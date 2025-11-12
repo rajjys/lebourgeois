@@ -1,0 +1,183 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "requestTicket": "Demander un Billet",
+    "exploreFlights": "Explorer les Vols",
+    "about": "À Propos",
+    "contact": "Contact",
+    "bookFlight": "Réserver un Vol"
+  },
+  "home": {
+    "hero": {
+      "title": "Voyagez avec efficacité et élégance",
+      "subtitle": "Découvrez des expériences de voyage inoubliables avec nos services de réservation premium. Vols directs, tarifs exclusifs et assistance 24/7.",
+      "cta": "Réservez votre Vol",
+      "latestPrices": "Prix Récents",
+      "exploreAllRoutes": "Explorer tout les Trajets"
+    },
+    "features": {
+      "fast": {
+        "title": "Réservation Rapide",
+        "description": "Obtenez vos billets en quelques minutes"
+      },
+      "global": {
+        "title": "Destinations Mondiales",
+        "description": "Accédez à des vols vers le monde entier"
+      },
+      "support": {
+        "title": "Assistance 24/7",
+        "description": "Notre équipe est toujours là pour vous"
+      }
+    },
+    "about": {
+      "title": "Pourquoi Le Bourgeois?",
+      "description": "Nous sommes spécialisés dans la recherche des meilleures offres de vols pour nos clients. Que vous voyagiez pour affaires ou pour le plaisir, notre équipe d'experts vous aidera à trouver le vol parfait qui correspond à votre budget et à votre emploi du temps.",
+      "cta": "Commencer"
+    }
+  },
+  "request": {
+    "title": "Demander un Billet d'Avion",
+    "subtitle": "Remplissez le formulaire ci-dessous et notre équipe vous contactera avec les meilleures options de vol.",
+    "form": {
+      "from": "De",
+      "fromPlaceholder": "Ville ou aéroport de départ",
+      "to": "À",
+      "toPlaceholder": "Ville ou aéroport de destination",
+      "departure": "Date de Départ",
+      "return": "Date de Retour",
+      "returnOptional": "(Optionnel)",
+      "travelers": "Nombre de Voyageurs",
+      "class": "Classe de Voyage",
+      "economy": "Économique",
+      "business": "Affaires",
+      "first": "Première",
+      "email": "Email",
+      "emailPlaceholder": "votre@email.com",
+      "phone": "Numéro de téléphone",
+      "phonePlaceholder": "+243 81 234 56 78",
+      "preferredContact": "Méthode de contact préférée",
+      "contactByEmail": "Contactez-moi par email",
+      "contactByPhone": "Contactez-moi par téléphone",
+      "isWhatsapp": "Ceci est mon numéro WhatsApp",
+      "missingFields": "Veuillez remplir tous les champs obligatoires",
+      "submit": "Demander Mon Billet",
+      "successTitle": "Demande Envoyée!",
+      "successMessage": "Merci! Un agent Le Bourgeois vous contactera bientôt."
+    }
+  },
+  "explore": {
+    "title": "Explorer les Destinations Populaires",
+    "subtitle": "Découvrez notre sélection de destinations de classe mondiale. Demandez un devis personnalisé pour n'importe lequel de ces lieux incroyables.",
+    "search": {
+      "from": "De",
+      "fromPlaceholder": "Sélectionner l'aéroport de départ",
+      "to": "À",
+      "toPlaceholder": "Sélectionner l'aéroport de destination",
+      "button": "Rechercher des Vols"
+    },
+    "results": {
+      "title": "{{count}} vol trouvé",
+      "title_plural": "{{count}} vols trouvés",
+      "bestPrice": "Meilleur prix affiché",
+      "noResults": "Aucun vol trouvé pour cette route",
+      "tryDifferent": "Essayez de rechercher avec d'autres aéroports"
+    },
+    "detail": {
+      "back": "Retour à la recherche",
+      "backToSearch": "Retour à la recherche",
+      "notFound": "Vol introuvable",
+      "missingFields": "Veuillez sélectionner une date et une classe de voyage",
+      "flightNumber": "Numéro de vol",
+      "origin": "Origine",
+      "destination": "Destination",
+      "departure": "Départ",
+      "arrival": "Arrivée",
+      "duration": "Durée",
+      "aircraft": "Avion",
+      "stops": "Escales",
+      "nonStop": "Sans escale",
+      "stop": "escale",
+      "airline": "Compagnie aérienne",
+      "bookFlight": "Réserver ce vol",
+      "selectOptions": "Sélectionnez vos préférences de voyage",
+      "pricePerPerson": "Prix par personne",
+      "selectDate": "Sélectionner la date de départ",
+      "pickDate": "Choisir une date",
+      "travelers": "Nombre de voyageurs",
+      "class": "Classe de voyage",
+      "selectClass": "Sélectionner la classe",
+      "continueBooking": "Continuer vers la réservation"
+    },
+    "destinations": {
+      "paris": {
+        "title": "Paris, France",
+        "description": "Découvrez le romantisme de la Ville Lumière. De la Tour Eiffel à la cuisine de classe mondiale, Paris vous attend.",
+        "price": "À partir de 450€"
+      },
+      "dubai": {
+        "title": "Dubaï, EAU",
+        "description": "Découvrez le luxe et l'innovation dans cette oasis moderne. L'architecture vertigineuse rencontre l'hospitalité arabe traditionnelle.",
+        "price": "À partir de 550€"
+      },
+      "newyork": {
+        "title": "New York, USA",
+        "description": "La ville qui ne dort jamais offre des possibilités infinies. Broadway, sites emblématiques et culture diversifiée.",
+        "price": "À partir de 380€"
+      },
+      "tokyo": {
+        "title": "Tokyo, Japon",
+        "description": "Où la tradition ancienne rencontre la technologie de pointe. Vivez les cerisiers en fleurs et les rues illuminées au néon.",
+        "price": "À partir de 680€"
+      }
+    },
+    "custom": {
+      "title": "Vous ne voyez pas votre destination?",
+      "description": "Nous proposons des vols vers des destinations du monde entier. Contactez-nous avec vos projets de voyage et nous trouverons les options parfaites pour vous.",
+      "quote": "Demander un Devis Personnalisé",
+      "contact": "Nous Contacter"
+    }
+  },
+  "about": {
+    "title": "À Propos de Le Bourgeois",
+    "mission": {
+      "title": "Notre Mission",
+      "description": "Le Bourgeois est dédié à rendre les voyages aériens accessibles, abordables et agréables pour tous. Nous croyons que tout le monde mérite de voyager avec élégance et confort."
+    },
+    "approach": {
+      "title": "Notre Approche",
+      "description": "Nous travaillons avec des compagnies aériennes du monde entier pour vous offrir les meilleurs tarifs possibles. Notre équipe recherche et compare constamment les vols pour s'assurer que vous obtenez le meilleur rapport qualité-prix."
+    },
+    "expertise": {
+      "title": "Expertise",
+      "description": "Avec des années d'expérience dans l'industrie du voyage, notre équipe comprend les subtilités de la réservation de vols et peut vous aider à naviguer même dans les itinéraires les plus complexes."
+    },
+    "cta": "Prêt à Commencer Votre Voyage?"
+  },
+  "contact": {
+    "title": "Contactez-Nous",
+    "subtitle": "Des questions? Nous sommes là pour vous aider. Contactez-nous via l'un des canaux ci-dessous.",
+    "form": {
+      "name": "Nom",
+      "namePlaceholder": "Votre nom",
+      "email": "Email",
+      "emailPlaceholder": "votre@email.com",
+      "message": "Message",
+      "messagePlaceholder": "Comment pouvons-nous vous aider?",
+      "submit": "Envoyer le Message",
+      "successTitle": "Message Envoyé!",
+      "successMessage": "Nous vous répondrons bientôt."
+    },
+    "info": {
+      "title": "Coordonnées",
+      "email": "Email",
+      "phone": "Téléphone",
+      "whatsapp": "WhatsApp"
+    }
+  },
+  "footer": {
+    "tagline": "Votre partenaire de confiance pour les voyages aériens.",
+    "quickLinks": "Liens Rapides",
+    "getInTouch": "Nous Contacter",
+    "rights": "Tous droits réservés."
+  }
+}

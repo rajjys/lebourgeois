@@ -1,0 +1,183 @@
+{
+  "nav": {
+    "home": "Home",
+    "requestTicket": "Request a Ticket",
+    "exploreFlights": "Explore Flights",
+    "about": "About",
+    "contact": "Contact",
+    "bookFlight": "Book Flight"
+  },
+  "home": {
+    "hero": {
+      "title": "Travel with efficiency and class",
+      "subtitle": "Discover unforgettable travel experiences with our premium booking services. Direct flights, exclusive rates, and 24/7 assistance.",
+      "cta": "Book your Flight",
+      "latestPrices": "Latest Prices",
+      "exploreAllRoutes": "Explore All Routes"
+    },
+    "features": {
+      "fast": {
+        "title": "Fast Booking",
+        "description": "Get your tickets in minutes"
+      },
+      "global": {
+        "title": "Global Destinations",
+        "description": "Access flights worldwide"
+      },
+      "support": {
+        "title": "24/7 Support",
+        "description": "Our team is always here for you"
+      }
+    },
+    "about": {
+      "title": "Why Le Bourgeois?",
+      "description": "We specialize in finding the best flight deals for our clients. Whether you're traveling for business or pleasure, our expert team will help you find the perfect flight that fits your budget and schedule.",
+      "cta": "Get Started"
+    }
+  },
+  "request": {
+    "title": "Request a Flight Ticket",
+    "subtitle": "Fill out the form below and our team will contact you with the best flight options.",
+    "form": {
+      "from": "From",
+      "fromPlaceholder": "Departure city or airport",
+      "to": "To",
+      "toPlaceholder": "Destination city or airport",
+      "departure": "Departure Date",
+      "return": "Return Date",
+      "returnOptional": "(Optional)",
+      "travelers": "Number of Travelers",
+      "class": "Travel Class",
+      "economy": "Economy",
+      "business": "Business",
+      "first": "First",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "phone": "Phone number",
+      "phonePlaceholder": "+1 234 567 8900",
+      "preferredContact": "Preferred contact method",
+      "contactByEmail": "Email me",
+      "contactByPhone": "Call me",
+      "isWhatsapp": "This is my WhatsApp number",
+      "missingFields": "Please fill in all required fields",
+      "submit": "Request My Ticket",
+      "successTitle": "Request Sent!",
+      "successMessage": "Thank you! A Le Bourgeois agent will contact you shortly."
+    }
+  },
+  "explore": {
+    "title": "Explore Popular Destinations",
+    "subtitle": "Discover our handpicked selection of world-class destinations. Request a personalized quote for any of these amazing locations.",
+    "search": {
+      "from": "From",
+      "fromPlaceholder": "Select departure airport",
+      "to": "To",
+      "toPlaceholder": "Select destination airport",
+      "button": "Search Flights"
+    },
+    "results": {
+      "title": "Found {{count}} flight",
+      "title_plural": "Found {{count}} flights",
+      "bestPrice": "Best price shown",
+      "noResults": "No flights found for this route",
+      "tryDifferent": "Try searching with different airports"
+    },
+    "detail": {
+      "back": "Back to Search",
+      "backToSearch": "Back to Search",
+      "notFound": "Flight not found",
+      "missingFields": "Please select a date and travel class",
+      "flightNumber": "Flight Number",
+      "origin": "Origin",
+      "destination": "Destination",
+      "departure": "Departure",
+      "arrival": "Arrival",
+      "duration": "Duration",
+      "aircraft": "Aircraft",
+      "stops": "Stops",
+      "nonStop": "Non-stop",
+      "stop": "stop",
+      "airline": "Airline",
+      "bookFlight": "Book This Flight",
+      "selectOptions": "Select your travel preferences",
+      "pricePerPerson": "Price per person",
+      "selectDate": "Select Departure Date",
+      "pickDate": "Pick a date",
+      "travelers": "Number of Travelers",
+      "class": "Travel Class",
+      "selectClass": "Select class",
+      "continueBooking": "Continue to Booking"
+    },
+    "destinations": {
+      "paris": {
+        "title": "Paris, France",
+        "description": "Experience the romance of the City of Light. From the Eiffel Tower to world-class cuisine, Paris awaits.",
+        "price": "From $450"
+      },
+      "dubai": {
+        "title": "Dubai, UAE",
+        "description": "Discover luxury and innovation in this modern oasis. Sky-high architecture meets traditional Arabian hospitality.",
+        "price": "From $550"
+      },
+      "newyork": {
+        "title": "New York, USA",
+        "description": "The city that never sleeps offers endless possibilities. Broadway, iconic landmarks, and diverse culture.",
+        "price": "From $380"
+      },
+      "tokyo": {
+        "title": "Tokyo, Japan",
+        "description": "Where ancient tradition meets cutting-edge technology. Experience cherry blossoms and neon-lit streets.",
+        "price": "From $680"
+      }
+    },
+    "custom": {
+      "title": "Don't See Your Destination?",
+      "description": "We offer flights to destinations worldwide. Contact us with your travel plans and we'll find the perfect options for you.",
+      "quote": "Request Custom Quote",
+      "contact": "Contact Us"
+    }
+  },
+  "about": {
+    "title": "About Le Bourgeois",
+    "mission": {
+      "title": "Our Mission",
+      "description": "Le Bourgeois is dedicated to making air travel accessible, affordable, and enjoyable for everyone. We believe that everyone deserves to travel with elegance and comfort."
+    },
+    "approach": {
+      "title": "Our Approach",
+      "description": "We work with airlines around the world to bring you the best possible rates. Our team constantly researches and compares flights to ensure you get the best value for your money."
+    },
+    "expertise": {
+      "title": "Expertise",
+      "description": "With years of experience in the travel industry, our team understands the ins and outs of flight booking and can help you navigate even the most complex itineraries."
+    },
+    "cta": "Ready to Start Your Journey?"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Have questions? We're here to help. Reach out to us through any of the channels below.",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "message": "Message",
+      "messagePlaceholder": "How can we help you?",
+      "submit": "Send Message",
+      "successTitle": "Message Sent!",
+      "successMessage": "We'll get back to you soon."
+    },
+    "info": {
+      "title": "Contact Information",
+      "email": "Email",
+      "phone": "Phone",
+      "whatsapp": "WhatsApp"
+    }
+  },
+  "footer": {
+    "tagline": "Your trusted partner for air travel.",
+    "quickLinks": "Quick Links",
+    "getInTouch": "Get in Touch",
+    "rights": "All rights reserved."
+  }
+}
