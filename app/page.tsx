@@ -59,7 +59,7 @@ const Home = () => {
               </Button>
             </div>
           </div>
-          <div className="mt-12">
+          <div className="mt-4 md:mt-10">
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-xl font-bold text-foreground">{t('home.hero.latestPrices')}</h3>
               <Link href="/explore" className="text-sm text-primary hover:underline">

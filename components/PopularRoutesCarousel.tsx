@@ -64,7 +64,7 @@ export default function PopularRoutesCarousel() {
                                     <CardHeader className="py-2 flex justify-center items-center">
 										<p className="text-sm font-semibold text-foreground truncate">{title}</p>
                                     </CardHeader>
-										<CardContent className="p-4 pt-1 flex gap-3 items-center">
+										<CardContent className="p-2 pt-1 flex gap-3 items-center">
 											{/* Airline emblem */}
 											<div
 												className="flex h-10 w-10 items-center justify-center rounded-full text-[10px] font-bold text-white"
@@ -78,10 +78,10 @@ export default function PopularRoutesCarousel() {
 											<div className="min-w-0 flex-1">
 												<div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
 													<span>{new Date(route.departureDate).toLocaleDateString()}</span>
-													<span className="hidden sm:inline">•</span>
-													<span className="hidden sm:inline">{route.ata} — {route.eta}</span>
-													<span className="hidden md:inline">•</span>
-													<span className="hidden md:inline">{route.airPlane}</span>
+													<span className="">•</span>
+													<span className="">{route.ata} — {route.eta}</span>
+													<span className="">•</span>
+													<span className="">{route.airPlane}</span>
 												</div>
 											</div>
 											{/* Price */}
