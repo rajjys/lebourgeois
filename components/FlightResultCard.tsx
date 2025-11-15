@@ -56,7 +56,7 @@ export default function FlightResultCard({ route }: FlightResultCardProps) {
             <div className="flex items-start gap-4 flex-1 min-w-0">
               {/* Airline Badge */}
               <div
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+                className="flex h-10 w-10 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
                 style={{ backgroundColor: route.airline.color }}
                 aria-label={route.airline.name}
                 title={route.airline.name}
@@ -66,10 +66,10 @@ export default function FlightResultCard({ route }: FlightResultCardProps) {
 
               {/* Route Details */}
               <div className="min-w-0 flex-1">
-                <h3 className="text-lg font-semibold text-foreground mb-1 truncate">
+                <h3 className="text-base md:text-lg font-semibold text-foreground mb-1 truncate">
                   {routeTitle}
                 </h3>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs md:text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
                     <span>{formatDuration(route.duration)}</span>
@@ -92,7 +92,7 @@ export default function FlightResultCard({ route }: FlightResultCardProps) {
             </div>
 
             {/* Price & CTA */}
-            <div className="flex items-center justify-between sm:flex-col sm:items-end gap-4 sm:gap-2">
+            <div className="flex items-center justify-end sm:justify-between sm:flex-col sm:items-end gap-4 sm:gap-2">
               <div className="text-right">
                 <div className="text-2xl font-bold text-foreground">
                   {formatMoney(route.price)}

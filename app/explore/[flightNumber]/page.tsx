@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, ArrowLeft, Plane, Clock, MapPin } from "lucide-react";
@@ -11,22 +12,28 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { popularRoutes } from "@/data/data";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const FlightDetail = () => {
   const { flightNumber } = useParams<{ flightNumber: string }>();
   const router = useRouter();
   const { t } = useTranslation();
-  
+
   const [departureDate, setDepartureDate] = useState<Date>();
-  const [travelers, setTravelers] = useState("1");
-  const [travelClass, setTravelClass] = useState("");
+  const [formData, setFormData] = useState({
+    travelers: "1",
+    travelClass: "economy",
+    contactMethod: "phone" as "phone" | "email",
+    email: "",
+    phone: "",
+    isWhatsapp: true,
+  });
 
   // Find the flight by flightNumber
   const flight = popularRoutes.find(
@@ -36,7 +43,6 @@ const FlightDetail = () => {
   if (!flight) {
     return (
       <div className="flex flex-col min-h-screen">
-        <Navbar />
         <div className="flex-1 flex items-center justify-center py-12">
           <Card className="max-w-md">
             <CardContent className="p-8 text-center">
@@ -56,23 +62,37 @@ const FlightDetail = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!departureDate || !travelClass) {
+
+    // Basic validation similar to /request page
+    const missingContact =
+      formData.contactMethod === "email" ? !formData.email.trim() : !formData.phone.trim();
+
+    if (!departureDate || !formData.travelClass || missingContact) {
       toast.error(t('explore.detail.missingFields'));
       return;
     }
-
-    // Navigate to request page with pre-filled data
-    const params = new URLSearchParams({
-      flightNumber: flight.flightNumber,
-      from: `${flight.origin.city} (${flight.origin.iataCode})`,
-      to: `${flight.destination.city} (${flight.destination.iataCode})`,
-      travelers,
-      travelClass,
-      departureDate: format(departureDate, "yyyy-MM-dd"),
+    console.log(formData);
+    console.log(flight.origin.iataCode);
+    console.log(flight.destination.iataCode);
+    // Optionally additional validation could be added (email pattern, phone format)
+    toast.success(t('explore.detail.requestSuccessTitle', { defaultValue: 'Request submitted' }), {
+      description:
+        t('explore.detail.requestSuccessMessage', {
+          defaultValue:
+            'We received your booking request. Our team will contact you shortly with availability and pricing.'
+        })
     });
 
-    router.push(`/request?${params.toString()}`);
+    // Reset form (keep departureDate cleared)
+    setFormData({
+      travelers: "1",
+      travelClass: "economy",
+      contactMethod: "phone",
+      email: "",
+      phone: "",
+      isWhatsapp: true,
+    });
+    setDepartureDate(undefined);
   };
 
   function formatMoney(amount: number): string {
@@ -280,8 +300,8 @@ const FlightDetail = () => {
                     <div className="space-y-2">
                       <Label htmlFor="travelers">{t('explore.detail.travelers')}</Label>
                       <Select
-                        value={travelers}
-                        onValueChange={setTravelers}
+                        value={formData.travelers}
+                        onValueChange={(value) => setFormData({ ...formData, travelers: value })}
                       >
                         <SelectTrigger id="travelers">
                           <SelectValue />
@@ -300,11 +320,11 @@ const FlightDetail = () => {
                     <div className="space-y-2">
                       <Label htmlFor="travelClass">{t('explore.detail.class')} *</Label>
                       <Select
-                        value={travelClass}
-                        onValueChange={setTravelClass}
+                        value={formData.travelClass}
+                        onValueChange={(value) => setFormData({ ...formData, travelClass: value })}
                         required
                       >
-                        <SelectTrigger id="travelClass">
+                        <SelectTrigger id="travelClass" className="font-medium">
                           <SelectValue placeholder={t('explore.detail.selectClass')} />
                         </SelectTrigger>
                         <SelectContent>
@@ -313,6 +333,69 @@ const FlightDetail = () => {
                           <SelectItem value="first">{t('request.form.first')}</SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+
+                    {/* Contact Info (added from /request) */}
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <div className="space-y-3">
+                        <Label className="text-muted-foreground">{t("request.form.preferredContact")}</Label>
+                        <RadioGroup
+                          value={formData.contactMethod}
+                          onValueChange={(value) =>
+                            setFormData({ ...formData, contactMethod: value as "email" | "phone" })
+                          }
+                          className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                        >
+                          <div className="flex items-center gap-2 rounded-md border border-border p-3">
+                            <RadioGroupItem value="email" id="contact-email" />
+                            <Label htmlFor="contact-email" className="cursor-pointer">
+                              {t("request.form.contactByEmail")}
+                            </Label>
+                          </div>
+                          <div className="flex items-center gap-2 rounded-md border border-border p-3">
+                            <RadioGroupItem value="phone" id="contact-phone" />
+                            <Label htmlFor="contact-phone" className="cursor-pointer">
+                              {t("request.form.contactByPhone")}
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+
+                      {formData.contactMethod === "email" ? (
+                        <div className="space-y-2">
+                          <Label className="text-muted-foreground" htmlFor="email">{t("request.form.email")} *</Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            placeholder={t("request.form.emailPlaceholder")}
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            required
+                          />
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <Label className="text-muted-foreground" htmlFor="phone">{t("request.form.phone")} *</Label>
+                          <Input
+                            id="phone"
+                            type="tel"
+                            placeholder={t("request.form.phonePlaceholder")}
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            required
+                          />
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              id="isWhatsapp"
+                              checked={formData.isWhatsapp}
+                              onCheckedChange={(checked) =>
+                                setFormData({ ...formData, isWhatsapp: Boolean(checked) })
+                              }
+                            />
+                            <Label htmlFor="isWhatsapp">{t("request.form.isWhatsapp")}</Label>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     <Button type="submit" variant="hero" size="lg" className="w-full">
@@ -330,4 +413,3 @@ const FlightDetail = () => {
 };
 
 export default FlightDetail;
-

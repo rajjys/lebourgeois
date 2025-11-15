@@ -33,7 +33,7 @@ const DestinationCard = ({ title, description, image, price }: DestinationCardPr
         <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
         <Button variant="ghost" size="sm" asChild className="w-full group/btn">
           <Link href="/request" className="flex items-center justify-center gap-2">
-            {t("explore.destinationsCta",{ defaultValues: "Request Quote"})}
+            {t("explore.destinationCta",{ defaultValues: "Request Quote"})}
             <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
           </Link>
         </Button>
