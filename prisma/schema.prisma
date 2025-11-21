@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Airport {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  name        String
+  city        String
+  country     String
+  timezone    String
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  departures FlightPattern[] @relation("origin")
+  arrivals   FlightPattern[] @relation("destination")
+}
+
+model Airline {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  name        String
+  logo        String?
+  color       String?
+  website     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  patterns    FlightPattern[] @relation("airline")
+}
+
+model FlightPattern {
+  id           Int       @id @default(autoincrement())
+
+  airlineId    String
+  airline      Airline   @relation("airline",fields: [airlineId], references: [id])
+
+  originId     String
+  origin       Airport   @relation("origin", fields: [originId], references: [id])
+
+  destinationId String
+  destination   Airport   @relation("destination", fields: [destinationId], references: [id])
+
+  flightNumber String     // "CAA201"
+
+  departureTime String     // "07:45"
+  arrivalTime   String     // "09:10"
+
+  // e.g. [1,3,5] = Mon, Wed, Fri
+  daysOfWeek   Int[]
+
+  startDate     DateTime
+  endDate       DateTime
+
+  price         Float?
+  currency      String?   // optional ("USD" | "CDF")
+
+  aircraft      String?   // "Q400", "A320", etc.
+  capacity      Int?      // seat capacity
+  distanceinKm      Int?  // distance in Km
+  durationMin   Int?      // time in mintes
+  classConfig   String?   // ex: 120Y12C5F
+
+  active        Boolean    @default(true)
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}

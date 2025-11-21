@@ -80,6 +80,8 @@ export default function PopularRoutesCarousel() {
 													<span>{new Date(route.departureDate).toLocaleDateString()}</span>
 													<span className="">•</span>
 													<span className="">{route.ata} — {route.eta}</span>
+													<span className="">•</span>
+													<span className="">{route.airPlane}</span>
 												</div>
 											</div>
 											{/* Price */}
