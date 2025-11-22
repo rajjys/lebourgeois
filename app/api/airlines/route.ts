@@ -1,18 +1,25 @@
 import prisma from "@/lib/prisma";
-import { badRequest, ok } from "../utils/http";
-
-export async function POST(request: Request) {
-  const data = await request.json();
-
-  if (!data.name || !data.code) {
-    return badRequest("Name and code are required.");
-  }
-
-  const airline = await prisma.airline.create({ data });
-  return ok(airline);
-}
+import { AirlineSchema } from "@/lib/validations/airline";
 
 export async function GET() {
-  const airlines = await prisma.airline.findMany();
-  return ok(airlines);
+  const airlines = await prisma.airline.findMany({
+    orderBy: { name: "asc" },
+  });
+
+  return Response.json(airlines);
+}
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const parsed = AirlineSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return new Response(JSON.stringify(parsed.error), { status: 400 });
+  }
+
+  const airline = await prisma.airline.create({
+    data: parsed.data,
+  });
+
+  return Response.json(airline);
 }

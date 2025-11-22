@@ -1,36 +1,55 @@
 import prisma from "@/lib/prisma";
-import { badRequest, ok } from "../../utils/http";
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+function toWeekdayEnum(date: Date) {
+  // returns "MON"..."SUN"
+  const map = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+  return map[date.getUTCDay()]; // JS 0=Sun
+}
 
-  const from = searchParams.get("from");
-  const to = searchParams.get("to");
-  const date = searchParams.get("date");
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const from = url.searchParams.get("from");
+  const to = url.searchParams.get("to");
+  const dateStr = url.searchParams.get("date");
 
-  if (!from || !to || !date) {
-    return badRequest("Missing query params: from, to, date");
+  if (!from || !to || !dateStr) {
+    return new Response(JSON.stringify({ error: "Missing query params from,to,date" }), { status: 400 });
   }
 
-  const searchDate = new Date(date);
-  const dayOfWeek = ((searchDate.getUTCDay() + 6) % 7) + 1;
-  // Converts JS Sunday=0 → 7
+  const searchDate = new Date(dateStr + "T00:00:00Z");
+  if (isNaN(searchDate.getTime())) {
+    return new Response(JSON.stringify({ error: "Invalid date" }), { status: 400 });
+  }
 
-  const flights = await prisma.flightPattern.findMany({
+  const weekday = toWeekdayEnum(searchDate); // e.g. "WED"
+
+  // Search:
+  // - patterns where daysOfWeek contains this weekday AND startDate <= date <= endDate
+  // - OR patterns marked isOneOff with startDate == date (single run)
+  const patterns = await prisma.flightPattern.findMany({
     where: {
-      origin: { code: from },
-      destination: { code: to },
-      startDate: { lte: searchDate },
-      endDate: { gte: searchDate },
-      daysOfWeek: { has: dayOfWeek },
+      origin: { iata: from },
+      destination: { iata: to },
       active: true,
+      OR: [
+        {
+          daysOfWeek: { has: weekday }, // recurring
+          startDate: { lte: searchDate },
+          endDate: { gte: searchDate },
+        },
+        {
+          isOneOff: true,
+          startDate: { lte: searchDate },
+          endDate: { gte: searchDate },
+        },
+      ],
     },
-    include: {
-      airline: true,
-      origin: true,
-      destination: true,
-    },
+    include: { airline: true, origin: true, destination: true },
+    orderBy: [
+      { price: "asc" },
+      { departureTime: "asc" }
+    ],
   });
 
-  return ok(flights);
+  return new Response(JSON.stringify(patterns), { status: 200 });
 }

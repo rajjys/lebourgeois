@@ -1,37 +1,47 @@
 import prisma from "@/lib/prisma";
-import { notFound, ok } from "../../utils/http";
+import { AirlineSchema } from "@/lib/validations/airline";
 
-export async function GET(_: Request, { params }: any) {
+export async function GET(
+  _req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
+
   const airline = await prisma.airline.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
-  if (!airline) return notFound("Airline not found.");
-
-  return ok(airline);
+  return Response.json(airline);
 }
 
-export async function PUT(request: Request, { params }: any) {
-  const data = await request.json();
+export async function PUT(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
+  const body = await req.json();
+  const parsed = AirlineSchema.safeParse(body);
 
-  try {
-    const airline = await prisma.airline.update({
-      where: { id: params.id },
-      data,
-    });
-    return ok(airline);
-  } catch {
-    return notFound("Airline not found.");
+  if (!parsed.success) {
+    return new Response(JSON.stringify(parsed.error), { status: 400 });
   }
+
+  const airline = await prisma.airline.update({
+    where: { id },
+    data: parsed.data,
+  });
+
+  return Response.json(airline);
 }
 
-export async function DELETE(_: Request, { params }: any) {
-  try {
-    await prisma.airline.delete({
-      where: { id: params.id },
-    });
-    return ok({ deleted: true });
-  } catch {
-    return notFound("Airline not found.");
-  }
+export async function DELETE(
+  _req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
+  await prisma.airline.delete({
+    where: { id },
+  });
+
+  return Response.json({ success: true });
 }

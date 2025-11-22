@@ -13,6 +13,15 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Weekday {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+  SUN
+}
 
 model Airport {
   id          String    @id @default(uuid())
@@ -34,6 +43,7 @@ model Airline {
   id          String    @id @default(uuid())
   code        String    @unique
   name        String
+  country     String?
   logo        String?
   color       String?
   website     String?
@@ -43,7 +53,7 @@ model Airline {
 }
 
 model FlightPattern {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(uuid())
 
   airlineId    String
   airline      Airline   @relation("airline",fields: [airlineId], references: [id])
@@ -59,8 +69,7 @@ model FlightPattern {
   departureTime String     // "07:45"
   arrivalTime   String     // "09:10"
 
-  // e.g. [1,3,5] = Mon, Wed, Fri
-  daysOfWeek   Int[]
+  daysOfWeek   Weekday[] // e.g. ["MON","WED","SAT"]
 
   startDate     DateTime
   endDate       DateTime
@@ -70,8 +79,8 @@ model FlightPattern {
 
   aircraft      String?   // "Q400", "A320", etc.
   capacity      Int?      // seat capacity
-  distanceinKm      Int?  // distance in Km
-  durationMin   Int?      // time in mintes
+  distanceInKm  Int?  // distance in Km
+  durationInMin   Int?      // time in mintes
   classConfig   String?   // ex: 120Y12C5F
 
   active        Boolean    @default(true)
