@@ -37,7 +37,7 @@ model Airport {
 
   departures FlightPattern[] @relation("origin")
   arrivals   FlightPattern[] @relation("destination")
-}
+} 
 
 model Airline {
   id          String    @id @default(uuid())
@@ -82,6 +82,7 @@ model FlightPattern {
   distanceInKm  Int?  // distance in Km
   durationInMin   Int?      // time in mintes
   classConfig   String?   // ex: 120Y12C5F
+  stops         Int?      // Number of stops to destination
 
   active        Boolean    @default(true)
 

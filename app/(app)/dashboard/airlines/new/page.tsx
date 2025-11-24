@@ -28,7 +28,7 @@ export default function NewAirlinePage() {
       onSubmit={form.handleSubmit(onSubmit)}
       className="max-w-md p-6 space-y-4"
     >
-      {["code", "name", "country"].map((field) => (
+      {["code", "name", "country", "logo"].map((field) => (
         <div key={field}>
           <Input placeholder={field} {...form.register(field as AirlineFields)} />
           {form.formState.errors[field as AirlineFields] && (

@@ -17,10 +17,10 @@ export default function NewFlightPatternPage() {
   const { airlines } = useAirlines();
   const { airports } = useAirports();
 
-  const { register, handleSubmit, control } = useForm<FlightPatternInput>({
+  const { register, handleSubmit, control, formState } = useForm<FlightPatternInput>({
     resolver: zodResolver(FlightPatternSchema),
     defaultValues: {
-      daysOfWeek: ["MON","WED","FRI"],
+      daysOfWeek: [],
       currency: "USD",
     }
   });
@@ -29,6 +29,7 @@ export default function NewFlightPatternPage() {
     await createFlightPattern(values);
     router.push("/dashboard/flight-patterns");
   }
+  if(formState.errors) console.log(formState.errors);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-3xl p-6 space-y-4">
@@ -94,11 +95,14 @@ export default function NewFlightPatternPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <input {...register("price")} placeholder="Price" className="p-2 border" type="number" />
-        <input {...register("currency")} placeholder="Currency" className="p-2 border" />
-        <input {...register("capacity")} placeholder="Capacity" className="p-2 border" type="number" />
+        <input {...register("price")} placeholder="Prix" className="p-2 border" type="number" />
+        <input {...register("currency")} placeholder="Devise" className="p-2 border" />
+        <input {...register("capacity")} placeholder="Capacite" className="p-2 border" type="number" />
+        <input {...register("stops")} placeholder="Escales" className="p-2 border" type="number" />
+        <input {...register("distanceInKm")} placeholder="Distance en Km" className="p-2 border" type="number" />
+        <input {...register("durationInMin")} placeholder="Duree de vol" className="p-2 border" type="number" />
+        <input {...register("aircraft")} placeholder="Appareil" className="p-2 border" />
       </div>
-
       <div className="flex gap-4">
         <Button type="submit">Create</Button>
       </div>
