@@ -1,32 +1,43 @@
 import prisma from "@/lib/prisma";
 import { FlightPatternSchema } from "@/lib/validations/flightPattern";
+import { ok, badRequest, notFound, internalError } from "@/app/api/utils/http";
 
+/**
+ * Handlers for /api/flight-patterns/:id
+ * - GET: returns flight pattern (200) or 404
+ * - PUT: validates body and updates pattern
+ * - DELETE: deletes pattern
+ */
 export async function GET(
   _req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
-
-  const pattern = await prisma.flightPattern.findUnique({
-    where: { id },
-    include: { airline: true, origin: true, destination: true },
-  });
-  return new Response(JSON.stringify(pattern), { status: pattern ? 200 : 404 });
+  try {
+    const { id } = await context.params;
+    const pattern = await prisma.flightPattern.findUnique({
+      where: { id },
+      include: { airline: true, origin: true, destination: true },
+    });
+    if (!pattern) return notFound(`Flight pattern not found for id=${id}`);
+    return ok(pattern);
+  } catch (err) {
+    return internalError("Failed to retrieve flight pattern", (err as Error)?.message ?? null);
+  }
 }
 
 export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
-  const body = await req.json();
-  const parsed = FlightPatternSchema.safeParse(body);
-  if (!parsed.success) {
-    return new Response(JSON.stringify(parsed.error.format()), { status: 400 });
-  }
-  const data = parsed.data;
-
   try {
+    const { id } = await context.params;
+    const body = await req.json();
+    const parsed = FlightPatternSchema.safeParse(body);
+    if (!parsed.success) {
+      return badRequest("Invalid flight pattern payload", parsed.error.format());
+    }
+    const data = parsed.data;
+
     const updated = await prisma.flightPattern.update({
       where: { id },
       data: {
@@ -48,9 +59,14 @@ export async function PUT(
         active: data.active ?? true,
       },
     });
-    return new Response(JSON.stringify(updated), { status: 200 });
-  } catch  {
-    return new Response("Not found", { status: 404 });
+    return ok(updated);
+  } catch (err) {
+    // Prisma throws when not found; surface as 404 where appropriate
+    const msg = (err as Error)?.message ?? null;
+    if (msg?.includes("Record to update not found")) {
+      return notFound(`Flight pattern not found for id`);
+    }
+    return internalError("Failed to update flight pattern", msg);
   }
 }
 
@@ -61,8 +77,12 @@ export async function DELETE(
   try {
     const { id } = await context.params;
     await prisma.flightPattern.delete({ where: { id } });
-    return new Response(JSON.stringify({ deleted: true }), { status: 200 });
-  } catch {
-    return new Response("Not found", { status: 404 });
+    return ok({ deleted: true });
+  } catch (err) {
+    const msg = (err as Error)?.message ?? null;
+    if (msg?.includes("Record to delete does not exist")) {
+      return notFound(`Flight pattern not found for id`);
+    }
+    return internalError("Failed to delete flight pattern", msg);
   }
 }

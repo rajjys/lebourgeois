@@ -1,5 +1,6 @@
 import { Weekday } from "@/lib/generated/prisma/enums";
 import prisma from "@/lib/prisma";
+import { badRequest, notFound, ok, internalError } from "@/app/api/utils/http";
 
 function toWeekdayEnum(date: Date): Weekday {
   // returns "MON"..."SUN"
@@ -7,49 +8,62 @@ function toWeekdayEnum(date: Date): Weekday {
   return map[date.getUTCDay()]; // JS 0=Sun
 }
 
+/**
+ * GET /api/flights/search
+ * Query params:
+ * - from: origin airport code (string)
+ * - to: destination airport code (string)
+ * - date: ISO date (YYYY-MM-DD)
+ *
+ * Responses:
+ * - 200: array of matching flight patterns
+ * - 400: missing/invalid params
+ * - 500: internal error
+ */
 export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const from = url.searchParams.get("from");
-  const to = url.searchParams.get("to");
-  const dateStr = url.searchParams.get("date");
+  try {
+    const url = new URL(req.url);
+    const from = url.searchParams.get("from");
+    const to = url.searchParams.get("to");
+    const dateStr = url.searchParams.get("date");
 
-  if (!from || !to || !dateStr) {
-    return new Response(JSON.stringify({ error: "Missing query params from,to,date" }), { status: 400 });
-  }
+    if (!from || !to || !dateStr) {
+      return badRequest("Missing query params: from, to and date are required");
+    }
 
-  const searchDate = new Date(dateStr + "T00:00:00Z");
-  if (isNaN(searchDate.getTime())) {
-    return new Response(JSON.stringify({ error: "Invalid date" }), { status: 400 });
-  }
+    const searchDate = new Date(dateStr + "T00:00:00Z");
+    if (isNaN(searchDate.getTime())) {
+      return badRequest("Invalid date: expected format YYYY-MM-DD");
+    }
 
-  const weekday = toWeekdayEnum(searchDate); // e.g. "WED"
+    const weekday = toWeekdayEnum(searchDate); // e.g. "WED"
 
-  // Search:
-  // - patterns where daysOfWeek contains this weekday AND startDate <= date <= endDate
-  // - OR patterns marked isOneOff with startDate == date (single run)
-  const patterns = await prisma.flightPattern.findMany({
-    where: {
-      origin: { code: from },
-      destination: { code: to },
-      active: true,
-      OR: [
-        {
-          daysOfWeek: { has: weekday }, // recurring
-          startDate: { lte: searchDate },
-          endDate: { gte: searchDate },
-        },
-        {
-          startDate: { lte: searchDate },
-          endDate: { gte: searchDate },
-        },
+    const patterns = await prisma.flightPattern.findMany({
+      where: {
+        origin: { code: from },
+        destination: { code: to },
+        active: true,
+        OR: [
+          {
+            daysOfWeek: { has: weekday }, // recurring
+            startDate: { lte: searchDate },
+            endDate: { gte: searchDate },
+          },
+          {
+            startDate: { lte: searchDate },
+            endDate: { gte: searchDate },
+          },
+        ],
+      },
+      include: { airline: true, origin: true, destination: true },
+      orderBy: [
+        { price: "asc" },
+        { departureTime: "asc" }
       ],
-    },
-    include: { airline: true, origin: true, destination: true },
-    orderBy: [
-      { price: "asc" },
-      { departureTime: "asc" }
-    ],
-  });
+    });
 
-  return new Response(JSON.stringify(patterns), { status: 200 });
+    return ok(patterns);
+  } catch (err) {
+    return internalError("Failed to search flights", (err as Error)?.message ?? null);
+  }
 }
