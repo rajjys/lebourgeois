@@ -9,6 +9,7 @@ import { ok, created, badRequest, internalError } from "@/app/api/utils/http";
  * - POST: creates a flight pattern; validated by FlightPatternSchema
  */
 export async function GET() {
+  console.log("API Route: GET /api/flight-patterns called");
   try {
     const patterns = await prisma.flightPattern.findMany({
       include: { airline: true, origin: true, destination: true },
@@ -16,6 +17,7 @@ export async function GET() {
     });
     return ok(patterns);
   } catch (err) {
+    console.error("Error listing flight patterns:", err);
     return internalError("Failed to list flight patterns", (err as Error)?.message ?? null);
   }
 }
