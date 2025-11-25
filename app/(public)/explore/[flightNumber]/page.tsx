@@ -13,12 +13,13 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
 import Footer from "@/components/Footer";
-import { popularRoutes } from "@/data/data";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useFlightPattern } from "@/hooks/useFlightPatterns";
+import Image from "next/image";
 
 const FlightDetail = () => {
   const { flightNumber } = useParams<{ flightNumber: string }>();
@@ -36,11 +37,9 @@ const FlightDetail = () => {
   });
 
   // Find the flight by flightNumber
-  const flight = popularRoutes.find(
-    (route) => route.flightNumber === decodeURIComponent(flightNumber || "")
-  );
+  const { pattern: flightDetail} = useFlightPattern(flightNumber)
 
-  if (!flight) {
+  if (!flightDetail) {
     return (
       <div className="flex flex-col min-h-screen">
         <div className="flex-1 flex items-center justify-center py-12">
@@ -71,9 +70,6 @@ const FlightDetail = () => {
       toast.error(t('explore.detail.missingFields'));
       return;
     }
-    console.log(formData);
-    console.log(flight.origin.iataCode);
-    console.log(flight.destination.iataCode);
     // Optionally additional validation could be added (email pattern, phone format)
     toast.success(t('explore.detail.requestSuccessTitle', { defaultValue: 'Request submitted' }), {
       description:
@@ -114,7 +110,7 @@ const FlightDetail = () => {
     return `${mins}m`;
   }
 
-  const routeTitle = `${flight.origin.city} (${flight.origin.iataCode}) → ${flight.destination.city} (${flight.destination.iataCode})`;
+  const routeTitle = `${flightDetail.origin.city} (${flightDetail.origin.code}) → ${flightDetail.destination.city} (${flightDetail.destination.code})`;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -139,17 +135,28 @@ const FlightDetail = () => {
                     <div>
                       <CardTitle className="text-xl md:text-2xl mb-2">{routeTitle}</CardTitle>
                       <CardDescription>
-                        {t('explore.detail.flightNumber')}: {flight.flightNumber}
+                        {t('explore.detail.flightNumber')}: {flightDetail.flightNumber}
                       </CardDescription>
                     </div>
-                    <div
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
-                      style={{ backgroundColor: flight.airline.color }}
-                      aria-label={flight.airline.name}
-                      title={flight.airline.name}
-                    >
-                      {flight.airline.code}
-                    </div>
+                    {
+                      flightDetail.airline.logo ?
+                      <Image 
+												src={flightDetail.airline.logo}
+												height={80}
+												width={80}
+												alt={flightDetail.airline.code}
+												className="flex h-12 w-12 items-center justify-center rounded-full"
+											/>
+                        :
+                      <div
+                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+                        style={{ backgroundColor: flightDetail.airline.color|| "#33cc33" }}
+                        aria-label={flightDetail.airline.name}
+                        title={flightDetail.airline.name}
+                      >
+                        {flightDetail.airline.code}
+                      </div>
+                    }
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -162,10 +169,10 @@ const FlightDetail = () => {
                       </div>
                       <div>
                         <p className="font-semibold text-foreground">
-                          {flight.origin.city}, {flight.origin.country}
+                          {flightDetail.origin.city}, {flightDetail.origin.country}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {flight.origin.iataCode}
+                          {flightDetail.origin.code}
                         </p>
                       </div>
                     </div>
@@ -176,10 +183,10 @@ const FlightDetail = () => {
                       </div>
                       <div>
                         <p className="font-semibold text-foreground">
-                          {flight.destination.city}, {flight.destination.country}
+                          {flightDetail.destination.city}, {flightDetail.destination.country}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {flight.destination.iataCode}
+                          {flightDetail.destination.code}
                         </p>
                       </div>
                     </div>
@@ -193,9 +200,9 @@ const FlightDetail = () => {
                         <span>{t('explore.detail.departure')}</span>
                       </div>
                       <div>
-                        <p className="font-semibold text-foreground">{flight.ata}</p>
+                        <p className="font-semibold text-foreground">{flightDetail.departureTime}</p>
                         <p className="text-sm text-muted-foreground">
-                          {format(new Date(flight.departureDate), "PPP")}
+                          {/*format(new Date(flight.departureDate), "PPP")*/}
                         </p>
                       </div>
                     </div>
@@ -205,9 +212,9 @@ const FlightDetail = () => {
                         <span>{t('explore.detail.arrival')}</span>
                       </div>
                       <div>
-                        <p className="font-semibold text-foreground">{flight.eta}</p>
+                        <p className="font-semibold text-foreground">{flightDetail.arrivalTime}</p>
                         <p className="text-sm text-muted-foreground">
-                          {format(new Date(flight.arrivalDate), "PPP")}
+                          {/*format(new Date(flightDetail.arrivalDate), "PPP")*/}
                         </p>
                       </div>
                     </div>
@@ -220,18 +227,18 @@ const FlightDetail = () => {
                       <div className="flex items-center gap-1">
                         <Clock className="h-4 w-4 text-muted-foreground" />
                         <p className="font-semibold text-foreground">
-                          {formatDuration(flight.duration)}
+                          {formatDuration(flightDetail.durationInMin)}
                         </p>
                       </div>
                     </div>
                     <div className="space-y-1">
                       <p className="text-sm text-muted-foreground">{t('explore.detail.aircraft')}</p>
-                      <p className="font-semibold text-foreground">{flight.airPlane}</p>
+                      <p className="font-semibold text-foreground">{flightDetail.aircraft}</p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-sm text-muted-foreground">{t('explore.detail.stops')}</p>
                       <p className="font-semibold text-foreground">
-                        {flight.stops === 0 ? t('explore.detail.nonStop') : `${flight.stops} ${t('explore.detail.stop')}`}
+                        {flightDetail.stops === 0 ? t('explore.detail.nonStop') : `${flightDetail.stops} ${t('explore.detail.stop')}`}
                       </p>
                     </div>
                   </div>
@@ -241,7 +248,16 @@ const FlightDetail = () => {
                     <p className="text-sm text-muted-foreground mb-1">
                       {t('explore.detail.airline')}
                     </p>
-                    <p className="font-semibold text-foreground">{flight.airline.name}</p>
+                    <div className="flex items-center gap-2">
+                    <Image 
+												src={flightDetail.airline.logo}
+												height={50}
+												width={50}
+												alt={flightDetail.airline.code}
+												className="flex h-8 w-8 items-center justify-center rounded-full"
+											/> 
+                    <p className="font-semibold text-foreground">{flightDetail.airline.name}</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -264,7 +280,7 @@ const FlightDetail = () => {
                         {t('explore.detail.pricePerPerson')}
                       </p>
                       <p className="text-3xl font-bold text-foreground">
-                        {formatMoney(flight.price)}
+                        {formatMoney(flightDetail.price)}
                       </p>
                     </div>
 

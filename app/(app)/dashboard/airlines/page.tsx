@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useAirlines } from "@/hooks/useAirlines";
+import { Airline } from "@/lib/generated/prisma/client";
 
 export default function AirlinesPage() {
   const { airlines, isLoading } = useAirlines();
@@ -29,7 +30,7 @@ export default function AirlinesPage() {
         </thead>
 
         <tbody>
-          {airlines?.map((a: any) => (
+          {airlines?.map((a: Airline) => (
             <tr key={a.id} className="border-t">
               <td className="p-2">{a.code}</td>
               <td className="p-2">{a.name}</td>

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, Suspense } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,42 +23,41 @@ import React from 'react'
 const RequestTicket = () => {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
-  const [departureDate, setDepartureDate] = useState<Date>();
-  const [returnDate, setReturnDate] = useState<Date>();
-  const [formData, setFormData] = useState({
-    from: "",
-    to: "",
-    travelers: "1",
-    travelClass: "economy",
-    contactMethod: "phone",
-    email: "",
-    phone: "",
-    isWhatsapp: true,
+  const [departureDate, setDepartureDate] = useState(() => {
+    const departureDateParam = searchParams.get("departureDate");
+    if (!departureDateParam) return undefined;
+
+    try {
+      const date = parse(departureDateParam, "yyyy-MM-dd", new Date());
+      return isNaN(date.getTime()) ? undefined : date;
+    } catch {
+      return undefined;
+    }
   });
 
-  // Pre-fill form from URL params (when coming from flight detail page)
-  useEffect(() => {
-    const fromParam = searchParams.get("from");
-    const toParam = searchParams.get("to");
-    const travelersParam = searchParams.get("travelers");
-    const travelClassParam = searchParams.get("travelClass");
-    const departureDateParam = searchParams.get("departureDate");
+  const [returnDate, setReturnDate] = useState(() => {
+    const returnDateParam = searchParams.get("returnDate");
+    if (!returnDateParam) return undefined;
 
-    if (fromParam) setFormData((prev) => ({ ...prev, from: fromParam }));
-    if (toParam) setFormData((prev) => ({ ...prev, to: toParam }));
-    if (travelersParam) setFormData((prev) => ({ ...prev, travelers: travelersParam }));
-    if (travelClassParam) setFormData((prev) => ({ ...prev, travelClass: travelClassParam }));
-    if (departureDateParam) {
-      try {
-        const date = parse(departureDateParam, "yyyy-MM-dd", new Date());
-        if (!isNaN(date.getTime())) {
-          setDepartureDate(date);
-        }
-      } catch (e) {
-        // Invalid date, ignore
-      }
+    try {
+      const date = parse(returnDateParam, "yyyy-MM-dd", new Date());
+      return isNaN(date.getTime()) ? undefined : date;
+    } catch {
+      return undefined;
     }
-  }, [searchParams]);
+  });
+  const [formData, setFormData] = useState(() => {
+  return {
+    from: searchParams.get("from") ?? "",
+    to: searchParams.get("to") ?? "",
+    travelers: searchParams.get("travelers") ?? "",
+    travelClass: searchParams.get("travelClass") ?? "",
+    contactMethod: "",
+    email: "",
+    phone: "",
+    isWhatsapp: false,
+  };
+});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

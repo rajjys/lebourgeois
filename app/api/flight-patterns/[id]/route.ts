@@ -49,7 +49,7 @@ export async function PUT(
       },
     });
     return new Response(JSON.stringify(updated), { status: 200 });
-  } catch (err) {
+  } catch  {
     return new Response("Not found", { status: 404 });
   }
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useAirports } from "@/hooks/useAirports";
+import { Airport } from "@/lib/generated/prisma/client";
 
 export default function AirportsPage() {
   const { airports, isLoading } = useAirports();
@@ -30,7 +31,7 @@ export default function AirportsPage() {
         </thead>
 
         <tbody>
-          {airports?.map((a: any) => (
+          {airports?.map((a: Airport) => (
             <tr key={a.id} className="border-t">
               <td className="p-2">{a.code}</td>
               <td className="p-2">{a.name}</td>

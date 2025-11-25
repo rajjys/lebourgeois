@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useFlightPatterns } from "@/hooks/useFlightPatterns";
+import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 
 export default function FlightPatternsPage() {
   const { patterns, isLoading } = useFlightPatterns();
@@ -32,12 +33,11 @@ export default function FlightPatternsPage() {
         </thead>
 
         <tbody>
-          {patterns?.map((p: any) => (
+          {patterns?.map((p: FlightPatternResponse) => (
             <tr key={p.id} className="border-t">
               <td className="p-2">{p.flightNumber}</td>
               <td className="p-2">{p.airline?.name}</td>
               <td className="p-2">{p.origin?.code} → {p.destination?.code}</td>
-              <td className="p-2">{(p.daysOfWeek || (p.isOneOff ? ["ONE-OFF"] : [])).join(", ")}</td>
               <td className="p-2">{p.departureTime} - {p.arrivalTime}</td>
               <td className="p-2">{p.price ? `${p.price} ${p.currency || "USD"}` : "-"}</td>
               <td className="p-2 text-right">

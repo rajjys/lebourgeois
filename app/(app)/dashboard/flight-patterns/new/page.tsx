@@ -9,6 +9,7 @@ import { useAirlines } from "@/hooks/useAirlines";
 import { useAirports } from "@/hooks/useAirports";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Airline, Airport } from "@/lib/generated/prisma/client";
 
 const WEEKDAYS = ["MON","TUE","WED","THU","FRI","SAT","SUN"] as const;
 
@@ -36,7 +37,7 @@ export default function NewFlightPatternPage() {
       <div className="grid grid-cols-2 gap-4">
         <select {...register("airlineId")} className="p-2 border">
           <option value="">Select airline</option>
-          {airlines?.map((a: any) => <option key={a.id} value={a.id}>{a.name} ({a.code})</option>)}
+          {airlines?.map((a: Airline) => <option key={a.id} value={a.id}>{a.name} ({a.code})</option>)}
         </select>
 
         <input {...register("flightNumber")} placeholder="Flight number" className="p-2 border" />
@@ -45,12 +46,12 @@ export default function NewFlightPatternPage() {
       <div className="grid grid-cols-3 gap-4">
         <select {...register("originId")} className="p-2 border">
           <option value="">Origin</option>
-          {airports?.map((a: any) => <option key={a.id} value={a.id}>{a.iata} — {a.city}</option>)}
+          {airports?.map((a: Airport) => <option key={a.id} value={a.id}>{a.code} — {a.city}</option>)}
         </select>
 
         <select {...register("destinationId")} className="p-2 border">
           <option value="">Destination</option>
-          {airports?.map((a: any) => <option key={a.id} value={a.id}>{a.iata} — {a.city}</option>)}
+          {airports?.map((a: Airport) => <option key={a.id} value={a.id}>{a.code} — {a.city}</option>)}
         </select>
       </div>
 

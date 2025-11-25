@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useAirlines } from "@/hooks/useAirlines";
 import { useAirports } from "@/hooks/useAirports";
 import { useFlightPatterns } from "@/hooks/useFlightPatterns";
+import { Airline, Airport } from "@/lib/generated/prisma/client";
+import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 
 export default function DashboardPage() {
     const { airlines } = useAirlines();
@@ -35,7 +37,7 @@ export default function DashboardPage() {
         )}
 
         <ul className="divide-y">
-          {airlines?.slice(0, 6).map((a: any) => (
+          {airlines?.slice(0, 6).map((a: Airline) => (
             <li key={a.id} className="py-3 flex justify-between">
               <span>
                 <span className="font-medium">{a.name}</span> ({a.code})
@@ -78,7 +80,7 @@ export default function DashboardPage() {
         )}
 
         <ul className="divide-y">
-          {airports?.slice(0, 6).map((ap: any) => (
+          {airports?.slice(0, 6).map((ap: Airport) => (
             <li key={ap.id} className="py-3 flex justify-between">
               <span>
                 <span className="font-medium">{ap.code}</span> - {ap.city},{" "}
@@ -120,7 +122,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <ul className="divide-y">
-            {patterns?.slice(0, 6).map((fp: any) => (
+            {patterns?.slice(0, 6).map((fp: FlightPatternResponse) => (
               <li key={fp.id} className="py-3 flex items-center justify-between">
                 <div>
                   <strong>{fp.flightNumber}</strong>{" "}

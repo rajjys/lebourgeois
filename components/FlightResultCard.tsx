@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Clock, Plane } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 

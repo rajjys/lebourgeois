@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { t } from "i18next";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface DestinationCardProps {
@@ -15,7 +16,7 @@ const DestinationCard = ({ title, description, image, price }: DestinationCardPr
   return (
     <Card className="group overflow-hidden border-border hover:shadow-hover transition-all duration-300 bg-card">
       <div className="relative h-48 overflow-hidden">
-        <img
+        <Image
           src={image}
           alt={title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

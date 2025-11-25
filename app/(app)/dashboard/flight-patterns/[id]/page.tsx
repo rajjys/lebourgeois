@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -93,6 +92,7 @@ export default function EditFlightPatternPage() {
       router.push("/dashboard/flight-patterns");
     } catch (err) {
       toast.error("Failed to delete");
+      console.log(err);
     }
   };
 

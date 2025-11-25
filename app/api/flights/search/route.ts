@@ -1,8 +1,9 @@
+import { Weekday } from "@/lib/generated/prisma/enums";
 import prisma from "@/lib/prisma";
 
-function toWeekdayEnum(date: Date) {
+function toWeekdayEnum(date: Date): Weekday {
   // returns "MON"..."SUN"
-  const map = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+  const map = ["SUN","MON","TUE","WED","THU","FRI","SAT"] as Weekday[];
   return map[date.getUTCDay()]; // JS 0=Sun
 }
 
@@ -28,8 +29,8 @@ export async function GET(req: Request) {
   // - OR patterns marked isOneOff with startDate == date (single run)
   const patterns = await prisma.flightPattern.findMany({
     where: {
-      origin: { iata: from },
-      destination: { iata: to },
+      origin: { code: from },
+      destination: { code: to },
       active: true,
       OR: [
         {
@@ -38,7 +39,6 @@ export async function GET(req: Request) {
           endDate: { gte: searchDate },
         },
         {
-          isOneOff: true,
           startDate: { lte: searchDate },
           endDate: { gte: searchDate },
         },
