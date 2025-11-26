@@ -35,7 +35,6 @@ export default function PopularRoutesCarousel() {
 	}, [api]);
 
 	// Keep the hero small: show first 10 popular routes
-	console.log("Getting flight patterns for test");
 	const { patterns } = useFlightPatterns();
 
 	return (

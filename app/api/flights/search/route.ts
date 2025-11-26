@@ -1,6 +1,6 @@
 import { Weekday } from "@/lib/generated/prisma/enums";
 import prisma from "@/lib/prisma";
-import { badRequest, notFound, ok, internalError } from "@/app/api/utils/http";
+import { badRequest, ok, internalError, generateRequestId } from "@/app/api/utils/http";
 
 function toWeekdayEnum(date: Date): Weekday {
   // returns "MON"..."SUN"
@@ -21,6 +21,7 @@ function toWeekdayEnum(date: Date): Weekday {
  * - 500: internal error
  */
 export async function GET(req: Request) {
+  const requestId = generateRequestId();
   try {
     const url = new URL(req.url);
     const from = url.searchParams.get("from");
@@ -28,12 +29,12 @@ export async function GET(req: Request) {
     const dateStr = url.searchParams.get("date");
 
     if (!from || !to || !dateStr) {
-      return badRequest("Missing query params: from, to and date are required");
+      return badRequest("Missing query params: from, to and date are required", null, requestId);
     }
 
     const searchDate = new Date(dateStr + "T00:00:00Z");
     if (isNaN(searchDate.getTime())) {
-      return badRequest("Invalid date: expected format YYYY-MM-DD");
+      return badRequest("Invalid date: expected format YYYY-MM-DD", null, requestId);
     }
 
     const weekday = toWeekdayEnum(searchDate); // e.g. "WED"
@@ -62,8 +63,8 @@ export async function GET(req: Request) {
       ],
     });
 
-    return ok(patterns);
+    return ok(patterns, requestId);
   } catch (err) {
-    return internalError("Failed to search flights", (err as Error)?.message ?? null);
+    return internalError("Failed to search flights", (err as Error)?.message ?? null, requestId);
   }
 }

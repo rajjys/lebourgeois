@@ -1,7 +1,6 @@
 import { FlightPatternInput } from "@/lib/validations/flightPattern";
 
 export async function fetchFlightPatterns() {
-  console.log("Fetching flight patterns from API Inside Service");
   return fetch("/api/flight-patterns").then((r) => r.json());
 }
 

@@ -2,9 +2,7 @@ import useSWR from "swr";
 import { fetchFlightPatterns, fetchFlightPattern } from "@/services/flightPatterns";
 
 export function useFlightPatterns() {
-  console.log("Hook call with SWR")
   const { data, error, isLoading, mutate } = useSWR("/api/flight-patterns", fetchFlightPatterns);
-  console.log("Hook call End");
   return { patterns: data, error, isLoading, mutate };
 }
 

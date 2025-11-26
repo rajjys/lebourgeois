@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { FlightPatternSchema } from "@/lib/validations/flightPattern";
-import { ok, badRequest, notFound, internalError } from "@/app/api/utils/http";
+import { ok, badRequest, notFound, internalError, generateRequestId } from "@/app/api/utils/http";
 
 /**
  * Handlers for /api/flight-patterns/:id
@@ -12,16 +12,17 @@ export async function GET(
   _req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
+  const requestId = generateRequestId();
   try {
     const { id } = await context.params;
     const pattern = await prisma.flightPattern.findUnique({
       where: { id },
       include: { airline: true, origin: true, destination: true },
     });
-    if (!pattern) return notFound(`Flight pattern not found for id=${id}`);
-    return ok(pattern);
+    if (!pattern) return notFound(`Flight pattern not found for id=${id}`, null, requestId);
+    return ok(pattern, requestId);
   } catch (err) {
-    return internalError("Failed to retrieve flight pattern", (err as Error)?.message ?? null);
+    return internalError("Failed to retrieve flight pattern", (err as Error)?.message ?? null, requestId);
   }
 }
 
@@ -29,12 +30,13 @@ export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
+  const requestId = generateRequestId();
   try {
     const { id } = await context.params;
     const body = await req.json();
     const parsed = FlightPatternSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest("Invalid flight pattern payload", parsed.error.format());
+      return badRequest("Invalid flight pattern payload", parsed.error.format(), requestId);
     }
     const data = parsed.data;
 
@@ -59,14 +61,14 @@ export async function PUT(
         active: data.active ?? true,
       },
     });
-    return ok(updated);
+    return ok(updated, requestId);
   } catch (err) {
     // Prisma throws when not found; surface as 404 where appropriate
     const msg = (err as Error)?.message ?? null;
     if (msg?.includes("Record to update not found")) {
-      return notFound(`Flight pattern not found for id`);
+      return notFound(`Flight pattern not found for id`, null, requestId);
     }
-    return internalError("Failed to update flight pattern", msg);
+    return internalError("Failed to update flight pattern", msg, requestId);
   }
 }
 
@@ -74,15 +76,16 @@ export async function DELETE(
   _req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
+  const requestId = generateRequestId();
   try {
     const { id } = await context.params;
     await prisma.flightPattern.delete({ where: { id } });
-    return ok({ deleted: true });
+    return ok({ deleted: true }, requestId);
   } catch (err) {
     const msg = (err as Error)?.message ?? null;
     if (msg?.includes("Record to delete does not exist")) {
-      return notFound(`Flight pattern not found for id`);
+      return notFound(`Flight pattern not found for id`, null, requestId);
     }
-    return internalError("Failed to delete flight pattern", msg);
+    return internalError("Failed to delete flight pattern", msg, requestId);
   }
 }

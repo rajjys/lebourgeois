@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { FlightPatternSchema } from "@/lib/validations/flightPattern";
-import { ok, created, badRequest, internalError } from "@/app/api/utils/http";
+import { ok, created, badRequest, internalError, generateRequestId } from "@/app/api/utils/http";
 
 /**
  * GET /api/flight-patterns
@@ -9,25 +9,25 @@ import { ok, created, badRequest, internalError } from "@/app/api/utils/http";
  * - POST: creates a flight pattern; validated by FlightPatternSchema
  */
 export async function GET() {
-  console.log("API Route: GET /api/flight-patterns called");
+  const requestId = generateRequestId();
   try {
     const patterns = await prisma.flightPattern.findMany({
       include: { airline: true, origin: true, destination: true },
       orderBy: { createdAt: "desc" },
     });
-    return ok(patterns);
+    return ok(patterns, requestId);
   } catch (err) {
-    console.error("Error listing flight patterns:", err);
-    return internalError("Failed to list flight patterns", (err as Error)?.message ?? null);
+    return internalError("Failed to list flight patterns", (err as Error)?.message ?? null, requestId);
   }
 }
 
 export async function POST(req: Request) {
+  const requestId = generateRequestId();
   try {
     const body = await req.json();
     const parsed = FlightPatternSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest("Invalid flight pattern payload", parsed.error.format());
+      return badRequest("Invalid flight pattern payload", parsed.error.format(), requestId);
     }
     const data = parsed.data;
     const createdRow = await prisma.flightPattern.create({
@@ -48,8 +48,8 @@ export async function POST(req: Request) {
         active: data.active ?? true,
       },
     });
-    return created(createdRow);
+    return created(createdRow, requestId);
   } catch (err) {
-    return internalError("Failed to create flight pattern", (err as Error)?.message ?? null);
+    return internalError("Failed to create flight pattern", (err as Error)?.message ?? null, requestId);
   }
 }
