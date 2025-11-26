@@ -12,11 +12,11 @@ export async function GET() {
   const requestId = generateRequestId();
   try {
     const patterns = await prisma.flightPattern.findMany({
-      include: { airline: true, origin: true, destination: true },
-      orderBy: { createdAt: "desc" },
+     
     });
     return ok(patterns, requestId);
   } catch (err) {
+    console.log(err);
     return internalError("Failed to list flight patterns", (err as Error)?.message ?? null, requestId);
   }
 }

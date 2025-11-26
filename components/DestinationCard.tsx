@@ -19,6 +19,8 @@ const DestinationCard = ({ title, description, image, price }: DestinationCardPr
         <Image
           src={image}
           alt={title}
+          width={270}
+          height={160}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
         {price && (
