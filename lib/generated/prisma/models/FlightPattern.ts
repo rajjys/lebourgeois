@@ -31,6 +31,7 @@ export type FlightPatternAvgAggregateOutputType = {
   capacity: number | null
   distanceInKm: number | null
   durationInMin: number | null
+  stops: number | null
 }
 
 export type FlightPatternSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type FlightPatternSumAggregateOutputType = {
   capacity: number | null
   distanceInKm: number | null
   durationInMin: number | null
+  stops: number | null
 }
 
 export type FlightPatternMinAggregateOutputType = {
@@ -57,6 +59,7 @@ export type FlightPatternMinAggregateOutputType = {
   distanceInKm: number | null
   durationInMin: number | null
   classConfig: string | null
+  stops: number | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -79,6 +82,7 @@ export type FlightPatternMaxAggregateOutputType = {
   distanceInKm: number | null
   durationInMin: number | null
   classConfig: string | null
+  stops: number | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -102,6 +106,7 @@ export type FlightPatternCountAggregateOutputType = {
   distanceInKm: number
   durationInMin: number
   classConfig: number
+  stops: number
   active: number
   createdAt: number
   updatedAt: number
@@ -114,6 +119,7 @@ export type FlightPatternAvgAggregateInputType = {
   capacity?: true
   distanceInKm?: true
   durationInMin?: true
+  stops?: true
 }
 
 export type FlightPatternSumAggregateInputType = {
@@ -121,6 +127,7 @@ export type FlightPatternSumAggregateInputType = {
   capacity?: true
   distanceInKm?: true
   durationInMin?: true
+  stops?: true
 }
 
 export type FlightPatternMinAggregateInputType = {
@@ -140,6 +147,7 @@ export type FlightPatternMinAggregateInputType = {
   distanceInKm?: true
   durationInMin?: true
   classConfig?: true
+  stops?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -162,6 +170,7 @@ export type FlightPatternMaxAggregateInputType = {
   distanceInKm?: true
   durationInMin?: true
   classConfig?: true
+  stops?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -185,6 +194,7 @@ export type FlightPatternCountAggregateInputType = {
   distanceInKm?: true
   durationInMin?: true
   classConfig?: true
+  stops?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -295,6 +305,7 @@ export type FlightPatternGroupByOutputType = {
   distanceInKm: number | null
   durationInMin: number | null
   classConfig: string | null
+  stops: number | null
   active: boolean
   createdAt: Date
   updatedAt: Date
@@ -341,6 +352,7 @@ export type FlightPatternWhereInput = {
   distanceInKm?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   durationInMin?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   classConfig?: Prisma.StringNullableFilter<"FlightPattern"> | string | null
+  stops?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   active?: Prisma.BoolFilter<"FlightPattern"> | boolean
   createdAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
@@ -367,6 +379,7 @@ export type FlightPatternOrderByWithRelationInput = {
   distanceInKm?: Prisma.SortOrderInput | Prisma.SortOrder
   durationInMin?: Prisma.SortOrderInput | Prisma.SortOrder
   classConfig?: Prisma.SortOrderInput | Prisma.SortOrder
+  stops?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -396,6 +409,7 @@ export type FlightPatternWhereUniqueInput = Prisma.AtLeast<{
   distanceInKm?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   durationInMin?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   classConfig?: Prisma.StringNullableFilter<"FlightPattern"> | string | null
+  stops?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   active?: Prisma.BoolFilter<"FlightPattern"> | boolean
   createdAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
@@ -422,6 +436,7 @@ export type FlightPatternOrderByWithAggregationInput = {
   distanceInKm?: Prisma.SortOrderInput | Prisma.SortOrder
   durationInMin?: Prisma.SortOrderInput | Prisma.SortOrder
   classConfig?: Prisma.SortOrderInput | Prisma.SortOrder
+  stops?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -453,6 +468,7 @@ export type FlightPatternScalarWhereWithAggregatesInput = {
   distanceInKm?: Prisma.IntNullableWithAggregatesFilter<"FlightPattern"> | number | null
   durationInMin?: Prisma.IntNullableWithAggregatesFilter<"FlightPattern"> | number | null
   classConfig?: Prisma.StringNullableWithAggregatesFilter<"FlightPattern"> | string | null
+  stops?: Prisma.IntNullableWithAggregatesFilter<"FlightPattern"> | number | null
   active?: Prisma.BoolWithAggregatesFilter<"FlightPattern"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FlightPattern"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"FlightPattern"> | Date | string
@@ -473,6 +489,7 @@ export type FlightPatternCreateInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -499,6 +516,7 @@ export type FlightPatternUncheckedCreateInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -519,6 +537,7 @@ export type FlightPatternUpdateInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -545,6 +564,7 @@ export type FlightPatternUncheckedUpdateInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -568,6 +588,7 @@ export type FlightPatternCreateManyInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -588,6 +609,7 @@ export type FlightPatternUpdateManyMutationInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -611,6 +633,7 @@ export type FlightPatternUncheckedUpdateManyInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -652,6 +675,7 @@ export type FlightPatternCountOrderByAggregateInput = {
   distanceInKm?: Prisma.SortOrder
   durationInMin?: Prisma.SortOrder
   classConfig?: Prisma.SortOrder
+  stops?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -662,6 +686,7 @@ export type FlightPatternAvgOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
   distanceInKm?: Prisma.SortOrder
   durationInMin?: Prisma.SortOrder
+  stops?: Prisma.SortOrder
 }
 
 export type FlightPatternMaxOrderByAggregateInput = {
@@ -681,6 +706,7 @@ export type FlightPatternMaxOrderByAggregateInput = {
   distanceInKm?: Prisma.SortOrder
   durationInMin?: Prisma.SortOrder
   classConfig?: Prisma.SortOrder
+  stops?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -703,6 +729,7 @@ export type FlightPatternMinOrderByAggregateInput = {
   distanceInKm?: Prisma.SortOrder
   durationInMin?: Prisma.SortOrder
   classConfig?: Prisma.SortOrder
+  stops?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -713,6 +740,7 @@ export type FlightPatternSumOrderByAggregateInput = {
   capacity?: Prisma.SortOrder
   distanceInKm?: Prisma.SortOrder
   durationInMin?: Prisma.SortOrder
+  stops?: Prisma.SortOrder
 }
 
 export type FlightPatternCreateNestedManyWithoutOriginInput = {
@@ -877,6 +905,7 @@ export type FlightPatternCreateWithoutOriginInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -901,6 +930,7 @@ export type FlightPatternUncheckedCreateWithoutOriginInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -931,6 +961,7 @@ export type FlightPatternCreateWithoutDestinationInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -955,6 +986,7 @@ export type FlightPatternUncheckedCreateWithoutDestinationInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1007,6 +1039,7 @@ export type FlightPatternScalarWhereInput = {
   distanceInKm?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   durationInMin?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   classConfig?: Prisma.StringNullableFilter<"FlightPattern"> | string | null
+  stops?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   active?: Prisma.BoolFilter<"FlightPattern"> | boolean
   createdAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
@@ -1043,6 +1076,7 @@ export type FlightPatternCreateWithoutAirlineInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1067,6 +1101,7 @@ export type FlightPatternUncheckedCreateWithoutAirlineInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1115,6 +1150,7 @@ export type FlightPatternCreateManyOriginInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1137,6 +1173,7 @@ export type FlightPatternCreateManyDestinationInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1157,6 +1194,7 @@ export type FlightPatternUpdateWithoutOriginInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1181,6 +1219,7 @@ export type FlightPatternUncheckedUpdateWithoutOriginInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1203,6 +1242,7 @@ export type FlightPatternUncheckedUpdateManyWithoutOriginInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1223,6 +1263,7 @@ export type FlightPatternUpdateWithoutDestinationInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1247,6 +1288,7 @@ export type FlightPatternUncheckedUpdateWithoutDestinationInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1269,6 +1311,7 @@ export type FlightPatternUncheckedUpdateManyWithoutDestinationInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1291,6 +1334,7 @@ export type FlightPatternCreateManyAirlineInput = {
   distanceInKm?: number | null
   durationInMin?: number | null
   classConfig?: string | null
+  stops?: number | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1311,6 +1355,7 @@ export type FlightPatternUpdateWithoutAirlineInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1335,6 +1380,7 @@ export type FlightPatternUncheckedUpdateWithoutAirlineInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1357,6 +1403,7 @@ export type FlightPatternUncheckedUpdateManyWithoutAirlineInput = {
   distanceInKm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   durationInMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1382,6 +1429,7 @@ export type FlightPatternSelect<ExtArgs extends runtime.Types.Extensions.Interna
   distanceInKm?: boolean
   durationInMin?: boolean
   classConfig?: boolean
+  stops?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1408,6 +1456,7 @@ export type FlightPatternSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   distanceInKm?: boolean
   durationInMin?: boolean
   classConfig?: boolean
+  stops?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1434,6 +1483,7 @@ export type FlightPatternSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   distanceInKm?: boolean
   durationInMin?: boolean
   classConfig?: boolean
+  stops?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1460,12 +1510,13 @@ export type FlightPatternSelectScalar = {
   distanceInKm?: boolean
   durationInMin?: boolean
   classConfig?: boolean
+  stops?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FlightPatternOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "airlineId" | "originId" | "destinationId" | "flightNumber" | "departureTime" | "arrivalTime" | "daysOfWeek" | "startDate" | "endDate" | "price" | "currency" | "aircraft" | "capacity" | "distanceInKm" | "durationInMin" | "classConfig" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["flightPattern"]>
+export type FlightPatternOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "airlineId" | "originId" | "destinationId" | "flightNumber" | "departureTime" | "arrivalTime" | "daysOfWeek" | "startDate" | "endDate" | "price" | "currency" | "aircraft" | "capacity" | "distanceInKm" | "durationInMin" | "classConfig" | "stops" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["flightPattern"]>
 export type FlightPatternInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   airline?: boolean | Prisma.AirlineDefaultArgs<ExtArgs>
   origin?: boolean | Prisma.AirportDefaultArgs<ExtArgs>
@@ -1507,6 +1558,7 @@ export type $FlightPatternPayload<ExtArgs extends runtime.Types.Extensions.Inter
     distanceInKm: number | null
     durationInMin: number | null
     classConfig: string | null
+    stops: number | null
     active: boolean
     createdAt: Date
     updatedAt: Date
@@ -1953,6 +2005,7 @@ export interface FlightPatternFieldRefs {
   readonly distanceInKm: Prisma.FieldRef<"FlightPattern", 'Int'>
   readonly durationInMin: Prisma.FieldRef<"FlightPattern", 'Int'>
   readonly classConfig: Prisma.FieldRef<"FlightPattern", 'String'>
+  readonly stops: Prisma.FieldRef<"FlightPattern", 'Int'>
   readonly active: Prisma.FieldRef<"FlightPattern", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"FlightPattern", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"FlightPattern", 'DateTime'>

@@ -121,6 +121,7 @@ export const FlightPatternScalarFieldEnum = {
   distanceInKm: 'distanceInKm',
   durationInMin: 'durationInMin',
   classConfig: 'classConfig',
+  stops: 'stops',
   active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
