@@ -10,6 +10,7 @@ import { useFlightPatterns } from "@/hooks/useFlightPatterns";
 import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 function formatMoney(amount: number): string {
@@ -36,7 +37,9 @@ export default function PopularRoutesCarousel() {
 	}, [api]);
 
 	// Keep the hero small: show first 10 popular routes
-	const { patterns } = useFlightPatterns();
+	const { patterns, error, isLoading } = useFlightPatterns();
+	const isSkeletonVisible = isLoading || !patterns?.length;
+	const skeletonSlides = Array.from({ length: 6 });
 
 	return (
 		<div className="w-full">
@@ -51,58 +54,84 @@ export default function PopularRoutesCarousel() {
 				}}
 			>
 				<CarouselContent className="items-stretch">
-					{patterns?.slice(0, 10).map((route: FlightPatternResponse) => {
-						const title = `${route.origin.city} (${route.origin.code}) → ${route.destination.city} (${route.destination.code})`;
-						return (
-							<CarouselItem key={route.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-								<Link href={`/explore/${encodeURIComponent(route.id)}`} className="block h-full">
-									<Card className="h-full bg-background/70 backdrop-blur border-border hover:bg-background/80 transition-colors">
-                                    <CardHeader className="py-2 flex justify-center items-center">
-										<p className="text-sm font-semibold text-foreground truncate">{title}</p>
-                                    </CardHeader>
+					{isSkeletonVisible
+						? skeletonSlides.map((_, index) => (
+								<CarouselItem key={`skeleton-${index}`} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+									<Card className="h-full bg-background/40 border-border">
+										<CardHeader className="py-2">
+											<Skeleton className="h-4 w-5/6" />
+										</CardHeader>
 										<CardContent className="p-2 pt-1 flex gap-3 items-center">
-											{/* Airline emblem */}
-
-											{
-												route.airline.logo ? 
-													<Image 
-														src={route.airline.logo}
-														height={60}
-														width={60}
-														alt={route.airline.code}
-														className="flex h-10 w-10 items-center justify-center rounded-full"
-													/>
-														:
-													<div
-														className="flex h-10 w-10 items-center justify-center rounded-full text-[10px] font-bold text-white"
-														style={{ backgroundColor: route.airline?.color || "#33cc33"}}
-														aria-label={route.airline.name}
-														title={route.airline.name}
-													>
-														{route.airline.code}
-													</div>
-											}
-											{/* Main meta */}
-											<div className="min-w-0 flex-1">
-												<div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-													<span>{formatDate(route.nextDepartureDate)}</span>
-													<span className="">•</span>
-													<span className="">{route.departureTime} — {route.arrivalTime}</span>
-													<span className="">•</span>
-													<span className="">{route.aircraft}</span>
+											<Skeleton className="h-10 w-10 rounded-full" />
+											<div className="min-w-0 flex-1 space-y-2">
+												<div className="flex flex-wrap items-center gap-2">
+													<Skeleton className="h-3 w-20" />
+													<Skeleton className="h-3 w-16" />
+													<Skeleton className="h-3 w-12" />
 												</div>
+												<Skeleton className="h-3 w-3/5" />
 											</div>
-											{/* Price */}
 											<div className="flex items-center gap-1">
-												<span className="text-sm font-bold text-primary">{formatMoney(route.price || 0)}</span>
-												<ArrowRight className="h-4 w-4 text-primary hidden sm:block" />
+												<Skeleton className="h-4 w-16" />
+												<Skeleton className="h-4 w-4 hidden sm:block" />
 											</div>
 										</CardContent>
 									</Card>
-								</Link>
-							</CarouselItem>
-						);
-					})}
+								</CarouselItem>
+						  ))
+						: patterns?.slice(0, 10).map((route: FlightPatternResponse) => {
+								const title = `${route.origin.city} (${route.origin.code}) → ${route.destination.city} (${route.destination.code})`;
+								return (
+									<CarouselItem key={route.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+										<Link href={`/explore/${encodeURIComponent(route.id)}`} className="block h-full">
+											<Card className="h-full bg-background/70 backdrop-blur border-border hover:bg-background/80 transition-colors">
+												<CardHeader className="py-2 flex justify-center items-center">
+													<p className="text-sm font-semibold text-foreground truncate">{title}</p>
+												</CardHeader>
+												<CardContent className="p-2 pt-1 flex gap-3 items-center">
+													{/* Airline emblem */}
+
+													{route.airline.logo ? (
+														<Image
+															src={route.airline.logo}
+															height={60}
+															width={60}
+															alt={route.airline.code}
+															className="flex h-10 w-10 items-center justify-center rounded-full"
+														/>
+													) : (
+														<div
+															className="flex h-10 w-10 items-center justify-center rounded-full text-[10px] font-bold text-white"
+															style={{ backgroundColor: route.airline?.color || "#33cc33" }}
+															aria-label={route.airline.name}
+															title={route.airline.name}
+														>
+															{route.airline.code}
+														</div>
+													)}
+													{/* Main meta */}
+													<div className="min-w-0 flex-1">
+														<div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+															<span className="font-medium">{formatDate(route.nextDepartureDate)}</span>
+															<span className="">•</span>
+															<span className="">
+																{route.departureTime} — {route.arrivalTime}
+															</span>
+															<span className="">•</span>
+															<span className="">{route.aircraft}</span>
+														</div>
+													</div>
+													{/* Price */}
+													<div className="flex items-center gap-1">
+														<span className="text-sm font-bold text-primary">{formatMoney(route.price || 0)}</span>
+														<ArrowRight className="h-4 w-4 text-primary hidden sm:block" />
+													</div>
+												</CardContent>
+											</Card>
+										</Link>
+									</CarouselItem>
+								);
+						  })}
 				</CarouselContent>
 			</Carousel>
 			<div className="mt-3 flex items-center justify-center gap-2">
