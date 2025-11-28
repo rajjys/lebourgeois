@@ -62,7 +62,7 @@ const Home = () => {
           <div className="mt-4 md:mt-10">
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-xl font-bold text-foreground">{t('home.hero.latestPrices')}</h3>
-              <Link href="/explore" className="text-sm text-primary hover:underline">
+              <Link href="/explore" className="text-sm text-muted-secondary font-medium hover:underline">
                 {t('home.hero.exploreAllRoutes', { defaultValue: 'Explore all routes' })}
               </Link>
             </div>
@@ -115,7 +115,7 @@ const Home = () => {
             {t('about.cta')}
           </h2>
           <Button variant="hero" size="xl" asChild>
-            <Link href="/request">{t('home.about.cta')}</Link>
+            <Link href="/explore">{t('home.about.cta')}</Link>
           </Button>
         </div>
       </section>

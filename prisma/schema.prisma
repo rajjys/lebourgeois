@@ -28,7 +28,7 @@ model Airport {
   code        String    @unique
   name        String
   city        String
-  country     String
+  countryCode String    @default("CD")
   timezone    String
   latitude    Float?
   longitude   Float?
@@ -43,7 +43,7 @@ model Airline {
   id          String    @id @default(uuid())
   code        String    @unique
   name        String
-  country     String?
+  countryCode String?
   logo        String?
   color       String?
   website     String?

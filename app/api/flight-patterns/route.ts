@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { FlightPatternSchema } from "@/lib/validations/flightPattern";
 import { ok, created, badRequest, internalError, generateRequestId } from "@/app/api/utils/http";
+import { withNextDepartureDate, withNextDepartureDates } from "@/lib/flightPatterns/nextDeparture";
 
 /**
  * GET /api/flight-patterns
@@ -15,10 +16,9 @@ export async function GET() {
       include: { airline: true, origin: true, destination: true },
       orderBy: { createdAt: "desc" },
     });
-    return ok(patterns, requestId);
+    return ok(withNextDepartureDates(patterns), requestId);
   } catch (err) {
-    console.log(err);
-    //return internalError("Failed to list flight patterns", (err as Error)?.message ?? null, requestId);
+    return internalError("Failed to list flight patterns", (err as Error)?.message ?? null, requestId);
   }
 }
 
@@ -48,8 +48,9 @@ export async function POST(req: Request) {
         capacity: data.capacity,
         active: data.active ?? true,
       },
+      include: { airline: true, origin: true, destination: true },
     });
-    return created(createdRow, requestId);
+    return created(withNextDepartureDate(createdRow), requestId);
   } catch (err) {
     return internalError("Failed to create flight pattern", (err as Error)?.message ?? null, requestId);
   }

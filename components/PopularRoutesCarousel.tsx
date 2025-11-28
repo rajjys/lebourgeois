@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useFlightPatterns } from "@/hooks/useFlightPatterns";
 import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 import Image from "next/image";
+import { formatDate } from "@/lib/utils";
 
 
 function formatMoney(amount: number): string {
@@ -84,7 +85,7 @@ export default function PopularRoutesCarousel() {
 											{/* Main meta */}
 											<div className="min-w-0 flex-1">
 												<div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-													<span>{/*new Date(route.departureDate).toLocaleDateString()*/}</span>
+													<span>{formatDate(route.nextDepartureDate)}</span>
 													<span className="">•</span>
 													<span className="">{route.departureTime} — {route.arrivalTime}</span>
 													<span className="">•</span>

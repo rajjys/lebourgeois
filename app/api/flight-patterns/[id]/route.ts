@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { FlightPatternSchema } from "@/lib/validations/flightPattern";
 import { ok, badRequest, notFound, internalError, generateRequestId } from "@/app/api/utils/http";
+import { withNextDepartureDate } from "@/lib/flightPatterns/nextDeparture";
 
 /**
  * Handlers for /api/flight-patterns/:id
@@ -20,7 +21,7 @@ export async function GET(
       include: { airline: true, origin: true, destination: true },
     });
     if (!pattern) return notFound(`Flight pattern not found for id=${id}`, null, requestId);
-    return ok(pattern, requestId);
+    return ok(withNextDepartureDate(pattern), requestId);
   } catch (err) {
     return internalError("Failed to retrieve flight pattern", (err as Error)?.message ?? null, requestId);
   }
@@ -60,8 +61,9 @@ export async function PUT(
         distanceInKm: Number(data.distanceInKm),
         active: data.active ?? true,
       },
+      include: { airline: true, origin: true, destination: true },
     });
-    return ok(updated, requestId);
+    return ok(withNextDepartureDate(updated), requestId);
   } catch (err) {
     // Prisma throws when not found; surface as 404 where appropriate
     const msg = (err as Error)?.message ?? null;
