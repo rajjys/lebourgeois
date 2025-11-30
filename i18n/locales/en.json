@@ -80,7 +80,21 @@
       "title_plural": "Found {{count}} flights",
       "bestPrice": "Best price shown",
       "noResults": "No flights found for this route",
-      "tryDifferent": "Try searching with different airports"
+      "tryDifferent": "Try searching with different airports",
+      "loading": "Searching flights...",
+      "reset": "Reset Search",
+      "nextDeparture": "Next departure",
+      "departureDate": "Departure Date",
+      "selectDate": "Select a date to filter",
+      "daysOfWeek": {
+        "mon": "M",
+        "tue": "T",
+        "wed": "W",
+        "thu": "T",
+        "fri": "F",
+        "sat": "S",
+        "sun": "S"
+      }
     },
     "detail": {
       "back": "Back to Search",

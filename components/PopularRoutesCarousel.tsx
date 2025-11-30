@@ -9,15 +9,9 @@ import Link from "next/link";
 import { useFlightPatterns } from "@/hooks/useFlightPatterns";
 import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 import Image from "next/image";
-import { formatDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-
-
-function formatMoney(amount: number): string {
-	return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(
-		amount,
-	);
-}
+import { formatDate } from "@/lib/utils/format-date-utils";
+import { formatMoney } from "@/lib/utils/money-utils";
 
 export default function PopularRoutesCarousel() {
 	const [api, setApi] = useState<CarouselApi | null>(null);

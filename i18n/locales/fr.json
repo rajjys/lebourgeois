@@ -80,7 +80,21 @@
       "title_plural": "{{count}} vols trouvés",
       "bestPrice": "Meilleur prix affiché",
       "noResults": "Aucun vol trouvé pour cette route",
-      "tryDifferent": "Essayez de rechercher avec d'autres aéroports"
+      "tryDifferent": "Essayez de rechercher avec d'autres aéroports",
+      "loading": "Recherche de vols...",
+      "reset": "Réinitialiser la recherche",
+      "nextDeparture": "Prochain départ",
+      "departureDate": "Date de départ",
+      "selectDate": "Sélectionnez une date pour filtrer",
+      "daysOfWeek": {
+        "mon": "L",
+        "tue": "M",
+        "wed": "M",
+        "thu": "J",
+        "fri": "V",
+        "sat": "S",
+        "sun": "D"
+      }
     },
     "detail": {
       "back": "Retour à la recherche",

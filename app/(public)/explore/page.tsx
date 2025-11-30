@@ -1,26 +1,33 @@
 'use client'
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AirportCombobox } from "@/components/AirportCombobox";
-import FlightResultCard from "@/components/FlightResultCard";
+import FlightPatternResultCard from "@/components/FlightPatternResultCard";
 import DestinationCard from "@/components/DestinationCard";
 import { useTranslation } from 'react-i18next';
-import { Search, Plane, ArrowUpDown, ArrowLeftRight } from "lucide-react";
-import { popularRoutes } from "@/data/data";
+import { Plane, ArrowUpDown, ArrowLeftRight, X, CalendarIcon, Loader2 } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils/cn-utils";
+import type { FlightPattern } from "@/lib/generated/prisma/client";
+
+type FlightPatternWithRelations = FlightPattern & {
+  airline: { id: string; code: string; name: string };
+  origin: { id: string; code: string; name: string; city: string; country: string; timezone: string | null };
+  destination: { id: string; code: string; name: string; city: string; country: string; timezone: string | null };
+  nextDepartureDate?: string | null;
+};
 
 const ExploreFlights = () => {
   const { t } = useTranslation();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [searchResults, setSearchResults] = useState<FlightPatternWithRelations[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-
-  // Swap origins/destinations
-  const handleSwap = () => {
-    const prevFrom = from;
-    setFrom(to);
-    setTo(prevFrom);
-  };
 
   // Extract IATA code from AirportCombobox value
   const extractIata = (value: string): string | null => {
@@ -29,30 +36,64 @@ const ExploreFlights = () => {
     return match ? match[1] : null;
   };
 
-  // Search logic: match origin & destination IATA
-  const searchResults = useMemo(() => {
-    const fromIata = extractIata(from);
-    const toIata = extractIata(to);
-    if (!fromIata || !toIata) return [];
-    return popularRoutes.filter(
-      (route) =>
-        route.origin.iataCode === fromIata &&
-        route.destination.iataCode === toIata
-    );
-  }, [from, to]);
+  const fromIata = useMemo(() => extractIata(from), [from]);
+  const toIata = useMemo(() => extractIata(to), [to]);
+  const canSearch = fromIata && toIata && fromIata !== toIata;
 
-  // Best price flight
-  const bestFlight = useMemo(() => {
-    if (searchResults.length === 0) return null;
-    return searchResults.reduce((best, current) =>
-      current.price < best.price ? current : best
-    );
-  }, [searchResults]);
+  // Auto-search when both airports are selected and different
+  useEffect(() => {
+    if (canSearch && fromIata && toIata) {
+      performSearch(fromIata, toIata, selectedDate);
+    } else {
+      setSearchResults([]);
+      setHasSearched(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromIata, toIata, selectedDate]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!from || !to) return;
+  const performSearch = async (origin: string, destination: string, date?: Date) => {
+    setIsLoading(true);
     setHasSearched(true);
+    
+    try {
+      const params = new URLSearchParams({
+        from: origin,
+        to: destination,
+      });
+      
+      if (date) {
+        params.append('date', format(date, 'yyyy-MM-dd'));
+      }
+
+      const response = await fetch(`/api/flights/search?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error('Failed to search flights');
+      }
+      
+      const data = await response.json();
+      setSearchResults(data || []);
+    } catch (error) {
+      console.error('Error searching flights:', error);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Swap origins/destinations
+  const handleSwap = () => {
+    const prevFrom = from;
+    setFrom(to);
+    setTo(prevFrom);
+  };
+
+  // Reset search
+  const handleReset = () => {
+    setFrom("");
+    setTo("");
+    setSelectedDate(undefined);
+    setSearchResults([]);
+    setHasSearched(false);
   };
 
   const destinations = [
@@ -81,35 +122,47 @@ const ExploreFlights = () => {
       price: t('explore.destinations.tokyo.price'),
     },
   ];
-
   return (
     <div className="flex flex-col min-h-screen mb-4">
-
       {/* Hero Search Section */}
-      <section className="bg-gradient-to-b from-primary/10 via-sky-light/20 to-background py-4 md:py-8">
+      <section className={cn(
+        "bg-gradient-to-b from-primary/10 via-sky-light/20 to-background transition-all duration-500 ease-in-out",
+        hasSearched ? "py-2 md:py-4" : "py-4 md:py-8"
+      )}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-
-            <div className="text-center mb-4 md:mb-8 space-y-3">
-              <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary/10 mb-4">
-                <Plane className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+            <div className={cn(
+              "text-center mb-4 transition-all duration-500 ease-in-out",
+              hasSearched ? "mb-2 space-y-1" : "mb-4 md:mb-8 space-y-3"
+            )}>
+              <div className={cn(
+                "inline-flex items-center justify-center rounded-full bg-primary/10 mb-4 transition-all duration-500",
+                hasSearched ? "w-8 h-8 md:w-10 md:h-10 mb-2" : "w-12 h-12 md:w-16 md:h-16 mb-4"
+              )}>
+                <Plane className={cn(
+                  "text-primary transition-all duration-500",
+                  hasSearched ? "h-4 w-4 md:h-5 md:w-5" : "h-6 w-6 md:h-8 md:w-8"
+                )} />
               </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
+              <h1 className={cn(
+                "font-bold text-foreground transition-all duration-500",
+                hasSearched ? "text-lg sm:text-xl md:text-2xl" : "text-2xl sm:text-3xl md:text-4xl"
+              )}>
                 {t('explore.title')}
               </h1>
-              <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-                {t('explore.subtitle')}
-              </p>
+              {!hasSearched && (
+                <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto transition-all duration-500">
+                  {t('explore.subtitle')}
+                </p>
+              )}
             </div>
 
             {/* Search Box */}
             <Card className="shadow-card border-border">
               <CardContent className="p-4 md:p-6">
-                <form onSubmit={handleSearch} className="space-y-4">
-
+                <div className="space-y-4">
                   {/* This grid handles responsive layout + swap button placement */}
                   <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
-
                     {/* FROM */}
                     <AirportCombobox
                       label={t('explore.search.from')}
@@ -127,8 +180,8 @@ const ExploreFlights = () => {
                         variant="outline"
                         className="px-3 rounded-full border-border"
                         onClick={handleSwap}
+                        disabled={!from || !to}
                       >
-                        {/* Below md: vertical arrows // md+: horizontal arrows */}
                         <span className="md:hidden">
                           <ArrowUpDown className="h-5 w-5" />
                         </span>
@@ -147,25 +200,58 @@ const ExploreFlights = () => {
                       id="search-to"
                       required
                     />
-
                   </div>
 
-                  {/* Search Button */}
-                  <Button
-                    type="submit"
-                    variant="hero"
-                    size="lg"
-                    className="w-full"
-                    disabled={!from || !to}
-                  >
-                    <Search className="mr-2 h-4 w-4" />
-                    {t('explore.search.button')}
-                  </Button>
+                  {/* Calendar - appears when both airports are set and there are results */}
+                  {canSearch && (
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] pt-2 border-t border-border">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !selectedDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {selectedDate ? (
+                              format(selectedDate, "PPP")
+                            ) : (
+                              <span>{t('explore.results.selectDate')}</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={selectedDate}
+                            onSelect={setSelectedDate}
+                            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  )}
 
-                </form>
+                  {/* Reset Button */}
+                  {hasSearched && (
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr]">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleReset}
+                        className="flex justify-start">
+                          <X className="mr-2 h-4 w-4" />
+                          {t('explore.results.reset')}
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
-
           </div>
         </div>
       </section>
@@ -174,8 +260,12 @@ const ExploreFlights = () => {
       {hasSearched && (
         <section className="py-4 bg-background">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-
-            {searchResults.length > 0 ? (
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+                <p className="text-muted-foreground">{t('explore.results.loading')}</p>
+              </div>
+            ) : searchResults.length > 0 ? (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">
@@ -183,15 +273,14 @@ const ExploreFlights = () => {
                       ? t('explore.results.title', { count: 1 })
                       : t('explore.results.title_plural', { count: searchResults.length })}
                   </h2>
-                  {bestFlight && (
-                    <p className="text-xs md:text-sm text-muted-foreground">
-                      {t('explore.results.bestPrice')}
-                    </p>
-                  )}
                 </div>
                 <div className="space-y-4">
-                  {searchResults.map((route) => (
-                    <FlightResultCard key={route.flightNumber} route={route} />
+                  {searchResults.map((pattern) => (
+                    <FlightPatternResultCard
+                      key={pattern.id}
+                      pattern={pattern}
+                      selectedDate={selectedDate || undefined}
+                    />
                   ))}
                 </div>
               </div>
@@ -215,7 +304,6 @@ const ExploreFlights = () => {
       {!hasSearched && (
         <section className="py-12 bg-gradient-to-b from-background to-secondary">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
               {destinations.map((dest, i) => (
                 <DestinationCard key={i} {...dest} />
@@ -245,13 +333,10 @@ const ExploreFlights = () => {
                   {t('explore.custom.contact')}
                 </a>
               </div>
-
             </div>
-
           </div>
         </section>
       )}
-
     </div>
   );
 };

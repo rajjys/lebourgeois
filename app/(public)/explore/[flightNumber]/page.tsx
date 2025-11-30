@@ -9,7 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, ArrowLeft, Plane, Clock, MapPin } from "lucide-react";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn-utils";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
 import Footer from "@/components/Footer";

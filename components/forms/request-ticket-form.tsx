@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarIcon, Plane } from "lucide-react";
 import { format, parse } from "date-fns";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn-utils";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { AirportCombobox } from "@/components/AirportCombobox";

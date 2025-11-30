@@ -1,3 +1,5 @@
+'use client';
+
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +12,10 @@ import {
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { airports } from "@/data/airports";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn-utils";
+import { useAirports } from "@/hooks/useAirports";
+import type { Airport } from "@/lib/generated/prisma/client";
+import { countryCodeToName } from "@/lib/utils/country-utils";
 
 type AirportComboboxProps = {
   label: string;
@@ -34,15 +38,17 @@ export function AirportCombobox({
 }: AirportComboboxProps) {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const { airports, isLoading } = useAirports();
 
-  const filteredAirports = useMemo(() => {
+  const filteredAirports = useMemo<Airport[]>(() => {
+    const list = (airports ?? []) as Airport[];
     const search = searchTerm.trim().toLowerCase();
-    if (!search) return airports;
-    return airports.filter((airport) => {
-      const content = `${airport.city} ${airport.country} ${airport.name} ${airport.iata}`.toLowerCase();
+    if (!search) return list;
+    return list.filter((airport) => {
+      const content = `${airport.city} ${airport.country} ${airport.name} ${airport.code}`.toLowerCase();
       return content.includes(search);
     });
-  }, [searchTerm]);
+  }, [airports, searchTerm]);
 
   return (
     <div className="space-y-2">
@@ -71,25 +77,30 @@ export function AirportCombobox({
               onValueChange={setSearchTerm}
             />
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandEmpty>{isLoading ? "Loading airports..." : "No results found."}</CommandEmpty>
               <CommandGroup>
                 {filteredAirports.map((airport) => {
-                  const display = `${airport.city} (${airport.iata}) · ${airport.name}`;
+                  const display = `${airport.city} (${airport.code}) · ${airport.name}`;
                   return (
                     <CommandItem
-                      key={airport.iata}
-                      value={airport.iata}
+                      key={airport.code}
+                      value={airport.code}
                       onSelect={() => {
                         onChange(display);
                         setOpen(false);
                         setSearchTerm("");
                       }}
                     >
-                      <Check className={cn("mr-2 h-4 w-4", value.includes(airport.iata) ? "opacity-100" : "opacity-0")} />
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          value && value.includes(airport.code) ? "opacity-100" : "opacity-0"
+                        )}
+                      />
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-foreground">{display}</span>
                         <span className="text-xs text-muted-foreground">
-                          {airport.country}
+                        {countryCodeToName[airport.country] || airport.country}
                         </span>
                       </div>
                     </CommandItem>

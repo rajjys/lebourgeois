@@ -1,0 +1,137 @@
+'use client';
+
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowRight, Clock } from "lucide-react";
+import Link from "next/link";
+import { useTranslation } from 'react-i18next';
+import type { FlightPattern, Weekday } from "@/lib/generated/prisma/client";
+import { cn } from "@/lib/utils/cn-utils";
+import { formatDuration, formatTime, getWeekdayFromDate } from "@/lib/utils/datetime-utils";
+import { formatMoney } from "@/lib/utils/money-utils";
+import { formatDate } from "@/lib/utils/format-date-utils";
+
+type FlightPatternWithRelations = FlightPattern & {
+  airline: { id: string; code: string; name: string };
+  origin: { id: string; code: string; name: string; city: string; country: string; timezone: string | null };
+  destination: { id: string; code: string; name: string; city: string; country: string; timezone: string | null };
+  nextDepartureDate?: string | null;
+};
+
+type FlightPatternResultCardProps = {
+  pattern: FlightPatternWithRelations;
+  selectedDate?: Date | null;
+};
+
+const WEEKDAY_ORDER: Weekday[] = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+export default function FlightPatternResultCard({ pattern, selectedDate }: FlightPatternResultCardProps) {
+  const { t } = useTranslation();
+  const routeTitle = `${pattern.origin.city} (${pattern.origin.code}) → ${pattern.destination.city} (${pattern.destination.code})`;
+  
+  const selectedWeekday = selectedDate ? getWeekdayFromDate(selectedDate) : 
+                          pattern.nextDepartureDate ? getWeekdayFromDate(new Date(pattern.nextDepartureDate)) : null;
+  const daysOfWeek = pattern.daysOfWeek || [];
+  return (
+    <Link href={`/explore/${encodeURIComponent(pattern.id)}`} className="block">
+      <Card className="hover:shadow-hover transition-all duration-300 border-border bg-card">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col gap-4">
+            {/* Main Flight Info */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              {/* Airline & Route Info */}
+              <div className="flex items-start gap-4 flex-1 min-w-0">
+                {/* Airline Badge */}
+                <div
+                  className="flex h-10 w-10 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white bg-primary"
+                  aria-label={pattern.airline.name}
+                  title={pattern.airline.name}
+                >
+                  {pattern.airline.code}
+                </div>
+
+                {/* Route Details */}
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base md:text-lg font-semibold text-foreground mb-1 truncate">
+                    {routeTitle}
+                  </h3>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs md:text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      <span>{formatDuration(pattern.durationInMin)}</span>
+                    </div>
+                    <span className="hidden sm:inline">•</span>
+                    <span>{formatTime(pattern.departureTime)} — {formatTime(pattern.arrivalTime)}</span>
+                    {pattern.aircraft && (
+                      <>
+                        <span className="hidden sm:inline">•</span>
+                        <span className="hidden sm:inline">{pattern.aircraft}</span>
+                      </>
+                    )}
+                    {pattern.stops !== null && pattern.stops > 0 && (
+                      <>
+                        <span className="hidden sm:inline">•</span>
+                        <span className="hidden sm:inline">{pattern.stops} stop{pattern.stops > 1 ? "s" : ""}</span>
+                      </>
+                    )}
+                  </div>
+                  
+                  {/* Next Departure Date */}
+                  {pattern.nextDepartureDate && (
+                    <div className="mt-2 text-xs text-muted-foreground">
+                      {t('explore.results.nextDeparture')}: <span className="font-medium">{formatDate(pattern.nextDepartureDate)}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Price & CTA */}
+              <div className="flex items-center justify-end sm:justify-between sm:flex-col sm:items-end gap-4 sm:gap-2">
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-foreground">
+                    {formatMoney(pattern.price, pattern.currency)}
+                  </div>
+                  <div className="text-xs text-muted-foreground">per person</div>
+                </div>
+                <div className="flex items-center gap-2 text-primary">
+                  <span className="text-sm font-medium hidden sm:inline">View Details</span>
+                  <ArrowRight className="h-4 w-4" />
+                </div>
+              </div>
+            </div>
+
+            {/* Days of Week Indicator */}
+            {daysOfWeek.length > 0 && (
+              <div className="flex flex-col gap-2 pt-2 border-t border-border">
+                <div className="text-xs text-muted-foreground mb-1">
+                  {t('explore.results.departureDate')}:
+                </div>
+                <div className="flex gap-2 items-center">
+                  {WEEKDAY_ORDER.map((day) => {
+                    const isActive = daysOfWeek.includes(day);
+                    const isSelected = selectedWeekday === day;
+                    
+                    return (
+                      <div
+                        key={day}
+                        className={cn(
+                          "w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-medium transition-colors",
+                          isActive && !isSelected && "border-green-600 dark:border-green-500 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300",
+                          isSelected && "border-orange-500 dark:border-orange-400 bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300",
+                          !isActive && "border-muted-foreground/30 text-muted-foreground/50"
+                        )}
+                        title={day}
+                      >
+                        {t(`explore.results.daysOfWeek.${day.toLowerCase()}`)}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+}
+
