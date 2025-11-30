@@ -10,6 +10,7 @@ import { Plane, ArrowUpDown, ArrowLeftRight, X, CalendarIcon, Loader2 } from "lu
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
+import { enUS, fr } from "date-fns/locale";
 import { cn } from "@/lib/utils/cn-utils";
 import type { FlightPattern } from "@/lib/generated/prisma/client";
 
@@ -21,7 +22,7 @@ type FlightPatternWithRelations = FlightPattern & {
 };
 
 const ExploreFlights = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
@@ -122,6 +123,7 @@ const ExploreFlights = () => {
       price: t('explore.destinations.tokyo.price'),
     },
   ];
+
   return (
     <div className="flex flex-col min-h-screen mb-4">
       {/* Hero Search Section */}
@@ -225,6 +227,7 @@ const ExploreFlights = () => {
                         <PopoverContent className="w-auto p-0" align="start">
                           <Calendar
                             mode="single"
+                            locale={i18n.language === "fr" ? fr : { ...enUS, options: { ...enUS.options, weekStartsOn: 1 }}}
                             selected={selectedDate}
                             onSelect={setSelectedDate}
                             disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}

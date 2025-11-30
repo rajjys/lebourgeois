@@ -16,12 +16,12 @@ import { useTranslation } from "react-i18next";
 import { AirportCombobox } from "@/components/AirportCombobox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { enUS, fr } from "date-fns/locale";
 import React from 'react'
 
 
 const RequestTicket = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const searchParams = useSearchParams();
   const [departureDate, setDepartureDate] = useState(() => {
     const departureDateParam = searchParams.get("departureDate");
@@ -157,9 +157,10 @@ const RequestTicket = () => {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
+                          locale={i18n.language === "fr" ? fr : { ...enUS, options: { ...enUS.options, weekStartsOn: 1 }}}
                           selected={departureDate}
                           onSelect={setDepartureDate}
-                          disabled={(date) => date < new Date()}
+                          disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                           initialFocus
                           className="pointer-events-auto"
                         />
