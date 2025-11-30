@@ -39,7 +39,7 @@ const Navbar = () => {
           </Link>
 
           {/* Mobile menu */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon" aria-label="Open menu">
@@ -82,7 +82,7 @@ const Navbar = () => {
             </Sheet>
           </div>
 
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <Button
                 key={link.href}
@@ -99,7 +99,7 @@ const Navbar = () => {
             ))}
           </div>
 
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2">
             <Select value={i18n.language} onValueChange={changeLanguage}>
               <SelectTrigger className="w-[110px] h-9">
                 <Languages className="h-4 w-4 mr-1" />
@@ -110,7 +110,7 @@ const Navbar = () => {
                 <SelectItem value="en">English</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="hero" size="sm" asChild className="hidden sm:inline-flex md:inline-flex">
+            <Button variant="hero" size="sm" asChild className="hidden sm:inline-flex lg:inline-flex">
               <Link href="/request">{t('nav.bookFlight')}</Link>
             </Button>
           </div>

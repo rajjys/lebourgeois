@@ -33,9 +33,11 @@ export const FlightPatternSchema = z.object({
 });
 export const FlightPatternResponseSchema = FlightPatternSchema.extend({
   id: z.string(),
+  price: z.number(),
   aircraft: z.string().optional(),
   stops: z.number().optional(),
   nextDepartureDate: z.string().optional(),
+  durationInMin: z.number().optional(),
   airline: z.object({
     id: z.string(),
     name: z.string(),

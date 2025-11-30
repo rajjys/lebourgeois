@@ -1,24 +1,19 @@
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ArrowRight, Clock } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from 'react-i18next';
-import type { FlightPattern, Weekday } from "@/lib/generated/prisma/client";
+import type { Weekday } from "@/lib/generated/prisma/client";
 import { cn } from "@/lib/utils/cn-utils";
 import { formatDuration, formatTime, getWeekdayFromDate } from "@/lib/utils/datetime-utils";
 import { formatMoney } from "@/lib/utils/money-utils";
 import { formatDate } from "@/lib/utils/format-date-utils";
-
-type FlightPatternWithRelations = FlightPattern & {
-  airline: { id: string; code: string; name: string };
-  origin: { id: string; code: string; name: string; city: string; country: string; timezone: string | null };
-  destination: { id: string; code: string; name: string; city: string; country: string; timezone: string | null };
-  nextDepartureDate?: string | null;
-};
+import Image from "next/image";
+import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 
 type FlightPatternResultCardProps = {
-  pattern: FlightPatternWithRelations;
+  pattern: FlightPatternResponse;
   selectedDate?: Date | null;
 };
 
@@ -34,30 +29,44 @@ export default function FlightPatternResultCard({ pattern, selectedDate }: Fligh
   return (
     <Link href={`/explore/${encodeURIComponent(pattern.id)}`} className="block">
       <Card className="hover:shadow-hover transition-all duration-300 border-border bg-card">
-        <CardContent className="p-4 sm:p-6">
-          <div className="flex flex-col gap-4">
-            {/* Main Flight Info */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              {/* Airline & Route Info */}
-              <div className="flex items-start gap-4 flex-1 min-w-0">
-                {/* Airline Badge */}
-                <div
-                  className="flex h-10 w-10 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white bg-primary"
-                  aria-label={pattern.airline.name}
-                  title={pattern.airline.name}
-                >
-                  {pattern.airline.code}
+        <CardHeader className="py-0">
+          <h3 className="text-base md:text-lg font-semibold text-foreground truncate pt-1 text-center">{routeTitle}</h3>
+        </CardHeader>
+        <CardContent className="">
+            <div className="flex gap-4 justify-between flex-wrap py-1">
+              {/* Main Flight Info */}
+              <div className="flex flex-row items-center justify-start gap-4 flex-nowrap">
+                {/* Airline & Route Info */}
+                <div className="flex items-start gap-4  min-w-0">
+                  {/* Airline emblem */}
+                  {pattern.airline.logo ? (
+                    <Image
+                      src={pattern.airline.logo}
+                      height={60}
+                      width={60}
+                      alt={pattern.airline.code}
+                      className="flex h-12 w-12 items-center justify-center rounded-full"
+                    />
+                  ) : (
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                      style={{ backgroundColor: pattern.airline?.color || "#33cc33" }}
+                      aria-label={pattern.airline.name}
+                      title={pattern.airline.name}
+                    >
+                      {pattern.airline.code}
+                    </div>
+                  )}
                 </div>
-
                 {/* Route Details */}
                 <div className="min-w-0 flex-1">
                   <h3 className="text-base md:text-lg font-semibold text-foreground mb-1 truncate">
-                    {routeTitle}
+                    
                   </h3>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs md:text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      <span>{formatDuration(pattern.durationInMin)}</span>
+                      <span>{formatDuration(pattern.durationInMin || 0)}</span>
                     </div>
                     <span className="hidden sm:inline">•</span>
                     <span>{formatTime(pattern.departureTime)} — {formatTime(pattern.arrivalTime)}</span>
@@ -67,7 +76,7 @@ export default function FlightPatternResultCard({ pattern, selectedDate }: Fligh
                         <span className="hidden sm:inline">{pattern.aircraft}</span>
                       </>
                     )}
-                    {pattern.stops !== null && pattern.stops > 0 && (
+                    {pattern.stops && pattern.stops > 0 && (
                       <>
                         <span className="hidden sm:inline">•</span>
                         <span className="hidden sm:inline">{pattern.stops} stop{pattern.stops > 1 ? "s" : ""}</span>
@@ -83,14 +92,12 @@ export default function FlightPatternResultCard({ pattern, selectedDate }: Fligh
                   )}
                 </div>
               </div>
-
               {/* Price & CTA */}
-              <div className="flex items-center justify-end sm:justify-between sm:flex-col sm:items-end gap-4 sm:gap-2">
+              <div className="flex items-end justify-end sm:flex-col gap-4 sm:gap-2 grow">
                 <div className="text-right">
                   <div className="text-2xl font-bold text-foreground">
                     {formatMoney(pattern.price, pattern.currency)}
                   </div>
-                  <div className="text-xs text-muted-foreground">per person</div>
                 </div>
                 <div className="flex items-center gap-2 text-primary">
                   <span className="text-sm font-medium hidden sm:inline">View Details</span>
@@ -98,7 +105,6 @@ export default function FlightPatternResultCard({ pattern, selectedDate }: Fligh
                 </div>
               </div>
             </div>
-
             {/* Days of Week Indicator */}
             {daysOfWeek.length > 0 && (
               <div className="flex flex-col gap-2 pt-2 border-t border-border">
@@ -128,7 +134,6 @@ export default function FlightPatternResultCard({ pattern, selectedDate }: Fligh
                 </div>
               </div>
             )}
-          </div>
         </CardContent>
       </Card>
     </Link>

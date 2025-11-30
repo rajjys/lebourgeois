@@ -6,27 +6,20 @@ import { AirportCombobox } from "@/components/AirportCombobox";
 import FlightPatternResultCard from "@/components/FlightPatternResultCard";
 import DestinationCard from "@/components/DestinationCard";
 import { useTranslation } from 'react-i18next';
-import { Plane, ArrowUpDown, ArrowLeftRight, X, CalendarIcon, Loader2 } from "lucide-react";
+import { Plane, ArrowLeftRight, X, CalendarIcon, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { enUS, fr } from "date-fns/locale";
 import { cn } from "@/lib/utils/cn-utils";
-import type { FlightPattern } from "@/lib/generated/prisma/client";
-
-type FlightPatternWithRelations = FlightPattern & {
-  airline: { id: string; code: string; name: string };
-  origin: { id: string; code: string; name: string; city: string; country: string; timezone: string | null };
-  destination: { id: string; code: string; name: string; city: string; country: string; timezone: string | null };
-  nextDepartureDate?: string | null;
-};
+import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 
 const ExploreFlights = () => {
   const { t, i18n } = useTranslation();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [searchResults, setSearchResults] = useState<FlightPatternWithRelations[]>([]);
+  const [searchResults, setSearchResults] = useState<FlightPatternResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -164,45 +157,45 @@ const ExploreFlights = () => {
               <CardContent className="p-4 md:p-6">
                 <div className="space-y-4">
                   {/* This grid handles responsive layout + swap button placement */}
-                  <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
-                    {/* FROM */}
+                  <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-stretch">
+                  {/* FROM */}
+                  <div className="min-w-0">
                     <AirportCombobox
-                      label={t('explore.search.from')}
+                      label={t("explore.search.from")}
                       value={from}
                       onChange={setFrom}
-                      placeholder={t('explore.search.fromPlaceholder')}
+                      placeholder={t("explore.search.fromPlaceholder")}
                       id="search-from"
                       required
                     />
+                  </div>
 
-                    {/* Swap Button → responsive icon */}
-                    <div className="flex justify-center md:h-full md:items-end">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="px-3 rounded-full border-border"
-                        onClick={handleSwap}
-                        disabled={!from || !to}
-                      >
-                        <span className="md:hidden">
-                          <ArrowUpDown className="h-5 w-5" />
-                        </span>
-                        <span className="hidden md:inline">
-                          <ArrowLeftRight className="h-5 w-5" />
-                        </span>
-                      </Button>
-                    </div>
+                  {/* Swap Button */}
+                  <div className="flex justify-center items-center">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="px-3 rounded-full border-border"
+                      onClick={handleSwap}
+                      disabled={!from || !to}
+                    >
+                      <ArrowLeftRight className="h-5 w-5" />
+                    </Button>
+                  </div>
 
-                    {/* TO */}
+                  {/* TO */}
+                  <div className="min-w-0">
                     <AirportCombobox
-                      label={t('explore.search.to')}
+                      label={t("explore.search.to")}
                       value={to}
                       onChange={setTo}
-                      placeholder={t('explore.search.toPlaceholder')}
+                      placeholder={t("explore.search.toPlaceholder")}
                       id="search-to"
                       required
                     />
                   </div>
+                </div>
+
 
                   {/* Calendar - appears when both airports are set and there are results */}
                   {canSearch && (

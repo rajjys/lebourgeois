@@ -50,12 +50,12 @@ const RequestTicket = () => {
   return {
     from: searchParams.get("from") ?? "",
     to: searchParams.get("to") ?? "",
-    travelers: searchParams.get("travelers") ?? "",
-    travelClass: searchParams.get("travelClass") ?? "",
-    contactMethod: "",
+    travelers: searchParams.get("travelers") ?? "1",
+    travelClass: searchParams.get("travelClass") ?? "economy",
+    contactMethod: "phone",
     email: "",
     phone: "",
-    isWhatsapp: false,
+    isWhatsapp: true,
   };
 });
 
@@ -118,7 +118,7 @@ const RequestTicket = () => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* From/To */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <AirportCombobox
                     id="from"
                     label={t("request.form.from")}
@@ -151,7 +151,8 @@ const RequestTicket = () => {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {departureDate ? format(departureDate, "PPP") : <span>Pick a date</span>}
+                          {departureDate ? format(departureDate, "PPP") : 
+                            <span>{t('explore.results.selectDate')}</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -179,7 +180,8 @@ const RequestTicket = () => {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {returnDate ? format(returnDate, "PPP") : <span>Pick a date</span>}
+                          {returnDate ? format(returnDate, "PPP") : 
+                            <span>{t('explore.results.selectDate')}</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
