@@ -11,6 +11,7 @@ import { formatMoney } from "@/lib/utils/money-utils";
 import { formatDate } from "@/lib/utils/format-date-utils";
 import Image from "next/image";
 import { FlightPatternResponse } from "@/lib/validations/flightPattern";
+import { format } from "date-fns";
 
 type FlightPatternResultCardProps = {
   pattern: FlightPatternResponse;
@@ -26,8 +27,11 @@ export default function FlightPatternResultCard({ pattern, selectedDate }: Fligh
   const selectedWeekday = selectedDate ? getWeekdayFromDate(selectedDate) : 
                           pattern.nextDepartureDate ? getWeekdayFromDate(new Date(pattern.nextDepartureDate)) : null;
   const daysOfWeek = pattern.daysOfWeek || [];
+
+const link = `/explore/${encodeURIComponent(pattern.id)}${selectedDate ? `?date=${format(selectedDate, "yyyy-MM-dd")}` : ""}`;
+
   return (
-    <Link href={`/explore/${encodeURIComponent(pattern.id)}`} className="block">
+    <Link href={link} className="block">
       <Card className="hover:shadow-hover transition-all duration-300 border-border bg-card">
         <CardHeader className="py-0">
           <h3 className="text-base md:text-lg font-semibold text-foreground truncate pt-1 text-center">{routeTitle}</h3>
