@@ -70,13 +70,13 @@ const Footer = () => {
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
                 <a href="mailto:info@lebourgeois.travel" className="hover:text-primary transition-colors">
-                  info@lebourgeois.travel
+                  info@lebourgeois.cd
                 </a>
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4 text-primary" />
                 <a href="tel:+1234567890" className="hover:text-primary transition-colors">
-                  +1 (234) 567-890
+                  +243 973 447 860
                 </a>
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
