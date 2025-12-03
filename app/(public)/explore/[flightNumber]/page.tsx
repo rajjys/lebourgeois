@@ -20,6 +20,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useFlightPattern } from "@/hooks/useFlightPatterns";
 import Image from "next/image";
+import { formatDuration } from "@/lib/utils/datetime-utils";
+import { formatMoney } from "@/lib/utils/money-utils";
 
 const FlightDetail = () => {
   const { flightNumber } = useParams<{ flightNumber: string }>();
@@ -90,25 +92,6 @@ const FlightDetail = () => {
     });
     setDepartureDate(undefined);
   };
-
-  function formatMoney(amount: number): string {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(amount);
-  }
-
-  function formatDuration(minutes: number): string {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0 && mins > 0) {
-      return `${hours}h ${mins}m`;
-    } else if (hours > 0) {
-      return `${hours}h`;
-    }
-    return `${mins}m`;
-  }
 
   const routeTitle = `${flightDetail.origin.city} (${flightDetail.origin.code}) → ${flightDetail.destination.city} (${flightDetail.destination.code})`;
 

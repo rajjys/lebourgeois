@@ -218,14 +218,27 @@ const ExploreFlights = () => {
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            locale={i18n.language === "fr" ? fr : { ...enUS, options: { ...enUS.options, weekStartsOn: 1 }}}
-                            selected={selectedDate}
-                            onSelect={setSelectedDate}
-                            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                            initialFocus
-                          />
+                          
+                          <div className="flex flex-col">
+                            <Calendar
+                              mode="single"
+                              locale={i18n.language === "fr" ? fr : { ...enUS, options: { ...enUS.options, weekStartsOn: 1 }}}
+                              selected={selectedDate}
+                              onSelect={setSelectedDate}
+                              disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                              initialFocus
+                            />
+                            {/* Reset Calendar Button */}
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              className="mt-2 self-end text-xs"
+                              onClick={() => setSelectedDate(undefined)}
+                              disabled={!selectedDate ? true: false}
+                            >
+                              {t('explore.search.calendar.reset')}
+                            </Button>
+                          </div>
                         </PopoverContent>
                       </Popover>
                     </div>

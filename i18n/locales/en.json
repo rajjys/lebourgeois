@@ -73,7 +73,10 @@
       "fromPlaceholder": "Select departure airport",
       "to": "To",
       "toPlaceholder": "Select destination airport",
-      "button": "Search Flights"
+      "button": "Search Flights",
+      "calendar": {
+        "reset": "Reset"
+      }
     },
     "results": {
       "title": "Found {{count}} flight",
@@ -85,6 +88,7 @@
       "reset": "Reset Search",
       "nextDeparture": "Next departure",
       "departureDate": "Departure Date",
+      "selectedDate": "Selected date",
       "selectDate": "Select a date to filter",
       "daysOfWeek": {
         "mon": "M",

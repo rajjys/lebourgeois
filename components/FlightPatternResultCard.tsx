@@ -85,7 +85,12 @@ export default function FlightPatternResultCard({ pattern, selectedDate }: Fligh
                   </div>
                   
                   {/* Next Departure Date */}
-                  {pattern.nextDepartureDate && (
+                  {selectedDate ? 
+                    <div className="mt-2 text-xs text-muted-foreground">
+                      {t('explore.results.selectedDate')}: <span className="font-medium">{formatDate(selectedDate.toISOString())}</span>
+                    </div>
+                      :
+                    pattern.nextDepartureDate && (
                     <div className="mt-2 text-xs text-muted-foreground">
                       {t('explore.results.nextDeparture')}: <span className="font-medium">{formatDate(pattern.nextDepartureDate)}</span>
                     </div>

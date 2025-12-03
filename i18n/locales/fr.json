@@ -73,7 +73,10 @@
       "fromPlaceholder": "Sélectionner l'aéroport de départ",
       "to": "À",
       "toPlaceholder": "Sélectionner l'aéroport de destination",
-      "button": "Rechercher des Vols"
+      "button": "Rechercher des Vols",
+      "calendar": {
+        "reset": "Reinitialiser"
+      }
     },
     "results": {
       "title": "{{count}} vol trouvé",
@@ -85,6 +88,7 @@
       "reset": "Réinitialiser la recherche",
       "nextDeparture": "Prochain départ",
       "departureDate": "Date de départ",
+      "selectedDate": "Date selectionée",
       "selectDate": "Sélectionnez une date pour filtrer",
       "daysOfWeek": {
         "mon": "L",
