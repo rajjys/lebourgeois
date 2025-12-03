@@ -41,7 +41,7 @@ export function AirportCombobox({
   const { airports, isLoading } = useAirports();
 
   const filteredAirports = useMemo<Airport[]>(() => {
-    const list = (airports ?? []) as Airport[];
+    const list = Array.isArray(airports) ? airports : [];
     const search = searchTerm.trim().toLowerCase();
     if (!search) return list;
     return list.filter((airport) => {
@@ -66,8 +66,11 @@ export function AirportCombobox({
           id={id}
         >
           {(() => {
-            const selected = airports?.find(a => `${a.city} (${a.code}) · ${a.name}` === value);
-
+            const list = Array.isArray(airports) ? airports : [];
+            const selected = list.find(
+              a => `${a.city} (${a.code}) · ${a.name}` === value
+            );
+            
             if (!selected)
               return <span className="text-muted-foreground truncate">{placeholder || "Select airport"}</span>;
 

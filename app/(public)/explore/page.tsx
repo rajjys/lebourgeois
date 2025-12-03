@@ -262,7 +262,7 @@ const ExploreFlights = () => {
                 <p className="text-muted-foreground">{t('explore.results.loading')}</p>
               </div>
             ) : searchResults.length > 0 ? (
-              <div className="space-y-2">
+              <div className="space-y-2 max-w-4xl mx-auto">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">
                     {searchResults.length === 1

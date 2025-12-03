@@ -32,8 +32,8 @@ export default function FlightPatternResultCard({ pattern, selectedDate }: Fligh
         <CardHeader className="py-0">
           <h3 className="text-base md:text-lg font-semibold text-foreground truncate pt-1 text-center">{routeTitle}</h3>
         </CardHeader>
-        <CardContent className="">
-            <div className="flex gap-4 justify-between flex-wrap py-1">
+        <CardContent className="pb-2 px-2 sm:px-6 md:px-8">
+            <div className="flex gap-2 justify-between py-1">
               {/* Main Flight Info */}
               <div className="flex flex-row items-center justify-start gap-4 flex-nowrap">
                 {/* Airline & Route Info */}
@@ -93,22 +93,22 @@ export default function FlightPatternResultCard({ pattern, selectedDate }: Fligh
                 </div>
               </div>
               {/* Price & CTA */}
-              <div className="flex items-end justify-end sm:flex-col gap-4 sm:gap-2 grow">
+              <div className="flex items-end justify-end sm:flex-col sm:gap-2 grow">
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-2xl font-bold text-orange-700/60">
                     {formatMoney(pattern.price, pattern.currency)}
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-primary">
+                <div className="flex items-center gap-2 text-muted-foreground">
                   <span className="text-sm font-medium hidden sm:inline">View Details</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 hidden sm:inline" />
                 </div>
               </div>
             </div>
             {/* Days of Week Indicator */}
             {daysOfWeek.length > 0 && (
-              <div className="flex flex-col gap-2 pt-2 border-t border-border">
-                <div className="text-xs text-muted-foreground mb-1">
+              <div className="flex flex-col pt-2 border-t border-border">
+                <div className="text-xs text-muted-foreground mb-1 hidden">
                   {t('explore.results.departureDate')}:
                 </div>
                 <div className="flex gap-2 items-center">
@@ -120,10 +120,10 @@ export default function FlightPatternResultCard({ pattern, selectedDate }: Fligh
                       <div
                         key={day}
                         className={cn(
-                          "w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-medium transition-colors",
-                          isActive && !isSelected && "border-green-600 dark:border-green-500 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300",
-                          isSelected && "border-orange-500 dark:border-orange-400 bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300",
-                          !isActive && "border-muted-foreground/30 text-muted-foreground/50"
+                          "w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors",
+                          isActive && !isSelected && "border border-green-300 bg-green-50 text-muted-foreground/80",
+                          isSelected && "border-2 border-orange-500 bg-orange-50 text-orange-700",
+                          !isActive && "border border-muted-foreground/30 text-muted-foreground/50"
                         )}
                         title={day}
                       >
