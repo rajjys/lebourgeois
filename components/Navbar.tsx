@@ -74,7 +74,7 @@ const Navbar = () => {
                   </Select>
                   <SheetClose asChild>
                     <Button variant="hero" size="sm" asChild className="mt-1">
-                      <Link href="/request">{t('nav.bookFlight')}</Link>
+                      <Link href="/explore">{t('nav.bookFlight')}</Link>
                     </Button>
                   </SheetClose>
                 </div>
@@ -111,7 +111,7 @@ const Navbar = () => {
               </SelectContent>
             </Select>
             <Button variant="hero" size="sm" asChild className="hidden sm:inline-flex lg:inline-flex">
-              <Link href="/request">{t('nav.bookFlight')}</Link>
+              <Link href="/explore">{t('nav.bookFlight')}</Link>
             </Button>
           </div>
         </div>
