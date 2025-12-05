@@ -1,0 +1,14 @@
+User-agent: *
+# Allow main public pages
+Allow: /
+
+# Block dashboard and internal tools
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /dashboard/*
+
+# Block API routes (optional but recommended)
+Disallow: /api/
+
+# Specify your sitemap
+Sitemap: https://lebourgeois.cd/sitemap.xml
