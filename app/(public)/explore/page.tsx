@@ -196,7 +196,6 @@ const ExploreFlights = () => {
                   </div>
                 </div>
 
-
                   {/* Calendar - appears when both airports are set and there are results */}
                   {canSearch && (
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] pt-2 border-t border-border">
