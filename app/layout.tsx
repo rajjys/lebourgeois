@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Le Bourgeois — Voyagez avec efficacité et élégance",
   description: "Consultez les tarifs en temps reels, Faites vos reservation avec assistance 24/7.",
+  alternates: {
+    canonical: "https://lebourgeois.cd",
+  },
   icons: {
     icon: "/icon.png",
     shortcut: "/favicon.ico",
@@ -35,6 +38,7 @@ export const metadata: Metadata = {
         url: "/site-image.jpg",
         width: 1200,
         height: 630,
+        alt:"Le Bourgeois Site Image"
       }
     ],
     type: "website",
@@ -54,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -65,6 +69,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </I18nProvider>
+        {/* Structured Data */}
         <script type="application/ld+json">
           {`
           {
@@ -73,9 +78,29 @@ export default function RootLayout({
             "name": "Le Bourgeois",
             "url": "https://lebourgeois.cd",
             "logo": "https://lebourgeois.cd/icon.png",
-            "sameAs": []
+            "sameAs": [
+              "https://www.facebook.com/lebourgeois",
+              "https://www.instagram.com/lebourgeois",
+              "https://twitter.com/lebourgeois",
+              "https://www.linkedin.com/company/lebourgeois"
+            ]
           }
           `}
+          </script>
+          <script type="application/ld+json">
+            {`
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "url": "https://lebourgeois.cd",
+              "name": "Le Bourgeois",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://lebourgeois.cd/search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            }
+            `}
           </script>
       </body>
     </html>
