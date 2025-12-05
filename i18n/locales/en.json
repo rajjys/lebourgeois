@@ -46,11 +46,13 @@
       "departure": "Departure Date",
       "return": "Return Date",
       "returnOptional": "(Optional)",
-      "travelers": "Number of Travelers",
+      "travelers": "N° of Travelers",
       "class": "Travel Class",
       "economy": "Economy",
       "business": "Business",
       "first": "First",
+      "name": "Full Name",
+      "namePlaceholder":"Your name",
       "email": "Email",
       "emailPlaceholder": "your@email.com",
       "phone": "Phone number",
@@ -121,10 +123,11 @@
       "pricePerPerson": "Price per person",
       "selectDate": "Select Departure Date",
       "pickDate": "Pick a date",
-      "travelers": "Number of Travelers",
+      "travelers": "N° of Travelers",
       "class": "Travel Class",
       "selectClass": "Select class",
-      "continueBooking": "Continue to Booking"
+      "continueBooking": "Submit Booking",
+      "noFlightOnDate": "No flights available on this date"
     },
     "destinations": {
       "paris": {

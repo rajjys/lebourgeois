@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ArrowRight, Clock } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from 'react-i18next';
-import type { Weekday } from "@/lib/generated/prisma/client";
 import { cn } from "@/lib/utils/cn-utils";
 import { formatDuration, formatTime, getWeekdayFromDate } from "@/lib/utils/datetime-utils";
 import { formatMoney } from "@/lib/utils/money-utils";
@@ -12,13 +11,12 @@ import { formatDate } from "@/lib/utils/format-date-utils";
 import Image from "next/image";
 import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 import { format } from "date-fns";
+import { WEEKDAY_ORDER } from "@/lib/types";
 
 type FlightPatternResultCardProps = {
   pattern: FlightPatternResponse;
   selectedDate?: Date | null;
 };
-
-const WEEKDAY_ORDER: Weekday[] = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
 export default function FlightPatternResultCard({ pattern, selectedDate }: FlightPatternResultCardProps) {
   const { t } = useTranslation();
