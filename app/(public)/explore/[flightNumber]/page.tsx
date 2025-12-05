@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -36,19 +36,9 @@ const FlightDetail = () => {
   // Find the flight by flightNumber
   const { pattern: flightDetail, isLoading } = useFlightPattern(flightNumber);
 
-  // Initialize selected date from params or nextDepartureDate
-  const getInitialDate = () => {
-    if (dateParam) {
-      const parsed = new Date(dateParam + "T00:00:00Z");
-      if (!isNaN(parsed.getTime())) return parsed;
-    }
-    if (flightDetail?.nextDepartureDate) {
-      return new Date(flightDetail.nextDepartureDate);
-    }
-    return undefined;
-  };
+  
 
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(getInitialDate());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [isBookingDialogOpen, setIsBookingDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -60,13 +50,64 @@ const FlightDetail = () => {
     isWhatsapp: true,
   });
 
+  // Update selectedDate whenever flightDetail or dateParam changes
+useEffect(() => {
+  // Initialize selected date from params or nextDepartureDate
+  const setInitialDate = () => {
+    if (dateParam) {
+      const parsed = new Date(dateParam + "T00:00:00Z");
+      if (!isNaN(parsed.getTime())) setSelectedDate(parsed);
+    }
+    if (flightDetail?.nextDepartureDate) {
+      const nextDepartureDate = new Date(flightDetail.nextDepartureDate)
+      setSelectedDate(nextDepartureDate);
+    }
+  };
+
+  setInitialDate();
+}, [dateParam, flightDetail]);
+
   if(isLoading) {
     return (
-      <div className="">
-        Loading...
-      </div>
-    )
-  }
+  <div className="mt-6 space-y-4 animate-pulse min-h-screen pb-20 md:pb-0 container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+    {/* Name */}
+    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+
+    {/* Date of Birth */}
+    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+
+    {/* Gender */}
+    <div className="h-10 bg-gray-200 rounded-xl w-1/2" />
+
+    {/* Contact Section Title */}
+    <div className="h-4 bg-gray-200 rounded-lg w-32 mt-4" />
+
+    {/* Phone */}
+    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+
+    {/* Email */}
+    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+
+    {/* Address Section Title */}
+    <div className="h-4 bg-gray-200 rounded-lg w-32 mt-4" />
+
+    {/* Country */}
+    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+
+    {/* State + City */}
+    <div className="flex gap-4">
+      <div className="h-10 bg-gray-200 rounded-xl flex-1" />
+      <div className="h-10 bg-gray-2 00 rounded-xl flex-1" />
+    </div>
+
+    {/* Street */}
+    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+
+    {/* Submit Button */}
+    <div className="h-12 bg-gray-300 rounded-xl w-40 mt-4" />
+  </div>
+)};
+
 
   if (!flightDetail && !isLoading) {
     return (

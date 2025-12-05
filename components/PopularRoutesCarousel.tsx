@@ -31,7 +31,7 @@ export default function PopularRoutesCarousel() {
 	}, [api]);
 
 	// Keep the hero small: show first 10 popular routes
-	const { patterns, error, isLoading } = useFlightPatterns();
+	const { patterns, isLoading } = useFlightPatterns();
 	const isSkeletonVisible = isLoading || !patterns?.length;
 	const skeletonSlides = Array.from({ length: 6 });
 
