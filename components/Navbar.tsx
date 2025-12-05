@@ -1,12 +1,13 @@
 'use client'
 import { Button } from "@/components/ui/button";
-import { Plane, Languages, Menu } from "lucide-react";
+import { Languages, Menu } from "lucide-react";
 import { cn } from "@/lib/utils/cn-utils";
 import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 
 const Navbar = () => {
@@ -30,8 +31,12 @@ const Navbar = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
-              <Plane className="h-6 w-6 text-primary" />
+            <div className="">
+              <Image 
+                src="/icon.png" 
+                alt="Le Bourgeois" 
+                width={40} height={40} 
+                className="w-12 h-12 object-contain" />
             </div>
             <span className="text-xl font-bold text-foreground">
               Le <span className="text-primary">Bourgeois</span>
