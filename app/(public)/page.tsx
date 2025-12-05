@@ -47,9 +47,9 @@ const Home = () => {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
               {t('home.hero.title')}
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-xl">
+            <h3 className="text-lg sm:text-xl text-muted-foreground max-w-xl">
               {t('home.hero.subtitle')}
-            </p>
+            </h3>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="hero" size="xl" asChild>
                 <Link href="/request">{t('home.hero.cta')}</Link>
