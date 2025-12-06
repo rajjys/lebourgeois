@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { badRequest, ok, internalError, generateRequestId } from "@/app/api/utils/http";
 import { withNextDepartureDates } from "@/lib/flightPatterns/nextDeparture";
 import { getWeekdayFromDate } from "@/lib/utils/datetime-utils";
+import { Prisma } from "@/lib/generated/prisma/client";
 
 function toWeekdayEnum(date: Date): Weekday {
   // returns "MON"..."SUN"
@@ -35,7 +36,7 @@ export async function GET(req: Request) {
     }
 
     // Build where clause - priority: find closest flights from origin to destination
-    const whereClause: any = {
+    const whereClause: Prisma.FlightPatternWhereInput = {
       origin: { code: from },
       destination: { code: to },
       active: true,
@@ -94,13 +95,46 @@ export async function GET(req: Request) {
     }
     // Sort by nextDepartureDate (closest first), then by price
     const sortedPatterns = filteredPatterns.sort((a, b) => {
-      if (a.nextDepartureDate && b.nextDepartureDate) {
-        const dateA = new Date(a.nextDepartureDate).getTime();
-        const dateB = new Date(b.nextDepartureDate).getTime();
-        if (dateA !== dateB) return dateA - dateB;
-      } else if (a.nextDepartureDate) return -1;
-      else if (b.nextDepartureDate) return 1;
-      
+      // If searchDate is provided, prioritize flights on that date
+      if (dateStr) {
+        const searchDate = new Date(dateStr + "T00:00:00Z");
+
+        const dateA = a.nextDepartureDate ? new Date(a.nextDepartureDate) : null;
+        const dateB = b.nextDepartureDate ? new Date(b.nextDepartureDate) : null;
+
+        // Normalize to same calendar day
+        const isSameDayA = dateA && dateA.toDateString() === searchDate.toDateString();
+        const isSameDayB = dateB && dateB.toDateString() === searchDate.toDateString();
+
+        if (isSameDayA && !isSameDayB) return -1;
+        if (!isSameDayA && isSameDayB) return 1;
+
+        if (isSameDayA && isSameDayB) {
+          // Both on searchDate → sort by time then price
+          const timeDiff = dateA.getTime() - dateB.getTime();
+          if (timeDiff !== 0) return timeDiff;
+
+          const priceA = a.price ?? Infinity;
+          const priceB = b.price ?? Infinity;
+          return priceA - priceB;
+        }
+        // If neither is on searchDate, fall back to global logic below
+      }
+
+      // Default global sort (soonest overall, then price)
+      if (!a.nextDepartureDate && !b.nextDepartureDate) return 0;
+      if (!a.nextDepartureDate) return 1;
+      if (!b.nextDepartureDate) return -1;
+
+      // Compare by nextDepartureDate
+      const diff =
+        new Date(a.nextDepartureDate).getTime() -
+        new Date(b.nextDepartureDate).getTime();
+
+      if (diff !== 0) return diff;
+
+      // If equal, compare by price (cheapest first)
+      // Assuming you have a numeric field like `a.price` or `a.basePrice`
       const priceA = a.price ?? Infinity;
       const priceB = b.price ?? Infinity;
       return priceA - priceB;

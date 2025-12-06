@@ -13,10 +13,33 @@ export async function GET() {
   const requestId = generateRequestId();
   try {
     const patterns = await prisma.flightPattern.findMany({
+      where: { startDate: { lte: new Date() }, endDate: { gte: new Date() }},
       include: { airline: true, origin: true, destination: true },
       orderBy: { createdAt: "desc" },
     });
-    return ok(withNextDepartureDates(patterns), requestId);
+    const enriched = withNextDepartureDates(patterns);
+
+    const sorted = enriched.sort((a, b) => {
+      // Handle nulls first
+      if (!a.nextDepartureDate && !b.nextDepartureDate) return 0;
+      if (!a.nextDepartureDate) return 1;
+      if (!b.nextDepartureDate) return -1;
+
+      // Compare by nextDepartureDate
+      const diff =
+        new Date(a.nextDepartureDate).getTime() -
+        new Date(b.nextDepartureDate).getTime();
+
+      if (diff !== 0) return diff;
+
+      // If equal, compare by price (cheapest first)
+      // Assuming you have a numeric field like `a.price` or `a.basePrice`
+      const priceA = a.price ?? Infinity;
+      const priceB = b.price ?? Infinity;
+      return priceA - priceB;
+    });
+
+    return ok(sorted, requestId);
   } catch (err) {
     return internalError("Failed to list flight patterns", (err as Error)?.message ?? null, requestId);
   }

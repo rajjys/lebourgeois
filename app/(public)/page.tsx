@@ -52,10 +52,10 @@ const Home = () => {
             </h3>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="hero" size="xl" asChild>
-                <Link href="/request">{t('home.hero.cta')}</Link>
+                <Link href="/explore">{t('home.hero.cta')}</Link>
               </Button>
               <Button variant="outline" size="xl" asChild>
-                <Link href="/explore">{t('nav.exploreFlights')}</Link>
+                <Link href="/request">{t('nav.requestQuote')}</Link>
               </Button>
             </div>
           </div>

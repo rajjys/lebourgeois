@@ -90,7 +90,7 @@ const About = () => {
               </h2>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="/request" className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-card hover:shadow-hover text-base">
-                  {t('nav.requestTicket')}
+                  {t('home.about.cta')}
                 </a>
                 <a href="/contact" className="inline-flex items-center justify-center px-8 py-4 border border-border rounded-lg font-semibold hover:bg-secondary transition-colors text-base">
                   {t('nav.contact')}

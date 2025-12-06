@@ -36,7 +36,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link href="/request" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  {t('nav.requestTicket')}
+                  {t('nav.requestQuote')}
                 </Link>
               </li>
               <li>

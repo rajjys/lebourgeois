@@ -93,9 +93,7 @@ export function withNextDepartureDate<T extends PatternWithOrigin>(
   return { ...pattern, nextDepartureDate };
 }
 
-export function withNextDepartureDates<T extends PatternWithOrigin>(
-  patterns: T[]
-) {
+export function withNextDepartureDates<T extends PatternWithOrigin>(patterns: T[]) {
   return patterns.map((pattern) => withNextDepartureDate(pattern));
 }
 

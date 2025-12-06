@@ -17,7 +17,7 @@ const Navbar = () => {
   const navLinks = [
     { href: "/", label: t('nav.home') },
     { href: "/explore", label: t('nav.exploreFlights') },
-    { href: "/request", label: t('nav.requestTicket') },
+    { href: "/request", label: t('nav.requestQuote') },
     { href: "/about", label: t('nav.about') },
     { href: "/contact", label: t('nav.contact') },
   ];
@@ -30,14 +30,12 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="">
+          <Link href="/" className="flex items-end gap-2 group">
               <Image 
                 src="/icon.png" 
                 alt="Le Bourgeois" 
                 width={40} height={40} 
-                className="w-12 h-12 object-contain" />
-            </div>
+                className="h-8 w-8 md:w-10 md:h-10 object-contain" />
             <span className="text-xl font-bold text-foreground">
               Le <span className="text-primary">Bourgeois</span>
             </span>
