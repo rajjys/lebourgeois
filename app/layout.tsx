@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { I18nProvider } from "@/components/I18nProvider";
 import { Toaster as Sonner, Toaster } from "@/components/ui/sonner";
 
@@ -65,9 +63,7 @@ export default function RootLayout({
         <I18nProvider>
         <Toaster />
         <Sonner />
-          <Navbar />
           {children}
-          <Footer />
         </I18nProvider>
         {/* Structured Data */}
         <script type="application/ld+json">
