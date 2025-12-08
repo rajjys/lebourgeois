@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { CalendarIcon, Plane } from "lucide-react";
 import { format, parse } from "date-fns";
 import { cn } from "@/lib/utils/cn-utils";
@@ -109,16 +109,10 @@ const RequestTicket = () => {
           </div>
 
           <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle>{t('request.title')}</CardTitle>
-              <CardDescription>
-                {t('request.subtitle')}
-              </CardDescription>
-            </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* From/To */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 mt-4">
                   <AirportCombobox
                     id="from"
                     label={t("request.form.from")}
@@ -187,9 +181,10 @@ const RequestTicket = () => {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
+                          locale={i18n.language === "fr" ? fr : { ...enUS, options: { ...enUS.options, weekStartsOn: 1 }}}
                           selected={returnDate}
                           onSelect={setReturnDate}
-                          disabled={(date) => date < (departureDate || new Date())}
+                          disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                           initialFocus
                           className="pointer-events-auto"
                         />

@@ -36,7 +36,7 @@
     }
   },
   "request": {
-    "title": "Demander un Billet d'Avion",
+    "title": "Demander un Devis Personnalisé",
     "subtitle": "Remplissez le formulaire ci-dessous et notre équipe vous contactera avec les meilleures options de vol.",
     "form": {
       "from": "De",
@@ -62,7 +62,7 @@
       "contactByPhone": "Par téléphone",
       "isWhatsapp": "Ceci est mon numéro WhatsApp",
       "missingFields": "Veuillez remplir tous les champs obligatoires",
-      "submit": "Demander Mon Billet",
+      "submit": "Demander le Devis",
       "successTitle": "Demande Envoyée!",
       "successMessage": "Merci! Un agent Le Bourgeois vous contactera bientôt."
     }
