@@ -680,8 +680,6 @@ useEffect(() => {
           </form>
         </DialogContent>
       </Dialog>
-
-      <Footer />
     </div>
   );
 };
