@@ -84,7 +84,7 @@ export default function DashboardPage() {
             <li key={ap.id} className="py-3 flex justify-between">
               <span>
                 <span className="font-medium">{ap.code}</span> - {ap.city},{" "}
-                {ap.country}
+                {ap.countryCode}
               </span>
               <Link href={`/dashboard/airports/${ap.id}`}>
                 <Button variant="outline" size="sm">Modifier</Button>

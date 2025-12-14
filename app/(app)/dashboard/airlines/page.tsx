@@ -34,7 +34,7 @@ export default function AirlinesPage() {
             <tr key={a.id} className="border-t">
               <td className="p-2">{a.code}</td>
               <td className="p-2">{a.name}</td>
-              <td className="p-2">{a.country}</td>
+              <td className="p-2">{a.countryCode}</td>
               <td className="p-2 text-right">
                 <Link
                   className="text-blue-600 underline"

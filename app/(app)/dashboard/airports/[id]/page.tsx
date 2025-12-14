@@ -40,7 +40,7 @@ export default function EditAirportPage() {
       onSubmit={form.handleSubmit(onSubmit)}
       className="max-w-md p-6 space-y-4"
     >
-      {["code", "name", "city", "country", "timezone"].map((field) => (
+      {["code", "name", "city", "countryCode", "timezone"].map((field) => (
         <div key={field}>
           <Input placeholder={field} {...form.register(field as AirportFields)} />
           {form.formState.errors[field as AirportFields] && (

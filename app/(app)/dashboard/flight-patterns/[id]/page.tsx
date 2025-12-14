@@ -159,7 +159,7 @@ export default function EditFlightPatternPage() {
                         <SelectContent>
                           {airports?.map((a: Airport) => (
                             <SelectItem key={a.id} value={a.id}>
-                              {a.code} - {a.city}, {a.country}
+                              {a.code} - {a.city}, {a.countryCode}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -188,7 +188,7 @@ export default function EditFlightPatternPage() {
                         <SelectContent>
                           {airports?.map((a: Airport) => (
                             <SelectItem key={a.id} value={a.id}>
-                              {a.code} - {a.city}, {a.country}
+                              {a.code} - {a.city}, {a.countryCode}
                             </SelectItem>
                           ))}
                         </SelectContent>

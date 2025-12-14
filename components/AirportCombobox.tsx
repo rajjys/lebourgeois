@@ -45,7 +45,7 @@ export function AirportCombobox({
     const search = searchTerm.trim().toLowerCase();
     if (!search) return list;
     return list.filter((airport) => {
-      const content = `${airport.city} ${airport.country} ${airport.name} ${airport.code}`.toLowerCase();
+      const content = `${airport.city} ${airport.countryCode} ${airport.name} ${airport.code}`.toLowerCase();
       return content.includes(search);
     });
   }, [airports, searchTerm]);
@@ -91,7 +91,7 @@ export function AirportCombobox({
                     {selected.city} ({selected.code}) · {selected.name}
                   </span>
                   <span className="text-xs text-muted-foreground block truncate whitespace-nowrap">
-                    {countryCodeToName[selected.country] || selected.country}
+                    {countryCodeToName[selected.countryCode] || selected.countryCode}
                   </span>
                 </div>
               </div>
@@ -130,7 +130,7 @@ export function AirportCombobox({
                         <div className="flex flex-col">
                           <span className="text-sm font-medium text-foreground">{display}</span>
                           <span className="text-xs text-muted-foreground">
-                          {countryCodeToName[airport.country] || airport.country}
+                          {countryCodeToName[airport.countryCode] || airport.countryCode}
                           </span>
                         </div>
                       </CommandItem>
