@@ -54,3 +54,8 @@ export type Airline = Prisma.AirlineModel
  * 
  */
 export type FlightPattern = Prisma.FlightPatternModel
+/**
+ * Model Request
+ * 
+ */
+export type Request = Prisma.RequestModel

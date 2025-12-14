@@ -127,7 +127,9 @@
       "class": "Classe de voyage",
       "selectClass": "Sélectionner la classe",
       "continueBooking": "Soumettre la réservation",
-      "noFlightOnDate": "Aucun vol disponible à cette date"
+      "noFlightOnDate": "Aucun vol disponible à cette date",
+      "requestSuccessTitle": "Demande de réservation envoyée!",
+      "requestSuccessMessage": "Merci! Un agent Le Bourgeois vous contactera bientot"
     },
     "destinations": {
       "paris": {

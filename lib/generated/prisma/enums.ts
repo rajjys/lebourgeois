@@ -20,3 +20,13 @@ export const Weekday = {
 } as const
 
 export type Weekday = (typeof Weekday)[keyof typeof Weekday]
+
+
+export const RequestStatus = {
+  NEW: 'NEW',
+  CLAIMED: 'CLAIMED',
+  CONTACTED: 'CONTACTED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]

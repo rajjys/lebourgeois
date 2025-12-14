@@ -89,3 +89,39 @@ model FlightPattern {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
+
+model Request {
+  id               String   @id @default(cuid())
+
+  // Client info
+  clientName       String
+  clientEmail      String?
+  clientPhone      String?
+  prefersWhatsapp  Boolean  @default(true)
+
+  // Flight info
+  flightNumber     String
+  originCity       String
+  destinationCity  String
+  travelDate       DateTime
+  travelClass      String
+  travelers        Int
+
+  // Metadata
+  source           String   @default("web")
+  status           RequestStatus @default(NEW)
+
+  // Future use
+  assignedToId     String?
+  claimedAt        DateTime?
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum RequestStatus {
+  NEW
+  CLAIMED
+  CONTACTED
+  CLOSED
+}

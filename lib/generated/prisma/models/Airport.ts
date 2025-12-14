@@ -41,7 +41,7 @@ export type AirportMinAggregateOutputType = {
   code: string | null
   name: string | null
   city: string | null
-  country: string | null
+  countryCode: string | null
   timezone: string | null
   latitude: number | null
   longitude: number | null
@@ -54,7 +54,7 @@ export type AirportMaxAggregateOutputType = {
   code: string | null
   name: string | null
   city: string | null
-  country: string | null
+  countryCode: string | null
   timezone: string | null
   latitude: number | null
   longitude: number | null
@@ -67,7 +67,7 @@ export type AirportCountAggregateOutputType = {
   code: number
   name: number
   city: number
-  country: number
+  countryCode: number
   timezone: number
   latitude: number
   longitude: number
@@ -92,7 +92,7 @@ export type AirportMinAggregateInputType = {
   code?: true
   name?: true
   city?: true
-  country?: true
+  countryCode?: true
   timezone?: true
   latitude?: true
   longitude?: true
@@ -105,7 +105,7 @@ export type AirportMaxAggregateInputType = {
   code?: true
   name?: true
   city?: true
-  country?: true
+  countryCode?: true
   timezone?: true
   latitude?: true
   longitude?: true
@@ -118,7 +118,7 @@ export type AirportCountAggregateInputType = {
   code?: true
   name?: true
   city?: true
-  country?: true
+  countryCode?: true
   timezone?: true
   latitude?: true
   longitude?: true
@@ -218,7 +218,7 @@ export type AirportGroupByOutputType = {
   code: string
   name: string
   city: string
-  country: string
+  countryCode: string
   timezone: string
   latitude: number | null
   longitude: number | null
@@ -254,7 +254,7 @@ export type AirportWhereInput = {
   code?: Prisma.StringFilter<"Airport"> | string
   name?: Prisma.StringFilter<"Airport"> | string
   city?: Prisma.StringFilter<"Airport"> | string
-  country?: Prisma.StringFilter<"Airport"> | string
+  countryCode?: Prisma.StringFilter<"Airport"> | string
   timezone?: Prisma.StringFilter<"Airport"> | string
   latitude?: Prisma.FloatNullableFilter<"Airport"> | number | null
   longitude?: Prisma.FloatNullableFilter<"Airport"> | number | null
@@ -269,7 +269,7 @@ export type AirportOrderByWithRelationInput = {
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   city?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   latitude?: Prisma.SortOrderInput | Prisma.SortOrder
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -287,7 +287,7 @@ export type AirportWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AirportWhereInput | Prisma.AirportWhereInput[]
   name?: Prisma.StringFilter<"Airport"> | string
   city?: Prisma.StringFilter<"Airport"> | string
-  country?: Prisma.StringFilter<"Airport"> | string
+  countryCode?: Prisma.StringFilter<"Airport"> | string
   timezone?: Prisma.StringFilter<"Airport"> | string
   latitude?: Prisma.FloatNullableFilter<"Airport"> | number | null
   longitude?: Prisma.FloatNullableFilter<"Airport"> | number | null
@@ -302,7 +302,7 @@ export type AirportOrderByWithAggregationInput = {
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   city?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   latitude?: Prisma.SortOrderInput | Prisma.SortOrder
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -323,7 +323,7 @@ export type AirportScalarWhereWithAggregatesInput = {
   code?: Prisma.StringWithAggregatesFilter<"Airport"> | string
   name?: Prisma.StringWithAggregatesFilter<"Airport"> | string
   city?: Prisma.StringWithAggregatesFilter<"Airport"> | string
-  country?: Prisma.StringWithAggregatesFilter<"Airport"> | string
+  countryCode?: Prisma.StringWithAggregatesFilter<"Airport"> | string
   timezone?: Prisma.StringWithAggregatesFilter<"Airport"> | string
   latitude?: Prisma.FloatNullableWithAggregatesFilter<"Airport"> | number | null
   longitude?: Prisma.FloatNullableWithAggregatesFilter<"Airport"> | number | null
@@ -336,7 +336,7 @@ export type AirportCreateInput = {
   code: string
   name: string
   city: string
-  country: string
+  countryCode?: string
   timezone: string
   latitude?: number | null
   longitude?: number | null
@@ -351,7 +351,7 @@ export type AirportUncheckedCreateInput = {
   code: string
   name: string
   city: string
-  country: string
+  countryCode?: string
   timezone: string
   latitude?: number | null
   longitude?: number | null
@@ -366,7 +366,7 @@ export type AirportUpdateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -381,7 +381,7 @@ export type AirportUncheckedUpdateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -396,7 +396,7 @@ export type AirportCreateManyInput = {
   code: string
   name: string
   city: string
-  country: string
+  countryCode?: string
   timezone: string
   latitude?: number | null
   longitude?: number | null
@@ -409,7 +409,7 @@ export type AirportUpdateManyMutationInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -422,7 +422,7 @@ export type AirportUncheckedUpdateManyInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -435,7 +435,7 @@ export type AirportCountOrderByAggregateInput = {
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   city?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
@@ -453,7 +453,7 @@ export type AirportMaxOrderByAggregateInput = {
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   city?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
@@ -466,7 +466,7 @@ export type AirportMinOrderByAggregateInput = {
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   city?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
@@ -533,7 +533,7 @@ export type AirportCreateWithoutDeparturesInput = {
   code: string
   name: string
   city: string
-  country: string
+  countryCode?: string
   timezone: string
   latitude?: number | null
   longitude?: number | null
@@ -547,7 +547,7 @@ export type AirportUncheckedCreateWithoutDeparturesInput = {
   code: string
   name: string
   city: string
-  country: string
+  countryCode?: string
   timezone: string
   latitude?: number | null
   longitude?: number | null
@@ -566,7 +566,7 @@ export type AirportCreateWithoutArrivalsInput = {
   code: string
   name: string
   city: string
-  country: string
+  countryCode?: string
   timezone: string
   latitude?: number | null
   longitude?: number | null
@@ -580,7 +580,7 @@ export type AirportUncheckedCreateWithoutArrivalsInput = {
   code: string
   name: string
   city: string
-  country: string
+  countryCode?: string
   timezone: string
   latitude?: number | null
   longitude?: number | null
@@ -610,7 +610,7 @@ export type AirportUpdateWithoutDeparturesInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -624,7 +624,7 @@ export type AirportUncheckedUpdateWithoutDeparturesInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -649,7 +649,7 @@ export type AirportUpdateWithoutArrivalsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -663,7 +663,7 @@ export type AirportUncheckedUpdateWithoutArrivalsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -717,7 +717,7 @@ export type AirportSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   code?: boolean
   name?: boolean
   city?: boolean
-  country?: boolean
+  countryCode?: boolean
   timezone?: boolean
   latitude?: boolean
   longitude?: boolean
@@ -733,7 +733,7 @@ export type AirportSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   code?: boolean
   name?: boolean
   city?: boolean
-  country?: boolean
+  countryCode?: boolean
   timezone?: boolean
   latitude?: boolean
   longitude?: boolean
@@ -746,7 +746,7 @@ export type AirportSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   code?: boolean
   name?: boolean
   city?: boolean
-  country?: boolean
+  countryCode?: boolean
   timezone?: boolean
   latitude?: boolean
   longitude?: boolean
@@ -759,7 +759,7 @@ export type AirportSelectScalar = {
   code?: boolean
   name?: boolean
   city?: boolean
-  country?: boolean
+  countryCode?: boolean
   timezone?: boolean
   latitude?: boolean
   longitude?: boolean
@@ -767,7 +767,7 @@ export type AirportSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AirportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "city" | "country" | "timezone" | "latitude" | "longitude" | "createdAt" | "updatedAt", ExtArgs["result"]["airport"]>
+export type AirportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "city" | "countryCode" | "timezone" | "latitude" | "longitude" | "createdAt" | "updatedAt", ExtArgs["result"]["airport"]>
 export type AirportInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   departures?: boolean | Prisma.Airport$departuresArgs<ExtArgs>
   arrivals?: boolean | Prisma.Airport$arrivalsArgs<ExtArgs>
@@ -787,7 +787,7 @@ export type $AirportPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     code: string
     name: string
     city: string
-    country: string
+    countryCode: string
     timezone: string
     latitude: number | null
     longitude: number | null
@@ -1222,7 +1222,7 @@ export interface AirportFieldRefs {
   readonly code: Prisma.FieldRef<"Airport", 'String'>
   readonly name: Prisma.FieldRef<"Airport", 'String'>
   readonly city: Prisma.FieldRef<"Airport", 'String'>
-  readonly country: Prisma.FieldRef<"Airport", 'String'>
+  readonly countryCode: Prisma.FieldRef<"Airport", 'String'>
   readonly timezone: Prisma.FieldRef<"Airport", 'String'>
   readonly latitude: Prisma.FieldRef<"Airport", 'Float'>
   readonly longitude: Prisma.FieldRef<"Airport", 'Float'>

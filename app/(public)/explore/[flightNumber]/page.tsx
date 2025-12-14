@@ -129,30 +129,64 @@ useEffect(() => {
     );
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    // Use selected date or fallback to nextDepartureDate
-    const submitDate = selectedDate || (flightDetail?.nextDepartureDate ? new Date(flightDetail.nextDepartureDate) : null);
+  const submitDate =
+    selectedDate ||
+    (flightDetail?.nextDepartureDate
+      ? new Date(flightDetail.nextDepartureDate)
+      : null);
 
-    // Basic validation similar to /request page
-    const missingContact =
-      formData.contactMethod === "email" ? !formData.email.trim() : !formData.phone.trim();
+  const missingContact =
+    formData.contactMethod === "email"
+      ? !formData.email.trim()
+      : !formData.phone.trim();
 
-    if (!submitDate || !formData.travelClass || missingContact) {
-      toast.error(t('explore.detail.missingFields'));
-      return;
-    }
-    // Optionally additional validation could be added (email pattern, phone format)
-    toast.success(t('explore.detail.requestSuccessTitle', { defaultValue: 'Request submitted' }), {
-      description:
-        t('explore.detail.requestSuccessMessage', {
-          defaultValue:
-            'We received your booking request. Our team will contact you shortly with availability and pricing.'
-        })
+  if (!submitDate || missingContact) {
+    toast.error(t("explore.detail.missingFields"));
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/requests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        clientName: formData.name,
+        clientEmail: formData.email || null,
+        clientPhone: formData.phone || null,
+        prefersWhatsapp: formData.isWhatsapp,
+        flightNumber: flightDetail.flightNumber,
+        originCity: flightDetail.origin.city,
+        destinationCity: flightDetail.destination.city,
+        travelDate: submitDate,
+        travelClass: formData.travelClass,
+        travelers: Number(formData.travelers),
+      }),
     });
 
-    // Close dialog and reset form
+    const request = await res.json();
+
+    await fetch("/api/notifications/whatsapp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ requestId: request.id }),
+    });
+
+    toast.success(
+      t("explore.detail.requestSuccessTitle", {
+        defaultValue: "Request submitted",
+      }),
+      {
+        description:
+          t("explore.detail.requestSuccessMessage", {
+            defaultValue:
+              "Our team has been notified and will contact you shortly.",
+          }),
+      }
+    );
+
     setIsBookingDialogOpen(false);
     setFormData({
       name: "",
@@ -163,7 +197,12 @@ useEffect(() => {
       phone: "",
       isWhatsapp: true,
     });
-  };
+  } catch (error) {
+    toast.error("Something went wrong. Please try again.");
+    console.log("Error submitting request:", error);
+  }
+};
+
 
   const routeTitle = `${flightDetail.origin.city} (${flightDetail.origin.code}) → ${flightDetail.destination.city} (${flightDetail.destination.code})`;
   const selectedWeekday = selectedDate ? getWeekdayFromDate(selectedDate) : null;

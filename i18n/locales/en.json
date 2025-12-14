@@ -127,7 +127,9 @@
       "class": "Travel Class",
       "selectClass": "Select class",
       "continueBooking": "Submit Booking",
-      "noFlightOnDate": "No flights available on this date"
+      "noFlightOnDate": "No flights available on this date",
+      "requestSuccessTitle": "Booking Request Sent!",
+      "requestSuccessMessage": "Thank you! A Le Bourgeois agent will contact you shortly."
     },
     "destinations": {
       "paris": {

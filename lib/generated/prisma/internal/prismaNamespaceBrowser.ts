@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Airport: 'Airport',
   Airline: 'Airline',
-  FlightPattern: 'FlightPattern'
+  FlightPattern: 'FlightPattern',
+  Request: 'Request'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -77,7 +78,7 @@ export const AirportScalarFieldEnum = {
   code: 'code',
   name: 'name',
   city: 'city',
-  country: 'country',
+  countryCode: 'countryCode',
   timezone: 'timezone',
   latitude: 'latitude',
   longitude: 'longitude',
@@ -92,7 +93,7 @@ export const AirlineScalarFieldEnum = {
   id: 'id',
   code: 'code',
   name: 'name',
-  country: 'country',
+  countryCode: 'countryCode',
   logo: 'logo',
   color: 'color',
   website: 'website',
@@ -128,6 +129,29 @@ export const FlightPatternScalarFieldEnum = {
 } as const
 
 export type FlightPatternScalarFieldEnum = (typeof FlightPatternScalarFieldEnum)[keyof typeof FlightPatternScalarFieldEnum]
+
+
+export const RequestScalarFieldEnum = {
+  id: 'id',
+  clientName: 'clientName',
+  clientEmail: 'clientEmail',
+  clientPhone: 'clientPhone',
+  prefersWhatsapp: 'prefersWhatsapp',
+  flightNumber: 'flightNumber',
+  originCity: 'originCity',
+  destinationCity: 'destinationCity',
+  travelDate: 'travelDate',
+  travelClass: 'travelClass',
+  travelers: 'travelers',
+  source: 'source',
+  status: 'status',
+  assignedToId: 'assignedToId',
+  claimedAt: 'claimedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RequestScalarFieldEnum = (typeof RequestScalarFieldEnum)[keyof typeof RequestScalarFieldEnum]
 
 
 export const SortOrder = {

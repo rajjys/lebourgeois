@@ -28,7 +28,7 @@ export type AirlineMinAggregateOutputType = {
   id: string | null
   code: string | null
   name: string | null
-  country: string | null
+  countryCode: string | null
   logo: string | null
   color: string | null
   website: string | null
@@ -40,7 +40,7 @@ export type AirlineMaxAggregateOutputType = {
   id: string | null
   code: string | null
   name: string | null
-  country: string | null
+  countryCode: string | null
   logo: string | null
   color: string | null
   website: string | null
@@ -52,7 +52,7 @@ export type AirlineCountAggregateOutputType = {
   id: number
   code: number
   name: number
-  country: number
+  countryCode: number
   logo: number
   color: number
   website: number
@@ -66,7 +66,7 @@ export type AirlineMinAggregateInputType = {
   id?: true
   code?: true
   name?: true
-  country?: true
+  countryCode?: true
   logo?: true
   color?: true
   website?: true
@@ -78,7 +78,7 @@ export type AirlineMaxAggregateInputType = {
   id?: true
   code?: true
   name?: true
-  country?: true
+  countryCode?: true
   logo?: true
   color?: true
   website?: true
@@ -90,7 +90,7 @@ export type AirlineCountAggregateInputType = {
   id?: true
   code?: true
   name?: true
-  country?: true
+  countryCode?: true
   logo?: true
   color?: true
   website?: true
@@ -175,7 +175,7 @@ export type AirlineGroupByOutputType = {
   id: string
   code: string
   name: string
-  country: string | null
+  countryCode: string | null
   logo: string | null
   color: string | null
   website: string | null
@@ -208,7 +208,7 @@ export type AirlineWhereInput = {
   id?: Prisma.StringFilter<"Airline"> | string
   code?: Prisma.StringFilter<"Airline"> | string
   name?: Prisma.StringFilter<"Airline"> | string
-  country?: Prisma.StringNullableFilter<"Airline"> | string | null
+  countryCode?: Prisma.StringNullableFilter<"Airline"> | string | null
   logo?: Prisma.StringNullableFilter<"Airline"> | string | null
   color?: Prisma.StringNullableFilter<"Airline"> | string | null
   website?: Prisma.StringNullableFilter<"Airline"> | string | null
@@ -221,7 +221,7 @@ export type AirlineOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  countryCode?: Prisma.SortOrderInput | Prisma.SortOrder
   logo?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -237,7 +237,7 @@ export type AirlineWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.AirlineWhereInput[]
   NOT?: Prisma.AirlineWhereInput | Prisma.AirlineWhereInput[]
   name?: Prisma.StringFilter<"Airline"> | string
-  country?: Prisma.StringNullableFilter<"Airline"> | string | null
+  countryCode?: Prisma.StringNullableFilter<"Airline"> | string | null
   logo?: Prisma.StringNullableFilter<"Airline"> | string | null
   color?: Prisma.StringNullableFilter<"Airline"> | string | null
   website?: Prisma.StringNullableFilter<"Airline"> | string | null
@@ -250,7 +250,7 @@ export type AirlineOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  countryCode?: Prisma.SortOrderInput | Prisma.SortOrder
   logo?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -268,7 +268,7 @@ export type AirlineScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Airline"> | string
   code?: Prisma.StringWithAggregatesFilter<"Airline"> | string
   name?: Prisma.StringWithAggregatesFilter<"Airline"> | string
-  country?: Prisma.StringNullableWithAggregatesFilter<"Airline"> | string | null
+  countryCode?: Prisma.StringNullableWithAggregatesFilter<"Airline"> | string | null
   logo?: Prisma.StringNullableWithAggregatesFilter<"Airline"> | string | null
   color?: Prisma.StringNullableWithAggregatesFilter<"Airline"> | string | null
   website?: Prisma.StringNullableWithAggregatesFilter<"Airline"> | string | null
@@ -280,7 +280,7 @@ export type AirlineCreateInput = {
   id?: string
   code: string
   name: string
-  country?: string | null
+  countryCode?: string | null
   logo?: string | null
   color?: string | null
   website?: string | null
@@ -293,7 +293,7 @@ export type AirlineUncheckedCreateInput = {
   id?: string
   code: string
   name: string
-  country?: string | null
+  countryCode?: string | null
   logo?: string | null
   color?: string | null
   website?: string | null
@@ -306,7 +306,7 @@ export type AirlineUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -319,7 +319,7 @@ export type AirlineUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -332,7 +332,7 @@ export type AirlineCreateManyInput = {
   id?: string
   code: string
   name: string
-  country?: string | null
+  countryCode?: string | null
   logo?: string | null
   color?: string | null
   website?: string | null
@@ -344,7 +344,7 @@ export type AirlineUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -356,7 +356,7 @@ export type AirlineUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -368,7 +368,7 @@ export type AirlineCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
   logo?: Prisma.SortOrder
   color?: Prisma.SortOrder
   website?: Prisma.SortOrder
@@ -380,7 +380,7 @@ export type AirlineMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
   logo?: Prisma.SortOrder
   color?: Prisma.SortOrder
   website?: Prisma.SortOrder
@@ -392,7 +392,7 @@ export type AirlineMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  country?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
   logo?: Prisma.SortOrder
   color?: Prisma.SortOrder
   website?: Prisma.SortOrder
@@ -427,7 +427,7 @@ export type AirlineCreateWithoutPatternsInput = {
   id?: string
   code: string
   name: string
-  country?: string | null
+  countryCode?: string | null
   logo?: string | null
   color?: string | null
   website?: string | null
@@ -439,7 +439,7 @@ export type AirlineUncheckedCreateWithoutPatternsInput = {
   id?: string
   code: string
   name: string
-  country?: string | null
+  countryCode?: string | null
   logo?: string | null
   color?: string | null
   website?: string | null
@@ -467,7 +467,7 @@ export type AirlineUpdateWithoutPatternsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -479,7 +479,7 @@ export type AirlineUncheckedUpdateWithoutPatternsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -522,7 +522,7 @@ export type AirlineSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   code?: boolean
   name?: boolean
-  country?: boolean
+  countryCode?: boolean
   logo?: boolean
   color?: boolean
   website?: boolean
@@ -536,7 +536,7 @@ export type AirlineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   code?: boolean
   name?: boolean
-  country?: boolean
+  countryCode?: boolean
   logo?: boolean
   color?: boolean
   website?: boolean
@@ -548,7 +548,7 @@ export type AirlineSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   code?: boolean
   name?: boolean
-  country?: boolean
+  countryCode?: boolean
   logo?: boolean
   color?: boolean
   website?: boolean
@@ -560,7 +560,7 @@ export type AirlineSelectScalar = {
   id?: boolean
   code?: boolean
   name?: boolean
-  country?: boolean
+  countryCode?: boolean
   logo?: boolean
   color?: boolean
   website?: boolean
@@ -568,7 +568,7 @@ export type AirlineSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AirlineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "country" | "logo" | "color" | "website" | "createdAt" | "updatedAt", ExtArgs["result"]["airline"]>
+export type AirlineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "countryCode" | "logo" | "color" | "website" | "createdAt" | "updatedAt", ExtArgs["result"]["airline"]>
 export type AirlineInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patterns?: boolean | Prisma.Airline$patternsArgs<ExtArgs>
   _count?: boolean | Prisma.AirlineCountOutputTypeDefaultArgs<ExtArgs>
@@ -585,7 +585,7 @@ export type $AirlinePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     code: string
     name: string
-    country: string | null
+    countryCode: string | null
     logo: string | null
     color: string | null
     website: string | null
@@ -1018,7 +1018,7 @@ export interface AirlineFieldRefs {
   readonly id: Prisma.FieldRef<"Airline", 'String'>
   readonly code: Prisma.FieldRef<"Airline", 'String'>
   readonly name: Prisma.FieldRef<"Airline", 'String'>
-  readonly country: Prisma.FieldRef<"Airline", 'String'>
+  readonly countryCode: Prisma.FieldRef<"Airline", 'String'>
   readonly logo: Prisma.FieldRef<"Airline", 'String'>
   readonly color: Prisma.FieldRef<"Airline", 'String'>
   readonly website: Prisma.FieldRef<"Airline", 'String'>
