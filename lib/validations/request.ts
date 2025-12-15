@@ -8,7 +8,7 @@ export const RequestSchema = z.object({
   flightNumber: z.string().min(1, "Flight number is required"),
   originCity: z.string().min(1, "Origin city is required"),
   destinationCity: z.string().min(1, "Destination city is required"),
-  travelDate: z.date(),
+  travelDate: z.preprocess((v) => (typeof v === "string" ? new Date(v) : v), z.date()),
   travelClass: z.enum(["economy", "business", "first"]),
   travelers: z.number().min(1).max(9),
   source: z.string().default("web"),
