@@ -18,6 +18,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { enUS, fr } from "date-fns/locale";
 import React from 'react'
+import { createRequest } from "@/services/requests";
 
 
 const RequestTicket = () => {
@@ -48,6 +49,7 @@ const RequestTicket = () => {
   });
   const [formData, setFormData] = useState(() => {
   return {
+    name: "",
     from: searchParams.get("from") ?? "",
     to: searchParams.get("to") ?? "",
     travelers: searchParams.get("travelers") ?? "1",
@@ -59,13 +61,15 @@ const RequestTicket = () => {
   };
 });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const missingContact =
       formData.contactMethod === "email" ? !formData.email : !formData.phone;
 
-    if (!formData.from || !formData.to || !departureDate || !formData.travelClass || missingContact) {
+    if (!formData.name || !formData.from || !formData.to || !departureDate || !formData.travelClass || missingContact) {
       toast.error(t("request.form.missingFields", { defaultValue: "Please fill in all required fields" }));
       return;
     }
@@ -74,22 +78,46 @@ const RequestTicket = () => {
       return;
     }
 
-    toast.success(t('request.form.successTitle'), {
-      description: t('request.form.successMessage')
-    }); 
-    // Reset form
-    setFormData({
-      from: "",
-      to: "",
-      travelers: "1",
-      travelClass: "economy",
-      contactMethod: "phone",
-      email: "",
-      phone: "",
-      isWhatsapp: true,
-    });
-    setDepartureDate(undefined);
-    setReturnDate(undefined);
+    setIsSubmitting(true);
+
+    try {
+      await createRequest({
+        clientName: formData.name,
+        clientEmail: formData.contactMethod === "email" ? formData.email : null,
+        clientPhone: formData.contactMethod === "phone" ? formData.phone : null,
+        prefersWhatsapp: formData.isWhatsapp,
+        flightNumber: "TBD", // To be determined - this is a general request
+        originCity: formData.from,
+        destinationCity: formData.to,
+        travelDate: departureDate,
+        travelClass: formData.travelClass as "economy" | "business" | "first",
+        travelers: Number(formData.travelers),
+        source: "request-form",
+      });
+
+      toast.success(t('request.form.successTitle'), {
+        description: t('request.form.successMessage')
+      });
+
+      // Reset form
+      setFormData({
+        name: "",
+        from: "",
+        to: "",
+        travelers: "1",
+        travelClass: "economy",
+        contactMethod: "phone",
+        email: "",
+        phone: "",
+        isWhatsapp: true,
+      });
+      setDepartureDate(undefined);
+      setReturnDate(undefined);
+    } catch (error) {
+      toast.error(t('request.form.error', { defaultValue: 'Failed to submit request. Please try again.' }));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -111,6 +139,19 @@ const RequestTicket = () => {
           <Card className="shadow-card">
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="name">{t("request.form.name")} *</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder={t("request.form.namePlaceholder")}
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+
                 {/* From/To */}
                 <div className="grid grid-cols-2 gap-4 mt-4">
                   <AirportCombobox

@@ -3,7 +3,7 @@
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Plane, Building2, MapPin, LayoutDashboard } from 'lucide-react';
+import { Menu, X, Plane, Building2, MapPin, LayoutDashboard, FileText } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
@@ -16,6 +16,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { name: 'Requests', href: '/dashboard/requests', icon: <FileText className="w-5 h-5" /> },
     { name: 'Airlines', href: '/dashboard/airlines', icon: <Building2 className="w-5 h-5" /> },
     { name: 'Airports', href: '/dashboard/airports', icon: <MapPin className="w-5 h-5" /> },
     { name: 'Flight Patterns', href: '/dashboard/flight-patterns', icon: <Plane className="w-5 h-5" /> },

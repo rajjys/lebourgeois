@@ -25,6 +25,7 @@ import Image from "next/image";
 import { formatDuration, getWeekdayFromDate } from "@/lib/utils/datetime-utils";
 import { formatMoney } from "@/lib/utils/money-utils";
 import { WEEKDAY_ORDER } from "@/lib/types";
+import { createRequest } from "@/services/requests";
 
 const FlightDetail = () => {
   const { flightNumber } = useParams<{ flightNumber: string }>();
@@ -149,29 +150,18 @@ useEffect(() => {
   }
 
   try {
-    const res = await fetch("/api/requests", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        clientName: formData.name,
-        clientEmail: formData.email || null,
-        clientPhone: formData.phone || null,
-        prefersWhatsapp: formData.isWhatsapp,
-        flightNumber: flightDetail.flightNumber,
-        originCity: flightDetail.origin.city,
-        destinationCity: flightDetail.destination.city,
-        travelDate: submitDate,
-        travelClass: formData.travelClass,
-        travelers: Number(formData.travelers),
-      }),
-    });
-
-    const request = await res.json();
-
-    await fetch("/api/notifications/whatsapp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ requestId: request.id }),
+    await createRequest({
+      clientName: formData.name,
+      clientEmail: formData.contactMethod === "email" ? formData.email : null,
+      clientPhone: formData.contactMethod === "phone" ? formData.phone : null,
+      prefersWhatsapp: formData.isWhatsapp,
+      flightNumber: flightDetail.flightNumber,
+      originCity: flightDetail.origin.city,
+      destinationCity: flightDetail.destination.city,
+      travelDate: submitDate,
+      travelClass: formData.travelClass as "economy" | "business" | "first",
+      travelers: Number(formData.travelers),
+      source: "flight-detail",
     });
 
     toast.success(
