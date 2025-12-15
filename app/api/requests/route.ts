@@ -13,7 +13,7 @@ const TEAM_NUMBERS = [
  * GET /api/requests - List all requests
  * Returns requests sorted by most recent first
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   const requestId = generateRequestId();
 
   try {
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validationResult = RequestSchema.safeParse(body);
     if (!validationResult.success) {
+      console.error("Request validation failed:", validationResult.error);
       return badRequest("Validation failed", validationResult.error.format(), requestId);
     }
 
