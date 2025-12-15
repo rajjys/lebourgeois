@@ -28,7 +28,7 @@ export async function sendFlightRequestAlert({
       template: {
         name: "flight_request_alert",
         //name:"hello_world",
-        language: { code: "en_US" },
+        language: { code: "en" },
         components: [
           {
             type: "body",
