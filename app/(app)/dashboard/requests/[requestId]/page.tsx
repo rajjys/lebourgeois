@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,7 +27,7 @@ export default function RequestDetailPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const { requestId } = useParams<{ requestId: string }>();
-  const { request, isLoading, mutate } = useRequest(requestId);
+  const { request, isLoading } = useRequest(requestId);
   const [deleting, setDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -40,7 +39,12 @@ export default function RequestDetailPage() {
       toast.success(t('dashboard.requests.deleteSuccess', { defaultValue: 'Request deleted successfully' }));
       router.push('/dashboard/requests');
     } catch (error) {
-      toast.error(t('dashboard.requests.deleteError', { defaultValue: 'Failed to delete request' }));
+        if (error instanceof Error) {
+            console.error("Delete failed:", error.message);
+            } else {
+                console.error("Unexpected error:", error);
+            }
+        toast.error(t('dashboard.requests.deleteError', { defaultValue: 'Failed to delete request' }));
     } finally {
       setDeleting(false);
     }
