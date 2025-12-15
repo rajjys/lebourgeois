@@ -189,7 +189,7 @@ useEffect(() => {
     });
   } catch (error) {
     toast.error("Something went wrong. Please try again.");
-    console.log("Error submitting request:", error);
+    console.error("Error submitting request:", error);
   }
 };
 
