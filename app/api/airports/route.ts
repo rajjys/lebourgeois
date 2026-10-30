@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { AirportSchema } from "@/lib/validations/airport";
+import { slugify } from "@/lib/utils/slug";
 import { ok, created, badRequest, internalError, generateRequestId } from "@/app/api/utils/http";
 import { requireAdmin } from "@/lib/auth/session";
 
@@ -33,7 +34,8 @@ export async function POST(req: Request) {
       return badRequest("Invalid airport payload", parsed.error.format(), requestId);
     }
 
-    const airport = await prisma.airport.create({ data: parsed.data });
+    const data = { ...parsed.data, slug: parsed.data.slug ?? slugify(parsed.data.city) };
+    const airport = await prisma.airport.create({ data });
     return created(airport, requestId);
   } catch (err) {
     return internalError("Failed to create airport", (err as Error)?.message ?? null, requestId);

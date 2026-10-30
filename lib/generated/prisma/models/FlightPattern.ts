@@ -61,6 +61,10 @@ export type FlightPatternMinAggregateOutputType = {
   classConfig: string | null
   stops: number | null
   active: boolean | null
+  source: $Enums.DataSource | null
+  sourceUrl: string | null
+  verifiedAt: Date | null
+  reviewStatus: $Enums.ReviewStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -84,6 +88,10 @@ export type FlightPatternMaxAggregateOutputType = {
   classConfig: string | null
   stops: number | null
   active: boolean | null
+  source: $Enums.DataSource | null
+  sourceUrl: string | null
+  verifiedAt: Date | null
+  reviewStatus: $Enums.ReviewStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -108,6 +116,10 @@ export type FlightPatternCountAggregateOutputType = {
   classConfig: number
   stops: number
   active: number
+  source: number
+  sourceUrl: number
+  verifiedAt: number
+  reviewStatus: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -149,6 +161,10 @@ export type FlightPatternMinAggregateInputType = {
   classConfig?: true
   stops?: true
   active?: true
+  source?: true
+  sourceUrl?: true
+  verifiedAt?: true
+  reviewStatus?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -172,6 +188,10 @@ export type FlightPatternMaxAggregateInputType = {
   classConfig?: true
   stops?: true
   active?: true
+  source?: true
+  sourceUrl?: true
+  verifiedAt?: true
+  reviewStatus?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -196,6 +216,10 @@ export type FlightPatternCountAggregateInputType = {
   classConfig?: true
   stops?: true
   active?: true
+  source?: true
+  sourceUrl?: true
+  verifiedAt?: true
+  reviewStatus?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -307,6 +331,10 @@ export type FlightPatternGroupByOutputType = {
   classConfig: string | null
   stops: number | null
   active: boolean
+  source: $Enums.DataSource
+  sourceUrl: string | null
+  verifiedAt: Date | null
+  reviewStatus: $Enums.ReviewStatus
   createdAt: Date
   updatedAt: Date
   _count: FlightPatternCountAggregateOutputType | null
@@ -354,6 +382,10 @@ export type FlightPatternWhereInput = {
   classConfig?: Prisma.StringNullableFilter<"FlightPattern"> | string | null
   stops?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   active?: Prisma.BoolFilter<"FlightPattern"> | boolean
+  source?: Prisma.EnumDataSourceFilter<"FlightPattern"> | $Enums.DataSource
+  sourceUrl?: Prisma.StringNullableFilter<"FlightPattern"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableFilter<"FlightPattern"> | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFilter<"FlightPattern"> | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
   airline?: Prisma.XOR<Prisma.AirlineScalarRelationFilter, Prisma.AirlineWhereInput>
@@ -381,6 +413,10 @@ export type FlightPatternOrderByWithRelationInput = {
   classConfig?: Prisma.SortOrderInput | Prisma.SortOrder
   stops?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  sourceUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   airline?: Prisma.AirlineOrderByWithRelationInput
@@ -411,6 +447,10 @@ export type FlightPatternWhereUniqueInput = Prisma.AtLeast<{
   classConfig?: Prisma.StringNullableFilter<"FlightPattern"> | string | null
   stops?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   active?: Prisma.BoolFilter<"FlightPattern"> | boolean
+  source?: Prisma.EnumDataSourceFilter<"FlightPattern"> | $Enums.DataSource
+  sourceUrl?: Prisma.StringNullableFilter<"FlightPattern"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableFilter<"FlightPattern"> | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFilter<"FlightPattern"> | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
   airline?: Prisma.XOR<Prisma.AirlineScalarRelationFilter, Prisma.AirlineWhereInput>
@@ -438,6 +478,10 @@ export type FlightPatternOrderByWithAggregationInput = {
   classConfig?: Prisma.SortOrderInput | Prisma.SortOrder
   stops?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  sourceUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.FlightPatternCountOrderByAggregateInput
@@ -470,6 +514,10 @@ export type FlightPatternScalarWhereWithAggregatesInput = {
   classConfig?: Prisma.StringNullableWithAggregatesFilter<"FlightPattern"> | string | null
   stops?: Prisma.IntNullableWithAggregatesFilter<"FlightPattern"> | number | null
   active?: Prisma.BoolWithAggregatesFilter<"FlightPattern"> | boolean
+  source?: Prisma.EnumDataSourceWithAggregatesFilter<"FlightPattern"> | $Enums.DataSource
+  sourceUrl?: Prisma.StringNullableWithAggregatesFilter<"FlightPattern"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FlightPattern"> | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusWithAggregatesFilter<"FlightPattern"> | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FlightPattern"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"FlightPattern"> | Date | string
 }
@@ -491,6 +539,10 @@ export type FlightPatternCreateInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   airline: Prisma.AirlineCreateNestedOneWithoutPatternsInput
@@ -518,6 +570,10 @@ export type FlightPatternUncheckedCreateInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -539,6 +595,10 @@ export type FlightPatternUpdateInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   airline?: Prisma.AirlineUpdateOneRequiredWithoutPatternsNestedInput
@@ -566,6 +626,10 @@ export type FlightPatternUncheckedUpdateInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -590,6 +654,10 @@ export type FlightPatternCreateManyInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -611,6 +679,10 @@ export type FlightPatternUpdateManyMutationInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -635,6 +707,10 @@ export type FlightPatternUncheckedUpdateManyInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -677,6 +753,10 @@ export type FlightPatternCountOrderByAggregateInput = {
   classConfig?: Prisma.SortOrder
   stops?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  sourceUrl?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -708,6 +788,10 @@ export type FlightPatternMaxOrderByAggregateInput = {
   classConfig?: Prisma.SortOrder
   stops?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  sourceUrl?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -731,6 +815,10 @@ export type FlightPatternMinOrderByAggregateInput = {
   classConfig?: Prisma.SortOrder
   stops?: Prisma.SortOrder
   active?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  sourceUrl?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -886,10 +974,6 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type FlightPatternCreateWithoutOriginInput = {
   id?: string
   flightNumber: string
@@ -907,6 +991,10 @@ export type FlightPatternCreateWithoutOriginInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   airline: Prisma.AirlineCreateNestedOneWithoutPatternsInput
@@ -932,6 +1020,10 @@ export type FlightPatternUncheckedCreateWithoutOriginInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -963,6 +1055,10 @@ export type FlightPatternCreateWithoutDestinationInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   airline: Prisma.AirlineCreateNestedOneWithoutPatternsInput
@@ -988,6 +1084,10 @@ export type FlightPatternUncheckedCreateWithoutDestinationInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1041,6 +1141,10 @@ export type FlightPatternScalarWhereInput = {
   classConfig?: Prisma.StringNullableFilter<"FlightPattern"> | string | null
   stops?: Prisma.IntNullableFilter<"FlightPattern"> | number | null
   active?: Prisma.BoolFilter<"FlightPattern"> | boolean
+  source?: Prisma.EnumDataSourceFilter<"FlightPattern"> | $Enums.DataSource
+  sourceUrl?: Prisma.StringNullableFilter<"FlightPattern"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableFilter<"FlightPattern"> | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFilter<"FlightPattern"> | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FlightPattern"> | Date | string
 }
@@ -1078,6 +1182,10 @@ export type FlightPatternCreateWithoutAirlineInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   origin: Prisma.AirportCreateNestedOneWithoutDeparturesInput
@@ -1103,6 +1211,10 @@ export type FlightPatternUncheckedCreateWithoutAirlineInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1152,6 +1264,10 @@ export type FlightPatternCreateManyOriginInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1175,6 +1291,10 @@ export type FlightPatternCreateManyDestinationInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1196,6 +1316,10 @@ export type FlightPatternUpdateWithoutOriginInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   airline?: Prisma.AirlineUpdateOneRequiredWithoutPatternsNestedInput
@@ -1221,6 +1345,10 @@ export type FlightPatternUncheckedUpdateWithoutOriginInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1244,6 +1372,10 @@ export type FlightPatternUncheckedUpdateManyWithoutOriginInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1265,6 +1397,10 @@ export type FlightPatternUpdateWithoutDestinationInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   airline?: Prisma.AirlineUpdateOneRequiredWithoutPatternsNestedInput
@@ -1290,6 +1426,10 @@ export type FlightPatternUncheckedUpdateWithoutDestinationInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1313,6 +1453,10 @@ export type FlightPatternUncheckedUpdateManyWithoutDestinationInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1336,6 +1480,10 @@ export type FlightPatternCreateManyAirlineInput = {
   classConfig?: string | null
   stops?: number | null
   active?: boolean
+  source?: $Enums.DataSource
+  sourceUrl?: string | null
+  verifiedAt?: Date | string | null
+  reviewStatus?: $Enums.ReviewStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1357,6 +1505,10 @@ export type FlightPatternUpdateWithoutAirlineInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   origin?: Prisma.AirportUpdateOneRequiredWithoutDeparturesNestedInput
@@ -1382,6 +1534,10 @@ export type FlightPatternUncheckedUpdateWithoutAirlineInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1405,6 +1561,10 @@ export type FlightPatternUncheckedUpdateManyWithoutAirlineInput = {
   classConfig?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stops?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.EnumDataSourceFieldUpdateOperationsInput | $Enums.DataSource
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1431,6 +1591,10 @@ export type FlightPatternSelect<ExtArgs extends runtime.Types.Extensions.Interna
   classConfig?: boolean
   stops?: boolean
   active?: boolean
+  source?: boolean
+  sourceUrl?: boolean
+  verifiedAt?: boolean
+  reviewStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   airline?: boolean | Prisma.AirlineDefaultArgs<ExtArgs>
@@ -1458,6 +1622,10 @@ export type FlightPatternSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   classConfig?: boolean
   stops?: boolean
   active?: boolean
+  source?: boolean
+  sourceUrl?: boolean
+  verifiedAt?: boolean
+  reviewStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   airline?: boolean | Prisma.AirlineDefaultArgs<ExtArgs>
@@ -1485,6 +1653,10 @@ export type FlightPatternSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   classConfig?: boolean
   stops?: boolean
   active?: boolean
+  source?: boolean
+  sourceUrl?: boolean
+  verifiedAt?: boolean
+  reviewStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   airline?: boolean | Prisma.AirlineDefaultArgs<ExtArgs>
@@ -1512,11 +1684,15 @@ export type FlightPatternSelectScalar = {
   classConfig?: boolean
   stops?: boolean
   active?: boolean
+  source?: boolean
+  sourceUrl?: boolean
+  verifiedAt?: boolean
+  reviewStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FlightPatternOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "airlineId" | "originId" | "destinationId" | "flightNumber" | "departureTime" | "arrivalTime" | "daysOfWeek" | "startDate" | "endDate" | "price" | "currency" | "aircraft" | "capacity" | "distanceInKm" | "durationInMin" | "classConfig" | "stops" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["flightPattern"]>
+export type FlightPatternOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "airlineId" | "originId" | "destinationId" | "flightNumber" | "departureTime" | "arrivalTime" | "daysOfWeek" | "startDate" | "endDate" | "price" | "currency" | "aircraft" | "capacity" | "distanceInKm" | "durationInMin" | "classConfig" | "stops" | "active" | "source" | "sourceUrl" | "verifiedAt" | "reviewStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["flightPattern"]>
 export type FlightPatternInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   airline?: boolean | Prisma.AirlineDefaultArgs<ExtArgs>
   origin?: boolean | Prisma.AirportDefaultArgs<ExtArgs>
@@ -1560,6 +1736,10 @@ export type $FlightPatternPayload<ExtArgs extends runtime.Types.Extensions.Inter
     classConfig: string | null
     stops: number | null
     active: boolean
+    source: $Enums.DataSource
+    sourceUrl: string | null
+    verifiedAt: Date | null
+    reviewStatus: $Enums.ReviewStatus
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["flightPattern"]>
@@ -2007,6 +2187,10 @@ export interface FlightPatternFieldRefs {
   readonly classConfig: Prisma.FieldRef<"FlightPattern", 'String'>
   readonly stops: Prisma.FieldRef<"FlightPattern", 'Int'>
   readonly active: Prisma.FieldRef<"FlightPattern", 'Boolean'>
+  readonly source: Prisma.FieldRef<"FlightPattern", 'DataSource'>
+  readonly sourceUrl: Prisma.FieldRef<"FlightPattern", 'String'>
+  readonly verifiedAt: Prisma.FieldRef<"FlightPattern", 'DateTime'>
+  readonly reviewStatus: Prisma.FieldRef<"FlightPattern", 'ReviewStatus'>
   readonly createdAt: Prisma.FieldRef<"FlightPattern", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"FlightPattern", 'DateTime'>
 }

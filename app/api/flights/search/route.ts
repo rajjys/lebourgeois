@@ -4,6 +4,7 @@ import { badRequest, ok, internalError, generateRequestId } from "@/app/api/util
 import { withNextDepartureDates } from "@/lib/flightPatterns/nextDeparture";
 import { getWeekdayFromDate } from "@/lib/utils/datetime-utils";
 import { Prisma } from "@/lib/generated/prisma/client";
+import { PUBLIC_PATTERN_FILTER } from "@/lib/flightPatterns/visibility";
 
 function toWeekdayEnum(date: Date): Weekday {
   // returns "MON"..."SUN"
@@ -37,9 +38,9 @@ export async function GET(req: Request) {
 
     // Build where clause - priority: find closest flights from origin to destination
     const whereClause: Prisma.FlightPatternWhereInput = {
+      ...PUBLIC_PATTERN_FILTER,
       origin: { code: from },
       destination: { code: to },
-      active: true,
     };
 
     // If date is provided, filter by that specific date

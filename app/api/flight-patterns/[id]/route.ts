@@ -2,7 +2,8 @@ import prisma from "@/lib/prisma";
 import { FlightPatternSchema } from "@/lib/validations/flightPattern";
 import { ok, badRequest, notFound, internalError, generateRequestId } from "@/app/api/utils/http";
 import { withNextDepartureDate } from "@/lib/flightPatterns/nextDeparture";
-import { requireAdmin } from "@/lib/auth/session";
+import { getSession, requireAdmin } from "@/lib/auth/session";
+import { PUBLIC_PATTERN_FILTER } from "@/lib/flightPatterns/visibility";
 
 /**
  * Handlers for /api/flight-patterns/:id
@@ -17,8 +18,9 @@ export async function GET(
   const requestId = generateRequestId();
   try {
     const { id } = await context.params;
-    const pattern = await prisma.flightPattern.findUnique({
-      where: { id },
+    const isAdmin = !!(await getSession());
+    const pattern = await prisma.flightPattern.findFirst({
+      where: isAdmin ? { id } : { id, ...PUBLIC_PATTERN_FILTER },
       include: { airline: true, origin: true, destination: true },
     });
     if (!pattern) return notFound(`Flight pattern not found for id=${id}`, null, requestId);

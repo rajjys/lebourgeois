@@ -625,10 +625,6 @@ export type EnumRequestStatusFieldUpdateOperationsInput = {
   set?: $Enums.RequestStatus
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 
 
 export type RequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{

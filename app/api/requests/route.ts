@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { RequestSchema } from "@/lib/validations/request";
 import { ok, created, badRequest, internalError, generateRequestId } from "../utils/http";
-import { notifyTeamOfRequest } from "@/services/whatsapp";
+import { notifyTeamOfRequest } from "@/services/notifications";
 import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth/session";
 
