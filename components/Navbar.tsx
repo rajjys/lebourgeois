@@ -9,7 +9,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import CountryFlag from "react-country-flag"
-import UtilityBar from "./UtilityBar";
+import { SITE } from "@/lib/site";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -20,7 +20,6 @@ const Navbar = () => {
     { href: "/explore", label: t('nav.exploreFlights') },
     { href: "/request", label: t('nav.requestQuote') },
     { href: "/about", label: t('nav.about') },
-    { href: "/contact", label: t('nav.contact') },
   ];
 
   const changeLanguage = (lng: string) => {
@@ -31,21 +30,17 @@ const Navbar = () => {
     <>
       {/* MAIN NAVBAR */}
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-        {/* 🌍 Utility Top Bar */}
-        <UtilityBar />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-end gap-2 group">
               <Image
                 src="/icon.png"
-                alt="Le Bourgeois"
+                alt=""
                 width={40}
                 height={40}
                 className="h-8 w-8 md:w-10 md:h-10 object-contain"
               />
-              <span className="text-xl font-bold text-foreground">
-                Le <span className="text-primary">Bourgeois</span>
-              </span>
+              <span className="text-xl font-bold text-foreground">{SITE.name}</span>
             </Link>
 
             {/* Mobile Menu */}
@@ -127,8 +122,27 @@ const Navbar = () => {
               ))}
             </div>
 
-            {/* Desktop Right: Book Flight */}
+            {/* Desktop Right: Language + Search */}
             <div className="hidden lg:flex items-center gap-2">
+              <Select value={i18n.language} onValueChange={changeLanguage}>
+                <SelectTrigger className="h-9 w-[84px]" aria-label="Langue / Language">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="fr">
+                    <div className="flex items-center gap-2">
+                      <CountryFlag countryCode="FR" svg style={{ width: "1em", height: "1em" }} />
+                      FR
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="en">
+                    <div className="flex items-center gap-2">
+                      <CountryFlag countryCode="GB" svg style={{ width: "1em", height: "1em" }} />
+                      EN
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
               <Button variant="hero" size="sm" asChild>
                 <Link href="/explore">{t("nav.bookFlight")}</Link>
               </Button>

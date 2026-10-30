@@ -14,7 +14,6 @@ import { cn } from "@/lib/utils/cn-utils";
 import { toast } from "sonner";
 import { enUS, fr } from "date-fns/locale";
 import { useTranslation } from 'react-i18next';
-import Footer from "@/components/Footer";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -125,7 +124,6 @@ useEffect(() => {
             </CardContent>
           </Card>
         </div>
-        <Footer />
       </div>
     );
   }

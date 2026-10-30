@@ -2,37 +2,36 @@
   "nav": {
     "home": "Accueil",
     "requestQuote": "Demander un Devis",
-    "exploreFlights": "Explorer les Vols",
+    "exploreFlights": "Rechercher des vols",
     "about": "À Propos",
-    "contact": "Contact",
-    "bookFlight": "Réserver un Vol"
+    "bookFlight": "Rechercher un vol"
   },
   "home": {
     "hero": {
-      "title": "Voyagez avec efficacité et élégance",
-      "subtitle": "Découvrez des expériences de voyage inoubliables avec nos services de réservation premium. Vols directs, tarifs exclusifs et assistance 24/7.",
-      "cta": "Réservez votre Vol",
+      "title": "Les vols intérieurs en RDC, enfin clairs",
+      "subtitle": "Compagnies, jours de vol, horaires et prix indicatifs pour chaque route. Comparez avant d'appeler une agence.",
+      "cta": "Rechercher un vol",
       "latestPrices": "Prix Récents",
       "exploreAllRoutes": "Explorer tout les Trajets"
     },
     "features": {
       "fast": {
-        "title": "Réservation Rapide",
-        "description": "Obtenez vos billets en quelques minutes"
+        "title": "Toutes les compagnies",
+        "description": "Comparez les vols de chaque compagnie sur une même route."
       },
       "global": {
-        "title": "Destinations Mondiales",
-        "description": "Accédez à des vols vers le monde entier"
+        "title": "Horaires et jours de vol",
+        "description": "Sachez quels jours chaque compagnie opère votre route."
       },
       "support": {
-        "title": "Assistance 24/7",
-        "description": "Notre équipe est toujours là pour vous"
+        "title": "Prix indicatifs datés",
+        "description": "Chaque prix indique sa date de vérification."
       }
     },
     "about": {
-      "title": "Pourquoi Le Bourgeois?",
-      "description": "Nous sommes spécialisés dans la recherche des meilleures offres de vols pour nos clients. Que vous voyagiez pour affaires ou pour le plaisir, notre équipe d'experts vous aidera à trouver le vol parfait qui correspond à votre budget et à votre emploi du temps.",
-      "cta": "Commencer"
+      "title": "Pourquoi ce site ?",
+      "description": "Trouver un horaire ou un prix de vol en RDC demande souvent plusieurs appels. Nous rassemblons ces informations au même endroit, route par route, pour que vous puissiez comparer avant de réserver.",
+      "cta": "Rechercher un vol"
     }
   },
   "request": {
@@ -64,12 +63,12 @@
       "missingFields": "Veuillez remplir tous les champs obligatoires",
       "submit": "Demander le Devis",
       "successTitle": "Demande Envoyée!",
-      "successMessage": "Merci! Un agent Le Bourgeois vous contactera bientôt."
+      "successMessage": "Merci ! Votre demande a bien été enregistrée."
     }
   },
   "explore": {
-    "title": "Explorer les Destinations Populaires",
-    "subtitle": "Découvrez notre sélection de destinations de classe mondiale. Demandez un devis personnalisé pour n'importe lequel de ces lieux incroyables.",
+    "title": "Rechercher un vol",
+    "subtitle": "Choisissez une ville de départ et d'arrivée pour voir les compagnies, les jours de vol et les prix indicatifs.",
     "search": {
       "from": "De",
       "fromPlaceholder": "Sélectionner l'aéroport de départ",
@@ -129,79 +128,28 @@
       "continueBooking": "Soumettre la réservation",
       "noFlightOnDate": "Aucun vol disponible à cette date",
       "requestSuccessTitle": "Demande de réservation envoyée!",
-      "requestSuccessMessage": "Merci! Un agent Le Bourgeois vous contactera bientot"
-    },
-    "destinations": {
-      "paris": {
-        "title": "Paris, France",
-        "description": "Découvrez le romantisme de la Ville Lumière. De la Tour Eiffel à la cuisine de classe mondiale, Paris vous attend.",
-        "price": "À partir de 450€"
-      },
-      "dubai": {
-        "title": "Dubaï, EAU",
-        "description": "Découvrez le luxe et l'innovation dans cette oasis moderne. L'architecture vertigineuse rencontre l'hospitalité arabe traditionnelle.",
-        "price": "À partir de 550€"
-      },
-      "newyork": {
-        "title": "New York, USA",
-        "description": "La ville qui ne dort jamais offre des possibilités infinies. Broadway, sites emblématiques et culture diversifiée.",
-        "price": "À partir de 380€"
-      },
-      "tokyo": {
-        "title": "Tokyo, Japon",
-        "description": "Où la tradition ancienne rencontre la technologie de pointe. Vivez les cerisiers en fleurs et les rues illuminées au néon.",
-        "price": "À partir de 680€"
-      }
-    },
-    "destinationCta": "Reservez cette destination",
-    "custom": {
-      "title": "Vous ne voyez pas votre destination?",
-      "description": "Nous proposons des vols vers des destinations du monde entier. Contactez-nous avec vos projets de voyage et nous trouverons les options parfaites pour vous.",
-      "quote": "Demander un Devis Personnalisé",
-      "contact": "Nous Contacter"
+      "requestSuccessMessage": "Merci ! Votre demande a bien été enregistrée."
     }
   },
   "about": {
-    "title": "À Propos de Le Bourgeois",
+    "title": "À propos",
     "mission": {
-      "title": "Notre Mission",
-      "description": "Le Bourgeois est dédié à rendre les voyages aériens accessibles, abordables et agréables pour tous. Nous croyons que tout le monde mérite de voyager avec élégance et confort."
+      "title": "Notre mission",
+      "description": "Rendre les informations sur les vols intérieurs en RDC (compagnies, horaires, prix) faciles à trouver et à comparer."
     },
     "approach": {
-      "title": "Notre Approche",
-      "description": "Nous travaillons avec des compagnies aériennes du monde entier pour vous offrir les meilleurs tarifs possibles. Notre équipe recherche et compare constamment les vols pour s'assurer que vous obtenez le meilleur rapport qualité-prix."
+      "title": "D'où viennent les données",
+      "description": "Les horaires et prix sont relevés auprès des compagnies aériennes puis vérifiés. Les prix sont indicatifs : le tarif final est toujours confirmé par la compagnie ou votre agence au moment de la réservation."
     },
     "expertise": {
-      "title": "Expertise",
-      "description": "Avec des années d'expérience dans l'industrie du voyage, notre équipe comprend les subtilités de la réservation de vols et peut vous aider à naviguer même dans les itinéraires les plus complexes."
+      "title": "Ce que nous ne sommes pas",
+      "description": "Nous ne sommes pas une compagnie aérienne et nous ne vendons pas de billets."
     },
-    "cta": "Prêt à Commencer Votre Voyage?"
-  },
-  "contact": {
-    "title": "Contactez-Nous",
-    "subtitle": "Des questions? Nous sommes là pour vous aider. Contactez-nous via l'un des canaux ci-dessous.",
-    "form": {
-      "name": "Nom",
-      "namePlaceholder": "Votre nom",
-      "email": "Email",
-      "emailPlaceholder": "votre@email.com",
-      "message": "Message",
-      "messagePlaceholder": "Comment pouvons-nous vous aider?",
-      "submit": "Envoyer le Message",
-      "successTitle": "Message Envoyé!",
-      "successMessage": "Nous vous répondrons bientôt."
-    },
-    "info": {
-      "title": "Coordonnées",
-      "email": "Email",
-      "phone": "Téléphone",
-      "whatsapp": "WhatsApp"
-    }
+    "cta": "Trouvez votre vol"
   },
   "footer": {
-    "tagline": "Votre partenaire de confiance pour les voyages aériens.",
+    "tagline": "Horaires et prix indicatifs des vols intérieurs en RDC.",
     "quickLinks": "Liens Rapides",
-    "getInTouch": "Nous Contacter",
     "rights": "Tous droits réservés."
   }
 }

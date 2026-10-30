@@ -35,9 +35,8 @@ export function internalError(message = "Internal Server Error", details: ErrorD
   // Use provided requestId or generate a new one for correlation, then log the error server-side.
   const rid = requestId ?? generateRequestId();
   safeLogError({ requestId: rid, message, details });
-  // Return minimal details to the client, include requestId so it can be reported back.
-  const safeDetails = typeof details === "string" ? details : null;
-  return respond({ error: message, code: "INTERNAL_ERROR", details: safeDetails, requestId: rid }, 500, rid);
+  // Details stay in server logs only (they can contain DB internals); the requestId correlates them.
+  return respond({ error: message, code: "INTERNAL_ERROR", requestId: rid }, 500, rid);
 }
 
 export function validationError(message = "Validation Error", details: ErrorDetails = null, requestId?: string) {

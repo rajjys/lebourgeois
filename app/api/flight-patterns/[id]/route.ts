@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { FlightPatternSchema } from "@/lib/validations/flightPattern";
 import { ok, badRequest, notFound, internalError, generateRequestId } from "@/app/api/utils/http";
 import { withNextDepartureDate } from "@/lib/flightPatterns/nextDeparture";
+import { requireAdmin } from "@/lib/auth/session";
 
 /**
  * Handlers for /api/flight-patterns/:id
@@ -31,6 +32,8 @@ export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const requestId = generateRequestId();
   try {
     const { id } = await context.params;
@@ -78,6 +81,8 @@ export async function DELETE(
   _req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const requestId = generateRequestId();
   try {
     const { id } = await context.params;

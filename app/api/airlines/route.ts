@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { AirlineSchema } from "@/lib/validations/airline";
 import { ok, created, badRequest, internalError, generateRequestId } from "@/app/api/utils/http";
+import { requireAdmin } from "@/lib/auth/session";
 
 /**
  * GET /api/airlines - list airlines
@@ -17,6 +18,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const requestId = generateRequestId();
   try {
     const body = await req.json();

@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { notFound, internalError, generateRequestId, ok } from "../../utils/http";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/auth/session";
 
 /**
  * GET /api/requests/[id] - Get a single request by ID
@@ -9,6 +10,8 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const requestId = generateRequestId();
   const { id } = await params;
 
@@ -34,6 +37,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const requestId = generateRequestId();
   const { id } = await params;
 

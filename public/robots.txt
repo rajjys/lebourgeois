@@ -9,6 +9,7 @@ Disallow: /dashboard/*
 
 # Block API routes (optional but recommended)
 Disallow: /api/
+Disallow: /login
 
 # Specify your sitemap
 Sitemap: https://lebourgeois.cd/sitemap.xml
