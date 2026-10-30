@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Plane, Building2, MapPin, LayoutDashboard, FileText } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { SITE } from '@/lib/site';
 
 interface DashboardLayoutProps {
     children: ReactNode;
@@ -33,7 +34,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <Link href="/" className="flex items-end gap-2 group p-4 border-b border-border">
           <Image
             src="/icon.png"
-            alt="Le Bourgeois logo"
+            alt=""
             width={40}
             height={40}
             className="h-5 w-5 object-contain"
@@ -69,13 +70,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <Link href="/" className="flex items-end gap-2 group p-4 border-b border-border">
               <Image
                 src="/icon.png"
-                alt="Le Bourgeois logo"
+                alt=""
                 width={40}
                 height={40}
                 className="h-8 w-8 object-contain"
               />
               <span className="text-xl font-bold text-foreground">
-                Le <span className="text-primary">Bourgeois</span>
+                {SITE.name}
               </span>
             </Link>
           {/* Main menu */}
@@ -101,13 +102,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
 
           {/* Footer link */}
-          <div className="px-4 py-4 border-t">
+          <div className="px-4 py-4 border-t space-y-2">
             <Link
               href="/"
               className="flex items-center justify-center px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 font-medium text-sm"
             >
               Go to Website
             </Link>
+            <form action="/api/auth/logout" method="post">
+              <button
+                type="submit"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 font-medium text-sm"
+              >
+                Log out
+              </button>
+            </form>
           </div>
         </nav>
       </aside>

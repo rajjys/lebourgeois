@@ -2,37 +2,36 @@
   "nav": {
     "home": "Home",
     "requestQuote": "Request a Quote",
-    "exploreFlights": "Explore Flights",
+    "exploreFlights": "Search flights",
     "about": "About",
-    "contact": "Contact",
-    "bookFlight": "Book Flight"
+    "bookFlight": "Search flights"
   },
   "home": {
     "hero": {
-      "title": "Travel with efficiency and class",
-      "subtitle": "Discover unforgettable travel experiences with our premium booking services. Direct flights, exclusive rates, and 24/7 assistance.",
-      "cta": "Book your Flight",
+      "title": "Domestic flights in the DRC, made clear",
+      "subtitle": "Airlines, operating days, times and indicative prices for every route. Compare before you call an agency.",
+      "cta": "Search flights",
       "latestPrices": "Latest Prices",
       "exploreAllRoutes": "Explore All Routes"
     },
     "features": {
       "fast": {
-        "title": "Fast Booking",
-        "description": "Get your tickets in minutes"
+        "title": "Every airline",
+        "description": "Compare each airline's flights on the same route."
       },
       "global": {
-        "title": "Global Destinations",
-        "description": "Access flights worldwide"
+        "title": "Schedules and operating days",
+        "description": "Know which days each airline flies your route."
       },
       "support": {
-        "title": "24/7 Support",
-        "description": "Our team is always here for you"
+        "title": "Dated indicative prices",
+        "description": "Every price shows when it was last checked."
       }
     },
     "about": {
-      "title": "Why Le Bourgeois?",
-      "description": "We specialize in finding the best flight deals for our clients. Whether you're traveling for business or pleasure, our expert team will help you find the perfect flight that fits your budget and schedule.",
-      "cta": "Get Started"
+      "title": "Why this site?",
+      "description": "Finding a flight time or price in the DRC often takes several phone calls. We gather that information in one place, route by route, so you can compare before you book.",
+      "cta": "Search flights"
     }
   },
   "request": {
@@ -52,7 +51,7 @@
       "business": "Business",
       "first": "First",
       "name": "Full Name",
-      "namePlaceholder":"Your name",
+      "namePlaceholder": "Your name",
       "email": "Email",
       "emailPlaceholder": "your@email.com",
       "phone": "Phone number",
@@ -64,12 +63,12 @@
       "missingFields": "Please fill in all required fields",
       "submit": "Request My Ticket",
       "successTitle": "Request Sent!",
-      "successMessage": "Thank you! A Le Bourgeois agent will contact you shortly."
+      "successMessage": "Thank you! Your request has been recorded."
     }
   },
   "explore": {
-    "title": "Explore Popular Destinations",
-    "subtitle": "Discover our handpicked selection of world-class destinations. Request a personalized quote for any of these amazing locations.",
+    "title": "Search flights",
+    "subtitle": "Pick a departure and arrival city to see airlines, operating days and indicative prices.",
     "search": {
       "from": "From",
       "fromPlaceholder": "Select departure airport",
@@ -129,79 +128,28 @@
       "continueBooking": "Submit Booking",
       "noFlightOnDate": "No flights available on this date",
       "requestSuccessTitle": "Booking Request Sent!",
-      "requestSuccessMessage": "Thank you! A Le Bourgeois agent will contact you shortly."
-    },
-    "destinations": {
-      "paris": {
-        "title": "Paris, France",
-        "description": "Experience the romance of the City of Light. From the Eiffel Tower to world-class cuisine, Paris awaits.",
-        "price": "From $450"
-      },
-      "dubai": {
-        "title": "Dubai, UAE",
-        "description": "Discover luxury and innovation in this modern oasis. Sky-high architecture meets traditional Arabian hospitality.",
-        "price": "From $550"
-      },
-      "newyork": {
-        "title": "New York, USA",
-        "description": "The city that never sleeps offers endless possibilities. Broadway, iconic landmarks, and diverse culture.",
-        "price": "From $380"
-      },
-      "tokyo": {
-        "title": "Tokyo, Japan",
-        "description": "Where ancient tradition meets cutting-edge technology. Experience cherry blossoms and neon-lit streets.",
-        "price": "From $680"
-      }
-    },
-    "destinationCta": "Book this destination",
-    "custom": {
-      "title": "Don't See Your Destination?",
-      "description": "We offer flights to destinations worldwide. Contact us with your travel plans and we'll find the perfect options for you.",
-      "quote": "Request Custom Quote",
-      "contact": "Contact Us"
+      "requestSuccessMessage": "Thank you! Your request has been recorded."
     }
   },
   "about": {
-    "title": "About Le Bourgeois",
+    "title": "About",
     "mission": {
-      "title": "Our Mission",
-      "description": "Le Bourgeois is dedicated to making air travel accessible, affordable, and enjoyable for everyone. We believe that everyone deserves to travel with elegance and comfort."
+      "title": "Our mission",
+      "description": "Make information about domestic flights in the DRC (airlines, schedules, prices) easy to find and compare."
     },
     "approach": {
-      "title": "Our Approach",
-      "description": "We work with airlines around the world to bring you the best possible rates. Our team constantly researches and compares flights to ensure you get the best value for your money."
+      "title": "Where the data comes from",
+      "description": "Schedules and prices are collected from the airlines and then checked. Prices are indicative: the final fare is always confirmed by the airline or your agency at booking time."
     },
     "expertise": {
-      "title": "Expertise",
-      "description": "With years of experience in the travel industry, our team understands the ins and outs of flight booking and can help you navigate even the most complex itineraries."
+      "title": "What we are not",
+      "description": "We are not an airline and we do not sell tickets."
     },
-    "cta": "Ready to Start Your Journey?"
-  },
-  "contact": {
-    "title": "Contact Us",
-    "subtitle": "Have questions? We're here to help. Reach out to us through any of the channels below.",
-    "form": {
-      "name": "Name",
-      "namePlaceholder": "Your name",
-      "email": "Email",
-      "emailPlaceholder": "your@email.com",
-      "message": "Message",
-      "messagePlaceholder": "How can we help you?",
-      "submit": "Send Message",
-      "successTitle": "Message Sent!",
-      "successMessage": "We'll get back to you soon."
-    },
-    "info": {
-      "title": "Contact Information",
-      "email": "Email",
-      "phone": "Phone",
-      "whatsapp": "WhatsApp"
-    }
+    "cta": "Find your flight"
   },
   "footer": {
-    "tagline": "Your trusted partner for air travel.",
+    "tagline": "Schedules and indicative prices for domestic flights in the DRC.",
     "quickLinks": "Quick Links",
-    "getInTouch": "Get in Touch",
     "rights": "All rights reserved."
   }
 }

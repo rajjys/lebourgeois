@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { AirportSchema } from "@/lib/validations/airport";
 import { ok, badRequest, notFound, internalError, generateRequestId } from "@/app/api/utils/http";
+import { requireAdmin } from "@/lib/auth/session";
 
 /**
  * GET /api/airports/:id
@@ -29,6 +30,8 @@ export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const requestId = generateRequestId();
   try {
     const { id } = await context.params;
@@ -50,6 +53,8 @@ export async function DELETE(
   _req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const requestId = generateRequestId();
   try {
     const { id } = await context.params;

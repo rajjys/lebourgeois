@@ -1,19 +1,17 @@
 import { NextRequest } from "next/server";
 import { RequestSchema } from "@/lib/validations/request";
-import { created, badRequest, internalError, generateRequestId } from "../utils/http";
-import { sendFlightRequestAlert } from "@/services/whatsapp";
+import { ok, created, badRequest, internalError, generateRequestId } from "../utils/http";
+import { notifyTeamOfRequest } from "@/services/whatsapp";
 import prisma from "@/lib/prisma";
-
-const TEAM_NUMBERS = [
-  "243975092470",
-  //"243973020687"
-];
+import { requireAdmin } from "@/lib/auth/session";
 
 /**
- * GET /api/requests - List all requests
+ * GET /api/requests - List all requests (admin only)
  * Returns requests sorted by most recent first
  */
 export async function GET() {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const requestId = generateRequestId();
 
   try {
@@ -21,15 +19,16 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    return created(requests, requestId);
+    return ok(requests, requestId);
   } catch (err) {
     return internalError("Failed to fetch requests", (err as Error)?.message ?? null, requestId);
   }
 }
 
 /**
- * POST /api/requests - Create a new request
- * Creates a request and sends WhatsApp notifications to team
+ * POST /api/requests - Create a new request (public)
+ * Creates a request and notifies the team on WhatsApp.
+ * Only the new id is returned so the endpoint never echoes stored records.
  */
 export async function POST(request: NextRequest) {
   const requestId = generateRequestId();
@@ -37,44 +36,19 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate input
     const validationResult = RequestSchema.safeParse(body);
     if (!validationResult.success) {
-      console.error("Request validation failed:", validationResult.error);
       return badRequest("Validation failed", validationResult.error.format(), requestId);
     }
 
-    const validatedData = validationResult.data;
-
-    // Create the request
     const newRequest = await prisma.request.create({
-      data: validatedData,
+      data: validationResult.data,
     });
 
-    // Send WhatsApp notifications to team (fire and forget)
-    try {
-      await Promise.allSettled(
-        TEAM_NUMBERS.map(number =>
-          sendFlightRequestAlert({
-            to: number,
-            payload: {
-              clientName: newRequest.clientName,
-              departureCity: newRequest.originCity,
-              arrivalCity: newRequest.destinationCity,
-              travelDate: newRequest.travelDate.toDateString(),
-              clientPhone: newRequest.clientPhone || undefined,
-              clientEmail: newRequest.clientEmail || undefined,
-              requestId: newRequest.id,
-            },
-          })
-        )
-      );
-    } catch (whatsappError) {
-      // Log WhatsApp errors but don't fail the request
-      console.error("WhatsApp notification failed:", whatsappError);
-    }
+    // Notification failures are logged but never fail the submission.
+    await notifyTeamOfRequest(newRequest);
 
-    return created(newRequest, requestId);
+    return created({ id: newRequest.id }, requestId);
   } catch (err) {
     return internalError("Failed to create request", (err as Error)?.message ?? null, requestId);
   }

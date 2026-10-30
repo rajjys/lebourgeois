@@ -17,7 +17,7 @@ export async function fetchRequest(id: string): Promise<Request> {
   return response.json();
 }
 
-export async function createRequest(data: RequestInput): Promise<Request> {
+export async function createRequest(data: RequestInput): Promise<{ id: string }> {
   const response = await fetch("/api/requests", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

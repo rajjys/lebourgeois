@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AirportCombobox } from "@/components/AirportCombobox";
 import FlightPatternResultCard from "@/components/FlightPatternResultCard";
-import DestinationCard from "@/components/DestinationCard";
 import { useTranslation } from 'react-i18next';
 import { Plane, ArrowLeftRight, X, CalendarIcon, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -89,33 +88,6 @@ const ExploreFlights = () => {
     setSearchResults([]);
     setHasSearched(false);
   };
-
-  const destinations = [
-    {
-      title: t('explore.destinations.paris.title'),
-      description: t('explore.destinations.paris.description'),
-      image: "/assets/destination-paris.jpg",
-      price: t('explore.destinations.paris.price'),
-    },
-    {
-      title: t('explore.destinations.dubai.title'),
-      description: t('explore.destinations.dubai.description'),
-      image: "/assets/destination-dubai.jpg",
-      price: t('explore.destinations.dubai.price'),
-    },
-    {
-      title: t('explore.destinations.newyork.title'),
-      description: t('explore.destinations.newyork.description'),
-      image: "/assets/destination-newyork.jpg",
-      price: t('explore.destinations.newyork.price'),
-    },
-    {
-      title: t('explore.destinations.tokyo.title'),
-      description: t('explore.destinations.tokyo.description'),
-      image: "/assets/destination-tokyo.jpg",
-      price: t('explore.destinations.tokyo.price'),
-    },
-  ];
 
   return (
     <div className="flex flex-col min-h-screen mb-4">
@@ -308,43 +280,6 @@ const ExploreFlights = () => {
         </section>
       )}
 
-      {/* Popular Destinations */}
-      {!hasSearched && (
-        <section className="py-12 bg-gradient-to-b from-background to-secondary">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-              {destinations.map((dest, i) => (
-                <DestinationCard key={i} {...dest} />
-              ))}
-            </div>
-
-            <div className="bg-card rounded-xl border border-border p-8 text-center shadow-card max-w-3xl mx-auto">
-              <h2 className="text-2xl font-bold text-foreground mb-3">
-                {t('explore.custom.title')}
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                {t('explore.custom.description')}
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="/request"
-                  className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-card hover:shadow-hover"
-                >
-                  {t('explore.custom.quote')}
-                </a>
-
-                <a
-                  href="/contact"
-                  className="inline-flex items-center justify-center px-6 py-3 border border-border rounded-lg font-semibold hover:bg-secondary transition-colors"
-                >
-                  {t('explore.custom.contact')}
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
     </div>
   );
 };
