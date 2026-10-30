@@ -1,67 +1,49 @@
 @import "tailwindcss";
+@import "./tokens.css";
 
-@layer theme, base, components, utilities;
+/* Design system: docs/DESIGN-SYSTEM.md. Colours, radius and shadows come from
+   design/tokens.json through tokens.css; edit the JSON, never tokens.css. */
 
-/* ---- THEME ---- */
 @theme {
-  --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(215 25% 27%);
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(215 25% 27%);
-  --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(215 25% 27%);
-  --color-primary: hsl(210 100% 56%);
-  --color-primary-foreground: hsl(0 0% 100%);
-  --color-secondary: hsl(210 20% 96%);
-  --color-secondary-foreground: hsl(215 25% 27%);
-  --color-muted: hsl(210 20% 96%);
-  --color-muted-foreground: hsl(215 16% 47%);
-  --color-accent: hsl(43 62% 52%);
-  --color-accent-foreground: hsl(0 0% 100%);
-  --color-destructive: hsl(0 84% 60%);
-  --color-destructive-foreground: hsl(0 0% 100%);
-  --color-border: hsl(214 32% 91%);
-  --color-input: hsl(214 32% 91%);
-  --color-ring: hsl(210 100% 56%);
+  /* --font-brand is set by next/font in app/layout.tsx */
+  --font-sans: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
 
-  --radius: 0.75rem;
-
-  --shadow-soft: 0 4px 20px -2px hsl(210 100% 56% / 0.08);
-  --shadow-card: 0 8px 30px -6px hsl(210 100% 56% / 0.1);
-  --shadow-hover: 0 12px 40px -8px hsl(210 100% 56% / 0.15);
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Legacy shadow names still used by older screens */
+  --shadow-soft: var(--shadow-card);
+  --shadow-hover: var(--shadow-popover);
 }
 
-/* ---- DARK MODE ---- */
-@layer base {
-  .dark {
-    --color-background: hsl(215 28% 17%);
-    --color-foreground: hsl(210 20% 98%);
-    --color-card: hsl(215 28% 17%);
-    --color-card-foreground: hsl(210 20% 98%);
-    --color-popover: hsl(215 28% 17%);
-    --color-popover-foreground: hsl(210 20% 98%);
-    --color-secondary: hsl(215 20% 25%);
-    --color-secondary-foreground: hsl(210 20% 98%);
-    --color-muted: hsl(215 20% 25%);
-    --color-muted-foreground: hsl(215 16% 65%);
-    --color-accent: hsl(43 62% 52%);
-    --color-accent-foreground: hsl(0 0% 100%);
-    --color-destructive: hsl(0 63% 31%);
-    --color-destructive-foreground: hsl(210 20% 98%);
-    --color-border: hsl(215 20% 25%);
-    --color-input: hsl(215 20% 25%);
-  }
-}
-
-/* ---- BASE ---- */
 @layer base {
   * {
     @apply border-border;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
-    @apply bg-background text-foreground transition-colors;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Times, prices and flight numbers line up in columns. */
+  time,
+  data {
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 

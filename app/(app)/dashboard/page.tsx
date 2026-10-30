@@ -50,10 +50,10 @@ export default function DashboardPage() {
         </ul>
 
         {/* Footer link pinned at bottom */}
-        <div className="border-t border-slate-200 flex justify-center mt-auto">
+        <div className="border-t border-neutral-200 flex justify-center mt-auto">
           <Link
             href={`/dashboard/airlines`}
-            className="pt-4 text-slate-500 hover:text-slate-600 font-medium"
+            className="pt-4 text-neutral-500 hover:text-neutral-600 font-medium"
           >
             Toutes les compagnies
           </Link>
@@ -93,10 +93,10 @@ export default function DashboardPage() {
           ))}
         </ul>
 
-        <div className="border-t border-slate-200 flex justify-center mt-auto">
+        <div className="border-t border-neutral-200 flex justify-center mt-auto">
           <Link
             href={`/dashboard/airports`}
-            className="pt-4 text-slate-500 hover:text-slate-600 font-medium"
+            className="pt-4 text-neutral-500 hover:text-neutral-600 font-medium"
           >
             Tous les aéroports
           </Link>
@@ -139,10 +139,10 @@ export default function DashboardPage() {
           </ul>
         )}
 
-        <div className="border-t border-slate-200 flex justify-center mt-auto">
+        <div className="border-t border-neutral-200 flex justify-center mt-auto">
           <Link
             href={`/dashboard/flight-patterns`}
-            className="pt-4 text-slate-500 hover:text-slate-600 font-medium"
+            className="pt-4 text-neutral-500 hover:text-neutral-600 font-medium"
           >
             Tous les programmes
           </Link>

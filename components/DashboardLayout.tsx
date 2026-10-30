@@ -1,128 +1,111 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Plane, Building2, MapPin, LayoutDashboard, FileText } from 'lucide-react';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { SITE } from '@/lib/site';
+import { Plane, Building2, MapPin, LayoutDashboard, FileText, Palette, ExternalLink, LogOut, Menu } from 'lucide-react';
+import { Logo } from '@/components/brand/Logo';
+import { cn } from '@/lib/utils/cn-utils';
 
-interface DashboardLayoutProps {
-    children: ReactNode;
-}
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+// Back office: desktop-first (docs/DESIGN-SYSTEM.md#back-office). Small screens get a simple menu.
+const navItems = [
+  { name: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Demandes', href: '/dashboard/requests', icon: FileText },
+  { name: 'Compagnies', href: '/dashboard/airlines', icon: Building2 },
+  { name: 'Aéroports', href: '/dashboard/airports', icon: MapPin },
+  { name: 'Programmes de vol', href: '/dashboard/flight-patterns', icon: Plane },
+  { name: 'Système de design', href: '/dashboard/design', icon: Palette },
+];
 
-  const navItems = [
-    { name: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-    { name: 'Requests', href: '/dashboard/requests', icon: <FileText className="w-5 h-5" /> },
-    { name: 'Airlines', href: '/dashboard/airlines', icon: <Building2 className="w-5 h-5" /> },
-    { name: 'Airports', href: '/dashboard/airports', icon: <MapPin className="w-5 h-5" /> },
-    { name: 'Flight Patterns', href: '/dashboard/flight-patterns', icon: <Plane className="w-5 h-5" /> },
-  ];
-
+function NavLinks({ pathname }: { pathname: string }) {
   const isActive = (href: string) =>
-    pathname === href
+    href === '/dashboard' ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
-
-      {/* ---- MOBILE TOP NAV ---- */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white shadow flex items-center justify-between px-4 z-40">
-        <Link href="/" className="flex items-end gap-2 group p-4 border-b border-border">
-          <Image
-            src="/icon.png"
-            alt=""
-            width={40}
-            height={40}
-            className="h-5 w-5 object-contain"
-          />
+    <>
+      {navItems.map(({ name, href, icon: Icon }) => (
+        <Link
+          key={href}
+          href={href}
+          aria-current={isActive(href) ? 'page' : undefined}
+          className={cn(
+            'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+            isActive(href)
+              ? 'bg-accent text-accent-foreground font-semibold'
+              : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
+          )}
+        >
+          <Icon className="size-4 shrink-0" aria-hidden="true" />
+          {name}
         </Link>
-        <span className="ml-4 font-bold text-lg">Dashboard</span>
-        <Button variant="outline" size="icon" aria-label="Open menu" onClick={() => setOpen(true)}>
-          <Menu className="w-5 h-5" />
-        </Button>
-      </div>
+      ))}
+    </>
+  );
+}
 
-      {/* ---- MOBILE SIDEBAR ---- */}
-      {open && (
-        <div className="md:hidden fixed inset-0 z-50 bg-black/40" onClick={() => setOpen(false)} />
-      )}
-
-      <aside
-        className={`
-          fixed md:static z-50 top-0 left-0 h-full w-64 bg-white shadow-md
-          transform transition-transform duration-300
-          ${open ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-        `}
+function SecondaryActions() {
+  return (
+    <>
+      <Link
+        href="/"
+        className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
       >
-        {/* Header + Close button mobile */}
-        <div className="flex items-center justify-between px-4 h-14 border-b md:hidden">
-          <span className="font-semibold text-lg">Menu</span>
-          <button onClick={() => setOpen(false)}>
-            <X className="w-6 h-6" />
-          </button>
+        <ExternalLink className="size-4" aria-hidden="true" />
+        Voir le site
+      </Link>
+      <form action="/api/auth/logout" method="post">
+        <button
+          type="submit"
+          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+        >
+          <LogOut className="size-4" aria-hidden="true" />
+          Se déconnecter
+        </button>
+      </form>
+    </>
+  );
+}
+
+export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+
+  return (
+    <div className="min-h-screen bg-background md:flex">
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex md:w-60 md:shrink-0 md:flex-col md:border-r md:bg-muted md:h-screen md:sticky md:top-0">
+        <div className="flex h-14 items-center border-b px-4">
+          <Link href="/dashboard" aria-label="Tableau de bord">
+            <Logo markClassName="size-7" />
+          </Link>
         </div>
-
-        <nav className="flex flex-col h-screen pb-16">
-            <Link href="/" className="flex items-end gap-2 group p-4 border-b border-border">
-              <Image
-                src="/icon.png"
-                alt=""
-                width={40}
-                height={40}
-                className="h-8 w-8 object-contain"
-              />
-              <span className="text-xl font-bold text-foreground">
-                {SITE.name}
-              </span>
-            </Link>
-          {/* Main menu */}
-          <div className="flex-1 px-4 py-6 space-y-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={`
-                  flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
-                  transition
-                  ${isActive(item.href)
-                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                    : 'text-gray-700 hover:bg-gray-100'}
-                `}
-              >
-                {item.icon}
-                {item.name}
-              </Link>
-            ))}
-
-          </div>
-
-          {/* Footer link */}
-          <div className="px-4 py-4 border-t space-y-2">
-            <Link
-              href="/"
-              className="flex items-center justify-center px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 font-medium text-sm"
-            >
-              Go to Website
-            </Link>
-            <form action="/api/auth/logout" method="post">
-              <button
-                type="submit"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 font-medium text-sm"
-              >
-                Log out
-              </button>
-            </form>
-          </div>
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3" aria-label="Back office">
+          <NavLinks pathname={pathname} />
         </nav>
+        <div className="space-y-1 border-t p-3">
+          <SecondaryActions />
+        </div>
       </aside>
 
-      {/* ---- PAGE CONTENT ---- */}
-      <main className="p-4">{children}</main>
+      {/* Small screens: logo + native disclosure menu, no client state */}
+      <header className="flex h-14 items-center justify-between border-b px-4 md:hidden">
+        <Link href="/dashboard" aria-label="Tableau de bord">
+          <Logo markClassName="size-7" />
+        </Link>
+        <details className="relative">
+          <summary className="flex size-10 cursor-pointer list-none items-center justify-center rounded-md border border-input">
+            <Menu className="size-5" aria-hidden="true" />
+            <span className="sr-only">Menu</span>
+          </summary>
+          <div className="absolute right-0 z-50 mt-2 w-64 space-y-1 rounded-lg border bg-popover p-2 shadow-popover">
+            <NavLinks pathname={pathname} />
+            <div className="border-t pt-1">
+              <SecondaryActions />
+            </div>
+          </div>
+        </details>
+      </header>
+
+      <main className="min-w-0 flex-1 px-4 py-6 md:px-8">{children}</main>
     </div>
   );
 }

@@ -71,40 +71,40 @@ useEffect(() => {
     return (
   <div className="mt-6 space-y-4 animate-pulse min-h-screen pb-20 md:pb-0 container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
     {/* Name */}
-    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+    <div className="h-10 bg-neutral-200 rounded-xl w-full" />
 
     {/* Date of Birth */}
-    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+    <div className="h-10 bg-neutral-200 rounded-xl w-full" />
 
     {/* Gender */}
-    <div className="h-10 bg-gray-200 rounded-xl w-1/2" />
+    <div className="h-10 bg-neutral-200 rounded-xl w-1/2" />
 
     {/* Contact Section Title */}
-    <div className="h-4 bg-gray-200 rounded-lg w-32 mt-4" />
+    <div className="h-4 bg-neutral-200 rounded-lg w-32 mt-4" />
 
     {/* Phone */}
-    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+    <div className="h-10 bg-neutral-200 rounded-xl w-full" />
 
     {/* Email */}
-    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+    <div className="h-10 bg-neutral-200 rounded-xl w-full" />
 
     {/* Address Section Title */}
-    <div className="h-4 bg-gray-200 rounded-lg w-32 mt-4" />
+    <div className="h-4 bg-neutral-200 rounded-lg w-32 mt-4" />
 
     {/* Country */}
-    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+    <div className="h-10 bg-neutral-200 rounded-xl w-full" />
 
     {/* State + City */}
     <div className="flex gap-4">
-      <div className="h-10 bg-gray-200 rounded-xl flex-1" />
-      <div className="h-10 bg-gray-2 00 rounded-xl flex-1" />
+      <div className="h-10 bg-neutral-200 rounded-xl flex-1" />
+      <div className="h-10 bg-neutral-200 rounded-xl flex-1" />
     </div>
 
     {/* Street */}
-    <div className="h-10 bg-gray-200 rounded-xl w-full" />
+    <div className="h-10 bg-neutral-200 rounded-xl w-full" />
 
     {/* Submit Button */}
-    <div className="h-12 bg-gray-300 rounded-xl w-40 mt-4" />
+    <div className="h-12 bg-neutral-300 rounded-xl w-40 mt-4" />
   </div>
 )};
 
@@ -199,7 +199,7 @@ useEffect(() => {
 
   return (
     <div className="flex flex-col min-h-screen pb-20 md:pb-0">
-      <div className="flex-1 bg-gradient-to-b from-sky-light/20 to-background pb-12 pt-4">
+      <div className="flex-1 bg-gradient-to-b from-brand-50 to-background pb-12 pt-4">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             {/* Flight Details Card */}
@@ -248,7 +248,7 @@ useEffect(() => {
                   <div className="grid grid-cols-2 gap-6 pt-4 border-t border-border">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4 text-orange-700/60" />
+                        <MapPin className="h-4 w-4 text-amber-700/60" />
                         <span>{t('explore.detail.origin')}</span>
                       </div>
                       <div>
@@ -262,7 +262,7 @@ useEffect(() => {
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4 text-orange-700/60" />
+                        <MapPin className="h-4 w-4 text-amber-700/60" />
                         <span>{t('explore.detail.destination')}</span>
                       </div>
                       <div>
@@ -322,7 +322,7 @@ useEffect(() => {
                               className={cn(
                                 "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-medium transition-colors",
                                 isActive && !isSelected && "border border-green-300 bg-green-50 text-green-700",
-                                isSelected && "border-2 border-orange-500 bg-orange-50 text-orange-700",
+                                isSelected && "border-2 border-amber-500 bg-amber-50 text-amber-700",
                                 !isActive && "border border-muted-foreground/30 text-muted-foreground/50"
                               )}
                               title={day}
@@ -333,7 +333,7 @@ useEffect(() => {
                         })}
                       </div>
                       {!isFlightAvailableOnSelectedDate && selectedDate && (
-                        <p className="text-xs text-orange-600 mt-1">
+                        <p className="text-xs text-amber-600 mt-1">
                           {t('explore.detail.noFlightOnDate')}
                         </p>
                       )}
@@ -544,7 +544,7 @@ useEffect(() => {
                       )}
                     </div>
 
-                    <Button type="submit" variant="hero" size="lg" className="w-full">
+                    <Button type="submit" size="lg" className="w-full">
                       {t('explore.detail.continueBooking')}
                     </Button>
                   </form>
@@ -559,7 +559,7 @@ useEffect(() => {
       <div className="fixed md:hidden bottom-0 left-0 right-0 bg-background border-t border-border p-4 shadow-lg">
         <Button
           onClick={() => setIsBookingDialogOpen(true)}
-          variant="hero"
+         
           size="lg"
           className="w-full flex items-center justify-between px-4"
         >
@@ -701,7 +701,7 @@ useEffect(() => {
               )}
             </div>
 
-            <Button type="submit" variant="hero" size="lg" className="w-full">
+            <Button type="submit" size="lg" className="w-full">
               {t('explore.detail.continueBooking')}
             </Button>
           </form>

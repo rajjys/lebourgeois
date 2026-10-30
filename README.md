@@ -1,14 +1,16 @@
-# Le Bourgeois
+# Clerikaa
 
 Schedules and indicative prices for domestic flights in the DRC: which airline flies a route, on which days, at what time and for roughly what price, with the date and source of every figure.
 
-**Where the project is going, what is done and what comes next: [docs/PLAN.md](docs/PLAN.md).**
+**Where the project is going, what is done and what comes next: [docs/PLAN.md](docs/PLAN.md).** All documents: [docs/README.md](docs/README.md).
+
+The site is still served from `lebourgeois.cd` until `clerikaa.com` is bought. The local database and folder names (`lebourgeois_dev`, `~/.lebourgeois`) keep the old name on purpose: renaming them would break existing setups for no benefit.
 
 ## Stack
 
 - Next.js 16 (App Router) on Vercel
 - PostgreSQL with Prisma 7 (Prisma Postgres in production)
-- Tailwind CSS, shadcn/ui
+- Tailwind CSS 4 with generated design tokens, shadcn/ui ([docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md))
 - i18next (French default, English)
 
 ## Local setup
@@ -52,10 +54,16 @@ After a reboot, run `npm run db:start` before `npm run dev`.
 | Command | What it does |
 |---|---|
 | `npm run dev` | Development server |
-| `npm run build` | Production build. On Vercel production builds it first runs `prisma migrate deploy`; preview and local builds skip that step. |
+| `npm run build` | Production build. Checks the design tokens first (contrast, generated CSS up to date). On Vercel production builds it then runs `prisma migrate deploy`; preview and local builds skip that step. |
+| `npm run tokens` | Regenerates `app/tokens.css` from `design/tokens.json` and checks colour contrast. Run after editing tokens. |
 | `npm run db:start` | Starts the local Postgres cluster |
 | `npm run db:seed` | Loads reference data (airports, airlines, statuses). Idempotent. Refuses non-local databases unless `ALLOW_REMOTE_DB=1`. |
 | `node scripts/hash-password.mjs '<password>'` | Produces the `ADMIN_PASSWORD_HASH` value |
+
+## Troubleshooting
+
+- **Styles look old in development** (old colours, missing classes) although the files are right: Turbopack's development cache is stale. Stop `npm run dev`, move or delete `.next/dev/cache/turbopack`, and start again. Seen with Next.js 16.4.3 on 2026-10-30.
+- **The design system page** is at `/dashboard/design` (log in first).
 
 ## Data safety rules
 

@@ -51,10 +51,10 @@ const Home = () => {
               {t('home.hero.subtitle')}
             </h3>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="xl" asChild>
+              <Button size="lg" asChild>
                 <Link href="/explore">{t('home.hero.cta')}</Link>
               </Button>
-              <Button variant="outline" size="xl" asChild>
+              <Button variant="outline" size="lg" asChild>
                 <Link href="/request">{t('nav.requestQuote')}</Link>
               </Button>
             </div>
@@ -62,7 +62,7 @@ const Home = () => {
           <div className="mt-4 md:mt-10">
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-xl font-bold text-foreground">{t('home.hero.latestPrices')}</h3>
-              <Link href="/explore" className="text-sm text-muted-secondary font-medium hover:underline">
+              <Link href="/explore" className="text-sm text-link font-medium hover:underline">
                 {t('home.hero.exploreAllRoutes', { defaultValue: 'Explore all routes' })}
               </Link>
             </div>
@@ -109,12 +109,12 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary/10 via-sky-light/50 to-gold-light/30">
+      <section className="py-20 bg-gradient-to-r from-primary/10 to-brand-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
             {t('about.cta')}
           </h2>
-          <Button variant="hero" size="xl" asChild>
+          <Button size="lg" asChild>
             <Link href="/explore">{t('home.about.cta')}</Link>
           </Button>
         </div>

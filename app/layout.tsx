@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "@/components/I18nProvider";
 import { Toaster as Sonner, Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next"
 import { SITE } from "@/lib/site";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// One variable font, latin subset (~27 KB): covers French accents and tabular figures.
+const brandFont = Plus_Jakarta_Sans({
+  variable: "--font-brand",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -25,11 +22,7 @@ export const metadata: Metadata = {
   description: SITE.description,
   // No canonical here: a root-level canonical is inherited by every page and
   // marks them all as duplicates of the homepage. Pages set their own.
-  icons: {
-    icon: "/icon.png",
-    shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
+  // Icons come from app/icon.svg and app/apple-icon.tsx
   openGraph: {
     title: `${SITE.name} — Horaires et prix des vols intérieurs en RDC`,
     description: SITE.description,
@@ -53,10 +46,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="fr" className={brandFont.variable}>
+      <body>
         <I18nProvider>
         <Toaster />
         <Sonner />

@@ -122,7 +122,7 @@ const RequestTicket = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex-1 bg-gradient-to-b from-sky-light/20 to-background py-12">
+      <div className="flex-1 bg-gradient-to-b from-brand-50 to-background py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
           <div className="text-center mb-8 space-y-3">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
@@ -336,7 +336,7 @@ const RequestTicket = () => {
                   )}
                 </div>
 
-                <Button type="submit" variant="hero" size="lg" className="w-full">
+                <Button type="submit" size="lg" className="w-full">
                   {t('request.form.submit')}
                 </Button>
               </form>
