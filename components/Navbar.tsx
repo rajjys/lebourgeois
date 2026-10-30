@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
+import { Logo } from "@/components/brand/Logo";
 import CountryFlag from "react-country-flag"
 import { SITE } from "@/lib/site";
 
@@ -32,15 +32,8 @@ const Navbar = () => {
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="flex items-end gap-2 group">
-              <Image
-                src="/icon.png"
-                alt=""
-                width={40}
-                height={40}
-                className="h-8 w-8 md:w-10 md:h-10 object-contain"
-              />
-              <span className="text-xl font-bold text-foreground">{SITE.name}</span>
+            <Link href="/" aria-label={`${SITE.name}, accueil`}>
+              <Logo />
             </Link>
 
             {/* Mobile Menu */}
@@ -95,7 +88,7 @@ const Navbar = () => {
                     </Select>
 
                     <SheetClose asChild>
-                      <Button variant="hero" size="sm" asChild className="mt-1">
+                      <Button size="sm" asChild className="mt-1">
                         <Link href="/explore">{t("nav.bookFlight")}</Link>
                       </Button>
                     </SheetClose>
@@ -143,7 +136,7 @@ const Navbar = () => {
                   </SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="hero" size="sm" asChild>
+              <Button size="sm" asChild>
                 <Link href="/explore">{t("nav.bookFlight")}</Link>
               </Button>
             </div>

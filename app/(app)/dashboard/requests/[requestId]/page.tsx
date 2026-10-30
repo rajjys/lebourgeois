@@ -16,12 +16,12 @@ import { deleteRequest } from '@/services/requests';
 import { ArrowLeft, Trash2, Phone, Mail, Users, Plane, Calendar, MapPin } from 'lucide-react';
 import { RequestStatus } from '@/lib/constants';
 
-const statusColors = {
-  [RequestStatus.NEW]: 'bg-blue-100 text-blue-800',
-  [RequestStatus.CLAIMED]: 'bg-yellow-100 text-yellow-800',
-  [RequestStatus.CONTACTED]: 'bg-green-100 text-green-800',
-  [RequestStatus.CLOSED]: 'bg-gray-100 text-gray-800',
-};
+const statusVariant = {
+  [RequestStatus.NEW]: 'info',
+  [RequestStatus.CLAIMED]: 'warning',
+  [RequestStatus.CONTACTED]: 'success',
+  [RequestStatus.CLOSED]: 'neutral',
+} as const;
 
 export default function RequestDetailPage() {
   const { t } = useTranslation();
@@ -142,7 +142,7 @@ export default function RequestDetailPage() {
                 <Plane className="h-5 w-5" />
                 {request.originCity} → {request.destinationCity}
               </CardTitle>
-              <Badge className={statusColors[request.status]}>
+              <Badge variant={statusVariant[request.status]}>
                 {request.status}
               </Badge>
             </div>

@@ -93,7 +93,7 @@ const ExploreFlights = () => {
     <div className="flex flex-col min-h-screen mb-4">
       {/* Hero Search Section */}
       <section className={cn(
-        "bg-gradient-to-b from-primary/10 via-sky-light/20 to-background transition-all duration-500 ease-in-out",
+        "bg-gradient-to-b from-primary/10 via-brand-50 to-background transition-all duration-500 ease-in-out",
         hasSearched ? "py-2 md:py-4" : "py-4 md:py-8"
       )}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

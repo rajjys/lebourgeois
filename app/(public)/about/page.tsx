@@ -8,7 +8,7 @@ const About = () => {
   return (
       <div className="flex-1">
         {/* Hero Section */}
-        <section className="py-20 bg-gradient-to-b from-sky-light/20 to-background">
+        <section className="py-20 bg-gradient-to-b from-brand-50 to-background">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center space-y-6">
             <h1 className="text-4xl sm:text-5xl font-bold text-foreground">
               {t('about.title')}
@@ -41,7 +41,7 @@ const About = () => {
         {/* CTA Section */}
         <section className="py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-gradient-to-r from-primary/10 via-sky-light/50 to-gold-light/30 rounded-2xl p-12 text-center space-y-6 max-w-4xl mx-auto">
+            <div className="bg-gradient-to-r from-primary/10 to-brand-50 rounded-2xl p-12 text-center space-y-6 max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-foreground">
                 {t('about.cta')}
               </h2>

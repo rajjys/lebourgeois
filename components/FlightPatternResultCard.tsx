@@ -102,7 +102,7 @@ const link = `/explore/${encodeURIComponent(pattern.id)}${selectedDate ? `?date=
               {/* Price & CTA */}
               <div className="flex items-end justify-end sm:flex-col sm:gap-2 grow">
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-orange-700/60">
+                  <div className="text-2xl font-bold text-amber-700/60">
                     {formatMoney(pattern.price, pattern.currency)}
                   </div>
                 </div>
@@ -129,7 +129,7 @@ const link = `/explore/${encodeURIComponent(pattern.id)}${selectedDate ? `?date=
                         className={cn(
                           "w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors",
                           isActive && !isSelected && "border border-green-300 bg-green-50 text-muted-foreground/80",
-                          isSelected && "border-2 border-orange-500 bg-orange-50 text-orange-700",
+                          isSelected && "border-2 border-amber-500 bg-amber-50 text-amber-700",
                           !isActive && "border border-muted-foreground/30 text-muted-foreground/50"
                         )}
                         title={day}
