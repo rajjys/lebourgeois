@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Le Bourgeois
 
-## Getting Started
+Schedules and indicative prices for domestic flights in the DRC: which airline flies a route, on which days, at what time and for roughly what price, with the date and source of every figure.
 
-First, run the development server:
+**Where the project is going, what is done and what comes next: [docs/PLAN.md](docs/PLAN.md).**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Next.js 16 (App Router) on Vercel
+- PostgreSQL with Prisma 7 (Prisma Postgres in production)
+- Tailwind CSS, shadcn/ui
+- i18next (French default, English)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Local setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Requirements: Node.js 24, PostgreSQL 18 binaries (`initdb`, `pg_ctl`, `psql`).
 
-## Learn More
+1. Install dependencies:
+   ```bash
+   npm ci
+   ```
+2. Create a local database cluster (once). It runs on port 5433, separate from any system Postgres:
+   ```bash
+   initdb -D ~/.lebourgeois/pgdata -U postgres --auth-local=trust --auth-host=trust -E UTF8
+   printf "\nlisten_addresses = 'localhost'\nport = 5433\n" >> ~/.lebourgeois/pgdata/postgresql.conf
+   npm run db:start
+   psql -h localhost -p 5433 -U postgres -c "create database lebourgeois_dev"
+   ```
+3. Create `.env.local` from [.env.example](.env.example). For local work, at minimum:
+   ```bash
+   DATABASE_URL=postgresql://postgres@localhost:5433/lebourgeois_dev
+   AUTH_SECRET=<openssl rand -base64 48>
+   ADMIN_EMAIL=<your email>
+   ADMIN_PASSWORD_HASH=<node scripts/hash-password.mjs '<password>'>
+   ```
+   `.env.local` takes precedence over `.env` for both Next.js and Prisma. Keep production credentials out of your local files where possible.
+4. Apply migrations and load reference data:
+   ```bash
+   npx prisma migrate deploy
+   npm run db:seed
+   ```
+5. Start the app:
+   ```bash
+   npm run dev
+   ```
+   Site: http://localhost:3000 · Admin: http://localhost:3000/login
 
-To learn more about Next.js, take a look at the following resources:
+After a reboot, run `npm run db:start` before `npm run dev`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Command | What it does |
+|---|---|
+| `npm run dev` | Development server |
+| `npm run build` | Production build. On Vercel production builds it first runs `prisma migrate deploy`; preview and local builds skip that step. |
+| `npm run db:start` | Starts the local Postgres cluster |
+| `npm run db:seed` | Loads reference data (airports, airlines, statuses). Idempotent. Refuses non-local databases unless `ALLOW_REMOTE_DB=1`. |
+| `node scripts/hash-password.mjs '<password>'` | Produces the `ADMIN_PASSWORD_HASH` value |
 
-## Deploy on Vercel
+## Data safety rules
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Never run migrations or the seed against production from a laptop by accident. Prisma reads `.env.local` first, and the seed refuses remote hosts unless `ALLOW_REMOTE_DB=1` is set.
+- Production schema changes ship as Prisma migrations in `prisma/migrations` and are applied by the production build.
+- Imported or unverified data is stored as `PENDING` and is not public until approved.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+Pushes to `main` deploy to production on Vercel. Required environment variables are listed in [.env.example](.env.example).
