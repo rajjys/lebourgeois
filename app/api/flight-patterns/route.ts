@@ -2,19 +2,24 @@ import prisma from "@/lib/prisma";
 import { FlightPatternSchema } from "@/lib/validations/flightPattern";
 import { ok, created, badRequest, internalError, generateRequestId } from "@/app/api/utils/http";
 import { withNextDepartureDate, withNextDepartureDates } from "@/lib/flightPatterns/nextDeparture";
-import { requireAdmin } from "@/lib/auth/session";
+import { getSession, requireAdmin } from "@/lib/auth/session";
+import { PUBLIC_PATTERN_FILTER } from "@/lib/flightPatterns/visibility";
 
 /**
  * GET /api/flight-patterns
  * POST /api/flight-patterns
- * - GET: returns patterns with related airline/origin/destination
+ * - GET: returns patterns with related airline/origin/destination (public: visible ones only)
  * - POST: creates a flight pattern; validated by FlightPatternSchema
  */
 export async function GET() {
   const requestId = generateRequestId();
   try {
+    // Admins see everything (including expired/pending rows they need to fix);
+    // the public sees only current, approved, published schedules.
+    const isAdmin = !!(await getSession());
+    const now = new Date();
     const patterns = await prisma.flightPattern.findMany({
-      where: { startDate: { lte: new Date() }, endDate: { gte: new Date() }},
+      where: isAdmin ? {} : { ...PUBLIC_PATTERN_FILTER, startDate: { lte: now }, endDate: { gte: now } },
       include: { airline: true, origin: true, destination: true },
       orderBy: { createdAt: "desc" },
     });

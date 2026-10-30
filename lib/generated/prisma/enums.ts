@@ -22,6 +22,58 @@ export const Weekday = {
 export type Weekday = (typeof Weekday)[keyof typeof Weekday]
 
 
+export const AirportStatus = {
+  OPEN: 'OPEN',
+  RESTRICTED: 'RESTRICTED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type AirportStatus = (typeof AirportStatus)[keyof typeof AirportStatus]
+
+
+export const AirlineStatus = {
+  OPERATING: 'OPERATING',
+  SUSPENDED: 'SUSPENDED',
+  CEASED: 'CEASED'
+} as const
+
+export type AirlineStatus = (typeof AirlineStatus)[keyof typeof AirlineStatus]
+
+
+export const DataSource = {
+  MANUAL: 'MANUAL',
+  AIRLINE_TIMETABLE: 'AIRLINE_TIMETABLE',
+  AIRLINE_WEBSITE: 'AIRLINE_WEBSITE'
+} as const
+
+export type DataSource = (typeof DataSource)[keyof typeof DataSource]
+
+
+export const ReviewStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ReviewStatus = (typeof ReviewStatus)[keyof typeof ReviewStatus]
+
+
+export const FareKind = {
+  FROM_PRICE: 'FROM_PRICE',
+  QUOTE: 'QUOTE'
+} as const
+
+export type FareKind = (typeof FareKind)[keyof typeof FareKind]
+
+
+export const TripType = {
+  ONE_WAY: 'ONE_WAY',
+  ROUND_TRIP: 'ROUND_TRIP'
+} as const
+
+export type TripType = (typeof TripType)[keyof typeof TripType]
+
+
 export const RequestStatus = {
   NEW: 'NEW',
   CLAIMED: 'CLAIMED',

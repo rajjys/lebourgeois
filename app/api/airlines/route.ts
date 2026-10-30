@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { AirlineSchema } from "@/lib/validations/airline";
+import { slugify } from "@/lib/utils/slug";
 import { ok, created, badRequest, internalError, generateRequestId } from "@/app/api/utils/http";
 import { requireAdmin } from "@/lib/auth/session";
 
@@ -25,7 +26,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     const parsed = AirlineSchema.safeParse(body);
     if (!parsed.success) return badRequest("Invalid airline payload", parsed.error.format(), requestId);
-    const airline = await prisma.airline.create({ data: parsed.data });
+    const data = { ...parsed.data, slug: parsed.data.slug ?? slugify(parsed.data.name) };
+    const airline = await prisma.airline.create({ data });
     return created(airline, requestId);
   } catch (err) {
     return internalError("Failed to create airline", (err as Error)?.message ?? null, requestId);
