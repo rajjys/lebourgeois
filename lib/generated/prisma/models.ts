@@ -10,6 +10,8 @@
  */
 export type * from './models/Airport'
 export type * from './models/Airline'
+export type * from './models/Route'
+export type * from './models/FareObservation'
 export type * from './models/FlightPattern'
 export type * from './models/Request'
 export type * from './commonInputTypes'

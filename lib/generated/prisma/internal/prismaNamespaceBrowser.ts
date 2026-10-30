@@ -53,6 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Airport: 'Airport',
   Airline: 'Airline',
+  Route: 'Route',
+  FareObservation: 'FareObservation',
   FlightPattern: 'FlightPattern',
   Request: 'Request'
 } as const
@@ -76,12 +78,18 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const AirportScalarFieldEnum = {
   id: 'id',
   code: 'code',
+  slug: 'slug',
   name: 'name',
   city: 'city',
+  province: 'province',
   countryCode: 'countryCode',
   timezone: 'timezone',
   latitude: 'latitude',
   longitude: 'longitude',
+  status: 'status',
+  statusNote: 'statusNote',
+  statusSince: 'statusSince',
+  statusSourceUrl: 'statusSourceUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -92,16 +100,60 @@ export type AirportScalarFieldEnum = (typeof AirportScalarFieldEnum)[keyof typeo
 export const AirlineScalarFieldEnum = {
   id: 'id',
   code: 'code',
+  slug: 'slug',
+  icao: 'icao',
   name: 'name',
   countryCode: 'countryCode',
   logo: 'logo',
   color: 'color',
   website: 'website',
+  bookingUrl: 'bookingUrl',
+  status: 'status',
+  statusNote: 'statusNote',
+  statusSince: 'statusSince',
+  statusSourceUrl: 'statusSourceUrl',
+  isPublished: 'isPublished',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type AirlineScalarFieldEnum = (typeof AirlineScalarFieldEnum)[keyof typeof AirlineScalarFieldEnum]
+
+
+export const RouteScalarFieldEnum = {
+  id: 'id',
+  originId: 'originId',
+  destinationId: 'destinationId',
+  slug: 'slug',
+  isPublished: 'isPublished',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RouteScalarFieldEnum = (typeof RouteScalarFieldEnum)[keyof typeof RouteScalarFieldEnum]
+
+
+export const FareObservationScalarFieldEnum = {
+  id: 'id',
+  airlineId: 'airlineId',
+  originId: 'originId',
+  destinationId: 'destinationId',
+  amount: 'amount',
+  currency: 'currency',
+  kind: 'kind',
+  tripType: 'tripType',
+  cabin: 'cabin',
+  travelDate: 'travelDate',
+  observedAt: 'observedAt',
+  source: 'source',
+  sourceUrl: 'sourceUrl',
+  note: 'note',
+  reviewStatus: 'reviewStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FareObservationScalarFieldEnum = (typeof FareObservationScalarFieldEnum)[keyof typeof FareObservationScalarFieldEnum]
 
 
 export const FlightPatternScalarFieldEnum = {
@@ -124,6 +176,10 @@ export const FlightPatternScalarFieldEnum = {
   classConfig: 'classConfig',
   stops: 'stops',
   active: 'active',
+  source: 'source',
+  sourceUrl: 'sourceUrl',
+  verifiedAt: 'verifiedAt',
+  reviewStatus: 'reviewStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

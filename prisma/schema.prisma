@@ -23,33 +23,135 @@ enum Weekday {
   SUN
 }
 
+enum AirportStatus {
+  OPEN
+  RESTRICTED  // operating with limits (e.g. some airlines suspended)
+  CLOSED      // no commercial passenger flights
+}
+
+enum AirlineStatus {
+  OPERATING
+  SUSPENDED   // grounded / not selling, may resume
+  CEASED
+}
+
+enum DataSource {
+  MANUAL             // typed in the dashboard
+  AIRLINE_TIMETABLE  // airline-published timetable (e.g. CAA weekly PDF)
+  AIRLINE_WEBSITE    // fares or schedules read from an airline website
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum FareKind {
+  FROM_PRICE  // advertised lowest fare ("à partir de"), no travel date
+  QUOTE       // fare seen for a specific travel date
+}
+
+enum TripType {
+  ONE_WAY
+  ROUND_TRIP
+}
+
 model Airport {
   id          String    @id @default(uuid())
-  code        String    @unique
+  code        String    @unique  // IATA
+  slug        String    @unique  // URL segment, e.g. "kinshasa"
   name        String
   city        String
+  province    String?
   countryCode String    @default("CD")
-  timezone    String
+  timezone    String    // IANA, e.g. "Africa/Kinshasa"
   latitude    Float?
   longitude   Float?
+
+  status          AirportStatus @default(OPEN)
+  statusNote      String?       // public explanation, French
+  statusSince     DateTime?
+  statusSourceUrl String?
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  departures FlightPattern[] @relation("origin")
-  arrivals   FlightPattern[] @relation("destination")
-} 
+  departures      FlightPattern[]   @relation("origin")
+  arrivals        FlightPattern[]   @relation("destination")
+  routesFrom      Route[]           @relation("routeOrigin")
+  routesTo        Route[]           @relation("routeDestination")
+  faresFrom       FareObservation[] @relation("fareOrigin")
+  faresTo         FareObservation[] @relation("fareDestination")
+}
 
 model Airline {
   id          String    @id @default(uuid())
-  code        String    @unique
+  code        String    @unique  // IATA designator when it has one (BU, 4H)
+  slug        String    @unique
+  icao        String?
   name        String
   countryCode String?
   logo        String?
   color       String?
   website     String?
+  bookingUrl  String?
+
+  status          AirlineStatus @default(OPERATING)
+  statusNote      String?
+  statusSince     DateTime?
+  statusSourceUrl String?
+  isPublished     Boolean       @default(true)
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  patterns    FlightPattern[] @relation("airline")
+  patterns    FlightPattern[]   @relation("airline")
+  fares       FareObservation[]
+}
+
+// A directional city pair that can have its own public page.
+model Route {
+  id            String   @id @default(uuid())
+  originId      String
+  origin        Airport  @relation("routeOrigin", fields: [originId], references: [id])
+  destinationId String
+  destination   Airport  @relation("routeDestination", fields: [destinationId], references: [id])
+  slug          String   @unique  // "kinshasa-lubumbashi"
+  isPublished   Boolean  @default(false)  // only routes with verified data get a page
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([originId, destinationId])
+}
+
+// One price seen at one moment. Prices are history, not a property of a schedule.
+model FareObservation {
+  id            String       @id @default(uuid())
+  airlineId     String
+  airline       Airline      @relation(fields: [airlineId], references: [id])
+  originId      String
+  origin        Airport      @relation("fareOrigin", fields: [originId], references: [id])
+  destinationId String
+  destination   Airport      @relation("fareDestination", fields: [destinationId], references: [id])
+
+  amount        Decimal      @db.Decimal(10, 2)
+  currency      String       @default("USD")
+  kind          FareKind
+  tripType      TripType     @default(ONE_WAY)
+  cabin         String?
+  travelDate    DateTime?    // set for QUOTE
+  observedAt    DateTime
+
+  source        DataSource
+  sourceUrl     String?
+  note          String?      // assumptions a reviewer must check
+  reviewStatus  ReviewStatus @default(PENDING)
+
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([originId, destinationId, observedAt])
+  @@index([reviewStatus])
 }
 
 model FlightPattern {
@@ -74,8 +176,10 @@ model FlightPattern {
   startDate     DateTime
   endDate       DateTime
 
+  // Deprecated: prices move to FareObservation. Kept until the dashboard and
+  // public pages read fares from there; then dropped.
   price         Float?
-  currency      String?   // optional ("USD" | "CDF")
+  currency      String?
 
   aircraft      String?   // "Q400", "A320", etc.
   capacity      Int?      // seat capacity
@@ -86,8 +190,16 @@ model FlightPattern {
 
   active        Boolean    @default(true)
 
+  // Provenance and review: imported rows start PENDING and stay hidden until approved.
+  source        DataSource   @default(MANUAL)
+  sourceUrl     String?
+  verifiedAt    DateTime?
+  reviewStatus  ReviewStatus @default(APPROVED)
+
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+
+  @@index([originId, destinationId])
 }
 
 model Request {

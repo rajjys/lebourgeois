@@ -386,6 +386,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   Airport: 'Airport',
   Airline: 'Airline',
+  Route: 'Route',
+  FareObservation: 'FareObservation',
   FlightPattern: 'FlightPattern',
   Request: 'Request'
 } as const
@@ -403,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "airport" | "airline" | "flightPattern" | "request"
+    modelProps: "airport" | "airline" | "route" | "fareObservation" | "flightPattern" | "request"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -552,6 +554,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AirlineCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AirlineCountAggregateOutputType> | number
+        }
+      }
+    }
+    Route: {
+      payload: Prisma.$RoutePayload<ExtArgs>
+      fields: Prisma.RouteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RouteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RouteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload>
+        }
+        findFirst: {
+          args: Prisma.RouteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RouteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload>
+        }
+        findMany: {
+          args: Prisma.RouteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload>[]
+        }
+        create: {
+          args: Prisma.RouteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload>
+        }
+        createMany: {
+          args: Prisma.RouteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RouteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload>[]
+        }
+        delete: {
+          args: Prisma.RouteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload>
+        }
+        update: {
+          args: Prisma.RouteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload>
+        }
+        deleteMany: {
+          args: Prisma.RouteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RouteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RouteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload>[]
+        }
+        upsert: {
+          args: Prisma.RouteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoutePayload>
+        }
+        aggregate: {
+          args: Prisma.RouteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRoute>
+        }
+        groupBy: {
+          args: Prisma.RouteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RouteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RouteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RouteCountAggregateOutputType> | number
+        }
+      }
+    }
+    FareObservation: {
+      payload: Prisma.$FareObservationPayload<ExtArgs>
+      fields: Prisma.FareObservationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FareObservationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FareObservationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload>
+        }
+        findFirst: {
+          args: Prisma.FareObservationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FareObservationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload>
+        }
+        findMany: {
+          args: Prisma.FareObservationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload>[]
+        }
+        create: {
+          args: Prisma.FareObservationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload>
+        }
+        createMany: {
+          args: Prisma.FareObservationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FareObservationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload>[]
+        }
+        delete: {
+          args: Prisma.FareObservationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload>
+        }
+        update: {
+          args: Prisma.FareObservationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload>
+        }
+        deleteMany: {
+          args: Prisma.FareObservationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FareObservationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FareObservationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload>[]
+        }
+        upsert: {
+          args: Prisma.FareObservationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FareObservationPayload>
+        }
+        aggregate: {
+          args: Prisma.FareObservationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFareObservation>
+        }
+        groupBy: {
+          args: Prisma.FareObservationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FareObservationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FareObservationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FareObservationCountAggregateOutputType> | number
         }
       }
     }
@@ -745,12 +895,18 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const AirportScalarFieldEnum = {
   id: 'id',
   code: 'code',
+  slug: 'slug',
   name: 'name',
   city: 'city',
+  province: 'province',
   countryCode: 'countryCode',
   timezone: 'timezone',
   latitude: 'latitude',
   longitude: 'longitude',
+  status: 'status',
+  statusNote: 'statusNote',
+  statusSince: 'statusSince',
+  statusSourceUrl: 'statusSourceUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -761,16 +917,60 @@ export type AirportScalarFieldEnum = (typeof AirportScalarFieldEnum)[keyof typeo
 export const AirlineScalarFieldEnum = {
   id: 'id',
   code: 'code',
+  slug: 'slug',
+  icao: 'icao',
   name: 'name',
   countryCode: 'countryCode',
   logo: 'logo',
   color: 'color',
   website: 'website',
+  bookingUrl: 'bookingUrl',
+  status: 'status',
+  statusNote: 'statusNote',
+  statusSince: 'statusSince',
+  statusSourceUrl: 'statusSourceUrl',
+  isPublished: 'isPublished',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type AirlineScalarFieldEnum = (typeof AirlineScalarFieldEnum)[keyof typeof AirlineScalarFieldEnum]
+
+
+export const RouteScalarFieldEnum = {
+  id: 'id',
+  originId: 'originId',
+  destinationId: 'destinationId',
+  slug: 'slug',
+  isPublished: 'isPublished',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RouteScalarFieldEnum = (typeof RouteScalarFieldEnum)[keyof typeof RouteScalarFieldEnum]
+
+
+export const FareObservationScalarFieldEnum = {
+  id: 'id',
+  airlineId: 'airlineId',
+  originId: 'originId',
+  destinationId: 'destinationId',
+  amount: 'amount',
+  currency: 'currency',
+  kind: 'kind',
+  tripType: 'tripType',
+  cabin: 'cabin',
+  travelDate: 'travelDate',
+  observedAt: 'observedAt',
+  source: 'source',
+  sourceUrl: 'sourceUrl',
+  note: 'note',
+  reviewStatus: 'reviewStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FareObservationScalarFieldEnum = (typeof FareObservationScalarFieldEnum)[keyof typeof FareObservationScalarFieldEnum]
 
 
 export const FlightPatternScalarFieldEnum = {
@@ -793,6 +993,10 @@ export const FlightPatternScalarFieldEnum = {
   classConfig: 'classConfig',
   stops: 'stops',
   active: 'active',
+  source: 'source',
+  sourceUrl: 'sourceUrl',
+  verifiedAt: 'verifiedAt',
+  reviewStatus: 'reviewStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -882,6 +1086,20 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
+ * Reference to a field of type 'AirportStatus'
+ */
+export type EnumAirportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AirportStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AirportStatus[]'
+ */
+export type ListEnumAirportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AirportStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -892,6 +1110,97 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AirlineStatus'
+ */
+export type EnumAirlineStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AirlineStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AirlineStatus[]'
+ */
+export type ListEnumAirlineStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AirlineStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FareKind'
+ */
+export type EnumFareKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FareKind'>
+    
+
+
+/**
+ * Reference to a field of type 'FareKind[]'
+ */
+export type ListEnumFareKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FareKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TripType'
+ */
+export type EnumTripTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TripType'>
+    
+
+
+/**
+ * Reference to a field of type 'TripType[]'
+ */
+export type ListEnumTripTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TripType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DataSource'
+ */
+export type EnumDataSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DataSource'>
+    
+
+
+/**
+ * Reference to a field of type 'DataSource[]'
+ */
+export type ListEnumDataSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DataSource[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ReviewStatus'
+ */
+export type EnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ReviewStatus[]'
+ */
+export type ListEnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewStatus[]'>
     
 
 
@@ -920,13 +1229,6 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -1024,6 +1326,8 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   airport?: Prisma.AirportOmit
   airline?: Prisma.AirlineOmit
+  route?: Prisma.RouteOmit
+  fareObservation?: Prisma.FareObservationOmit
   flightPattern?: Prisma.FlightPatternOmit
   request?: Prisma.RequestOmit
 }

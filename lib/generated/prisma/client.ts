@@ -50,6 +50,16 @@ export type Airport = Prisma.AirportModel
  */
 export type Airline = Prisma.AirlineModel
 /**
+ * Model Route
+ * 
+ */
+export type Route = Prisma.RouteModel
+/**
+ * Model FareObservation
+ * 
+ */
+export type FareObservation = Prisma.FareObservationModel
+/**
  * Model FlightPattern
  * 
  */

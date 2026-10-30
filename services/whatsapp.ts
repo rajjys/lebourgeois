@@ -8,7 +8,7 @@ const WHATSAPP_API_URL = `https://graph.facebook.com/v22.0/${process.env.WHATSAP
  * WHATSAPP_ALERT_RECIPIENTS (comma-separated, international format without "+").
  * No-op when WhatsApp is not configured. Never throws.
  */
-export async function notifyTeamOfRequest(request: FlightRequest) {
+export async function sendRequestAlertWhatsApp(request: FlightRequest) {
   const recipients = (process.env.WHATSAPP_ALERT_RECIPIENTS ?? "")
     .split(",")
     .map((n) => n.trim())
