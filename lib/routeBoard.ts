@@ -1,6 +1,7 @@
 import "server-only";
 import prisma from "@/lib/prisma";
 import { byAttention, dayOf, freshnessOf, isUpcoming, localNow, routeFreshness, type Freshness } from "@/lib/routeStatus";
+import { addDays, mondayOf } from "@/lib/schedule";
 
 export type BoardAirline = { code: string; name: string; status: "ACTIVE" | "SUSPENDED" | "ENDED"; isPublished: boolean };
 
@@ -108,8 +109,29 @@ export async function loadRouteBoard(now: Date = new Date()): Promise<BoardRoute
   return rows.sort(byAttention);
 }
 
-/** One route with everything under it, for its back-office page. Null when the slug is unknown. */
-export async function loadRouteDetail(slug: string, now: Date = new Date()) {
+export const CALENDAR_WEEKS = 8;
+
+/** A flight as the route workspace shows it (dates as "YYYY-MM-DD"). */
+export type WorkspaceFlight = {
+  id: string;
+  date: string;
+  flightNumber: string | null;
+  departureTime: string;
+  arrivalTime: string;
+  arrivalDayOffset: number;
+  via: string[];
+  aircraft: string | null;
+  status: "SCHEDULED" | "CANCELLED";
+  reviewStatus: "PENDING" | "APPROVED" | "REJECTED";
+  verified: boolean;
+};
+
+/**
+ * One route with everything under it, for its back-office page and workspace (ROUTE-MODEL §6.2).
+ * `weekStart` (a Monday) moves the 8-week calendar; it starts on the current week by default.
+ * Null when the slug is unknown.
+ */
+export async function loadRouteDetail(slug: string, weekStart?: string, now: Date = new Date()) {
   const route = await prisma.route.findUnique({
     where: { slug },
     include: {
@@ -128,50 +150,102 @@ export async function loadRouteDetail(slug: string, now: Date = new Date()) {
   if (!route) return null;
 
   const local = localNow(route.origin.timezone, now);
-  const from = new Date(`${local.day}T00:00:00Z`);
-  const until = new Date(from.getTime() + 27 * 86_400_000); // the next 4 weeks
-  const routeAirlineIds = route.airlines.map((ra) => ra.id);
-  const [flights, lastDays, reverse] = await Promise.all([
+  const start = weekStart && /^\d{4}-\d{2}-\d{2}$/.test(weekStart) ? mondayOf(weekStart) : mondayOf(local.day);
+  const end = addDays(start, CALENDAR_WEEKS * 7 - 1);
+  const ids = route.airlines.map((ra) => ra.id);
+  const [calendar, upcoming, lastDays, undoable, schedules, others, reverse] = await Promise.all([
     prisma.flight.findMany({
-      where: { routeAirlineId: { in: routeAirlineIds }, date: { gte: from, lte: until } },
+      where: { routeAirlineId: { in: ids }, date: { gte: day(start), lte: day(end) } },
       orderBy: [{ date: "asc" }, { departureTime: "asc" }],
+    }),
+    prisma.flight.findMany({
+      where: { routeAirlineId: { in: ids }, date: { gte: day(local.day) }, status: "SCHEDULED", reviewStatus: "APPROVED" },
+      orderBy: [{ date: "asc" }, { departureTime: "asc" }],
+      take: 50,
     }),
     prisma.flight.groupBy({
       by: ["routeAirlineId"],
-      where: { routeAirlineId: { in: routeAirlineIds }, status: "SCHEDULED", reviewStatus: "APPROVED" },
+      where: { routeAirlineId: { in: ids }, status: "SCHEDULED", reviewStatus: "APPROVED" },
       _max: { date: true },
+    }),
+    // Latest action per airline that can still be undone, and the last schedule applied (to pre-fill the form).
+    prisma.changeBatch.findMany({
+      where: { routeAirlineId: { in: ids }, undoneAt: null, action: { not: "UNDO" } },
+      orderBy: { createdAt: "desc" },
+      distinct: ["routeAirlineId"],
+      select: { routeAirlineId: true, summary: true, createdAt: true },
+    }),
+    prisma.changeBatch.findMany({
+      where: { routeAirlineId: { in: ids }, action: "APPLY_SCHEDULE" },
+      orderBy: { createdAt: "desc" },
+      distinct: ["routeAirlineId"],
+      select: { routeAirlineId: true, params: true },
+    }),
+    prisma.airline.findMany({
+      where: { id: { notIn: route.airlines.map((ra) => ra.airlineId) } },
+      select: { id: true, code: true, name: true, status: true, isPublished: true },
+      orderBy: { name: "asc" },
     }),
     prisma.route.findUnique({
       where: { originId_destinationId: { originId: route.destinationId, destinationId: route.originId } },
       select: { slug: true },
     }),
   ]);
-  const upcoming = flights.filter((f) => isUpcoming(f, local));
   const lastDayBy = new Map(lastDays.map((l) => [l.routeAirlineId, l._max.date]));
-  const stopCodes = [...new Set(upcoming.flatMap((f) => f.via))];
-  const stops = stopCodes.length
-    ? Object.fromEntries((await prisma.airport.findMany({ where: { code: { in: stopCodes } }, select: { code: true, city: true } })).map((a) => [a.code, a.city]))
-    : {};
+  const undoBy = new Map(undoable.map((b) => [b.routeAirlineId, { summary: b.summary, at: b.createdAt.toISOString() }]));
+  const scheduleBy = new Map(schedules.map((b) => [b.routeAirlineId, b.params]));
 
   return {
     route,
     reverseSlug: reverse?.slug ?? null,
-    stops: stops as Record<string, string>,
     freshness: routeFreshness(route.airlines, now),
-    airlines: route.airlines.map((ra) => {
-      const own = upcoming.filter((f) => f.routeAirlineId === ra.id && f.status === "SCHEDULED" && f.reviewStatus === "APPROVED");
-      const last = lastDayBy.get(ra.id);
-      return {
-        ...ra,
-        next: own[0] ?? null,
-        flightsNext4Weeks: own.length,
-        knownUntil: last ? dayOf(last) : null,
-        freshness: freshnessOf(ra.verifiedAt, now),
-      };
-    }),
-    // Next 14 days, cancelled and pending ones included so nothing is hidden from the operator.
-    departures: upcoming.filter((f) => dayOf(f.date) <= dayOf(new Date(from.getTime() + 13 * 86_400_000))),
+    fares: route.airlines.flatMap((ra) => ra.fares.map((f) => ({ ...f, airline: ra.airline.code }))),
+    workspace: {
+      today: local.day,
+      start,
+      weeks: CALENDAR_WEEKS,
+      origin: route.origin.code,
+      destination: route.destination.code,
+      airlines: route.airlines.map((ra) => {
+        const next = upcoming.find((f) => f.routeAirlineId === ra.id && isUpcoming(f, local));
+        const last = lastDayBy.get(ra.id);
+        return {
+          id: ra.id,
+          code: ra.airline.code,
+          name: ra.airline.name,
+          airlineStatus: ra.airline.status,
+          status: ra.status,
+          isPublished: ra.isPublished,
+          verifiedSourceUrl: ra.verifiedSourceUrl,
+          freshness: freshnessOf(ra.verifiedAt, now),
+          knownUntil: last ? dayOf(last) : null,
+          next: next ? { date: dayOf(next.date), time: next.departureTime, flightNumber: next.flightNumber } : null,
+          flights: calendar
+            .filter((f) => f.routeAirlineId === ra.id)
+            .map((f): WorkspaceFlight => ({
+              id: f.id,
+              date: dayOf(f.date),
+              flightNumber: f.flightNumber,
+              departureTime: f.departureTime,
+              arrivalTime: f.arrivalTime,
+              arrivalDayOffset: f.arrivalDayOffset,
+              via: f.via,
+              aircraft: f.aircraft,
+              status: f.status,
+              reviewStatus: f.reviewStatus,
+              verified: !!f.verifiedAt,
+            })),
+          lastAction: undoBy.get(ra.id) ?? null,
+          lastSchedule: (scheduleBy.get(ra.id) ?? null) as Record<string, unknown> | null,
+        };
+      }),
+      otherAirlines: others,
+    },
   };
 }
 
+const day = (d: string) => new Date(`${d}T00:00:00Z`);
+
 export type RouteDetail = NonNullable<Awaited<ReturnType<typeof loadRouteDetail>>>;
+export type WorkspaceData = RouteDetail["workspace"];
+export type WorkspaceAirline = WorkspaceData["airlines"][number];

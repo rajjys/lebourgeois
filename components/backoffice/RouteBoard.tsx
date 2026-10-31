@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { RouteTitle } from "@/components/ds/RouteTitle";
-import { NewRouteDialog } from "@/components/backoffice/NewRouteDialog";
+import { NewRouteDialog, type ExistingRoutes } from "@/components/backoffice/NewRouteDialog";
 import { AirlineCodes, RouteFreshnessBadge, RouteStatusBadge, TierBadge } from "@/components/backoffice/RouteParts";
 import { attentionRank } from "@/lib/routeStatus";
 import type { BoardRoute } from "@/lib/routeBoard";
@@ -38,6 +38,16 @@ export function RouteBoard({ routes }: { routes: BoardRoute[] }) {
     });
   }, [routes, filter]);
 
+  const existing = useMemo<ExistingRoutes>(
+    () =>
+      Object.fromEntries(
+        routes.map((r) => [
+          `${r.origin.code}-${r.destination.code}`,
+          { slug: r.slug, label: `${r.origin.city} → ${r.destination.city}${r.status === "ARCHIVED" ? " (archivée)" : ""}` },
+        ]),
+      ),
+    [routes],
+  );
   const toCheck = routes.filter((r) => attentionRank(r) <= 1).length;
   const withoutAirline = routes.filter((r) => r.status !== "ARCHIVED" && r.airlines.length === 0).length;
   const published = routes.filter((r) => r.status === "PUBLISHED").length;
@@ -51,7 +61,7 @@ export function RouteBoard({ routes }: { routes: BoardRoute[] }) {
             {routes.length} routes · {published} publiées · {toCheck} à vérifier · {withoutAirline} sans compagnie
           </p>
         </div>
-        <NewRouteDialog />
+        <NewRouteDialog existing={existing} />
       </header>
 
       <div className="flex flex-wrap items-center gap-3" role="search">

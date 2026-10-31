@@ -58,7 +58,7 @@ After a reboot, run `npm run db:start` before `npm run dev`.
 | `npm run build` | Production build. Checks the design tokens first (contrast, generated CSS up to date). On Vercel production builds it then runs `prisma migrate deploy`; preview and local builds skip that step. |
 | `npm run tokens` | Regenerates `app/tokens.css` from `design/tokens.json` and checks colour contrast. Run after editing tokens. |
 | `npm run db:start` | Starts the local Postgres cluster |
-| `npm run test` | Unit tests, plus the database rules (unique flights, checks) on the local database with throwaway rows. The database part is skipped on any non-local database. |
+| `npm run test` | Unit tests, plus the database rules (unique flights, checks) and the route workspace actions (apply, copy, cancel, edit a day, verify, undo) on the local database with throwaway rows. The database part is skipped on any non-local database. Runs with the `react-server` condition so server-only modules can be imported. |
 | `npm run db:seed` | Loads reference data (airports, airlines, statuses, priority routes). Only adds what is missing, so it never undoes a back-office edit. Refuses non-local databases unless `ALLOW_REMOTE_DB=1`. |
 | `node scripts/hash-password.mjs '<password>'` | Produces the `ADMIN_PASSWORD_HASH` value |
 | `npx tsx scripts/clean-legacy-data.ts [--production] [--apply]` | Removes data from before the route model: expired schedules, prices copied from them, route records left empty (never priority routes, requests or messages). Previews by default; `--apply` writes a backup to `~/.lebourgeois/backups` first, then deletes in one transaction and logs each deletion. `--production` reads the database address from `.env`. |

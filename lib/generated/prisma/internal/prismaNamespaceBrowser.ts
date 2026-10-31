@@ -56,6 +56,7 @@ export const ModelName = {
   Route: 'Route',
   RouteAirline: 'RouteAirline',
   Flight: 'Flight',
+  ChangeBatch: 'ChangeBatch',
   ChangeLog: 'ChangeLog',
   FareObservation: 'FareObservation',
   FlightPattern: 'FlightPattern',
@@ -177,6 +178,22 @@ export const FlightScalarFieldEnum = {
 } as const
 
 export type FlightScalarFieldEnum = (typeof FlightScalarFieldEnum)[keyof typeof FlightScalarFieldEnum]
+
+
+export const ChangeBatchScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  actor: 'actor',
+  routeId: 'routeId',
+  routeAirlineId: 'routeAirlineId',
+  action: 'action',
+  summary: 'summary',
+  params: 'params',
+  undoneAt: 'undoneAt',
+  undoneBy: 'undoneBy'
+} as const
+
+export type ChangeBatchScalarFieldEnum = (typeof ChangeBatchScalarFieldEnum)[keyof typeof ChangeBatchScalarFieldEnum]
 
 
 export const ChangeLogScalarFieldEnum = {

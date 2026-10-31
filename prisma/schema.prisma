@@ -205,6 +205,32 @@ model Flight {
   @@index([batchId])
 }
 
+enum BatchAction {
+  APPLY_SCHEDULE  // "Appliquer un horaire"
+  COPY_WEEK       // "Copier une semaine"
+  CANCEL_FLIGHTS  // "Annuler des vols"
+  EDIT_DAY        // flights of one date edited by hand
+  VERIFY          // "Tout est vérifié"
+  UNDO            // reverts an earlier batch; not itself undoable
+}
+
+// One action in the route workspace. Its ChangeLog rows share its id, so it can be undone as a whole
+// (ROUTE-MODEL §6.2). Undo works as a stack per airline-on-route: the latest batch not yet undone.
+model ChangeBatch {
+  id             String      @id @default(cuid())
+  createdAt      DateTime    @default(now())
+  actor          String
+  routeId        String
+  routeAirlineId String
+  action         BatchAction
+  summary        String      // one line in French: "Horaire ET60 appliqué du 2 au 8 nov. : 3 vols ajoutés"
+  params         Json?       // the form as submitted, to pre-fill the next one
+  undoneAt       DateTime?
+  undoneBy       String?
+
+  @@index([routeAirlineId, createdAt])
+}
+
 // Who changed what, and when. Written on every back-office write; never edited.
 model ChangeLog {
   id        String       @id @default(cuid())

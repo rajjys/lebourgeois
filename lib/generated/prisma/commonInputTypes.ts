@@ -321,11 +321,11 @@ export type EnumReviewStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumReviewStatusFilter<$PrismaModel>
 }
 
-export type EnumChangeActionFilter<$PrismaModel = never> = {
-  equals?: $Enums.ChangeAction | Prisma.EnumChangeActionFieldRefInput<$PrismaModel>
-  in?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
-  notIn?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumChangeActionFilter<$PrismaModel> | $Enums.ChangeAction
+export type EnumBatchActionFilter<$PrismaModel = never> = {
+  equals?: $Enums.BatchAction | Prisma.EnumBatchActionFieldRefInput<$PrismaModel>
+  in?: $Enums.BatchAction[] | Prisma.ListEnumBatchActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BatchAction[] | Prisma.ListEnumBatchActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBatchActionFilter<$PrismaModel> | $Enums.BatchAction
 }
 
 export type JsonNullableFilter<$PrismaModel = never> =
@@ -352,14 +352,14 @@ export type JsonNullableFilterBase<$PrismaModel = never> = {
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
 }
 
-export type EnumChangeActionWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.ChangeAction | Prisma.EnumChangeActionFieldRefInput<$PrismaModel>
-  in?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
-  notIn?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumChangeActionWithAggregatesFilter<$PrismaModel> | $Enums.ChangeAction
+export type EnumBatchActionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BatchAction | Prisma.EnumBatchActionFieldRefInput<$PrismaModel>
+  in?: $Enums.BatchAction[] | Prisma.ListEnumBatchActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BatchAction[] | Prisma.ListEnumBatchActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBatchActionWithAggregatesFilter<$PrismaModel> | $Enums.BatchAction
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumChangeActionFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumChangeActionFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBatchActionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBatchActionFilter<$PrismaModel>
 }
 
 export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
@@ -387,6 +387,23 @@ export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedJsonNullableFilter<$PrismaModel>
   _max?: Prisma.NestedJsonNullableFilter<$PrismaModel>
+}
+
+export type EnumChangeActionFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChangeAction | Prisma.EnumChangeActionFieldRefInput<$PrismaModel>
+  in?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChangeActionFilter<$PrismaModel> | $Enums.ChangeAction
+}
+
+export type EnumChangeActionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChangeAction | Prisma.EnumChangeActionFieldRefInput<$PrismaModel>
+  in?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChangeActionWithAggregatesFilter<$PrismaModel> | $Enums.ChangeAction
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumChangeActionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumChangeActionFilter<$PrismaModel>
 }
 
 export type DecimalFilter<$PrismaModel = never> = {
@@ -848,21 +865,21 @@ export type NestedEnumReviewStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumReviewStatusFilter<$PrismaModel>
 }
 
-export type NestedEnumChangeActionFilter<$PrismaModel = never> = {
-  equals?: $Enums.ChangeAction | Prisma.EnumChangeActionFieldRefInput<$PrismaModel>
-  in?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
-  notIn?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumChangeActionFilter<$PrismaModel> | $Enums.ChangeAction
+export type NestedEnumBatchActionFilter<$PrismaModel = never> = {
+  equals?: $Enums.BatchAction | Prisma.EnumBatchActionFieldRefInput<$PrismaModel>
+  in?: $Enums.BatchAction[] | Prisma.ListEnumBatchActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BatchAction[] | Prisma.ListEnumBatchActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBatchActionFilter<$PrismaModel> | $Enums.BatchAction
 }
 
-export type NestedEnumChangeActionWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.ChangeAction | Prisma.EnumChangeActionFieldRefInput<$PrismaModel>
-  in?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
-  notIn?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumChangeActionWithAggregatesFilter<$PrismaModel> | $Enums.ChangeAction
+export type NestedEnumBatchActionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BatchAction | Prisma.EnumBatchActionFieldRefInput<$PrismaModel>
+  in?: $Enums.BatchAction[] | Prisma.ListEnumBatchActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BatchAction[] | Prisma.ListEnumBatchActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBatchActionWithAggregatesFilter<$PrismaModel> | $Enums.BatchAction
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumChangeActionFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumChangeActionFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBatchActionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBatchActionFilter<$PrismaModel>
 }
 
 export type NestedJsonNullableFilter<$PrismaModel = never> =
@@ -887,6 +904,23 @@ export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumChangeActionFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChangeAction | Prisma.EnumChangeActionFieldRefInput<$PrismaModel>
+  in?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChangeActionFilter<$PrismaModel> | $Enums.ChangeAction
+}
+
+export type NestedEnumChangeActionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChangeAction | Prisma.EnumChangeActionFieldRefInput<$PrismaModel>
+  in?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChangeAction[] | Prisma.ListEnumChangeActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChangeActionWithAggregatesFilter<$PrismaModel> | $Enums.ChangeAction
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumChangeActionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumChangeActionFilter<$PrismaModel>
 }
 
 export type NestedDecimalFilter<$PrismaModel = never> = {
