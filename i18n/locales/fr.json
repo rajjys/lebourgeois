@@ -1,36 +1,68 @@
 {
   "nav": {
     "home": "Accueil",
-    "requestQuote": "Demander un Devis",
-    "exploreFlights": "Rechercher des vols",
-    "about": "À Propos",
-    "bookFlight": "Rechercher un vol"
+    "flights": "Vols",
+    "about": "À propos",
+    "openMenu": "Ouvrir le menu",
+    "menu": "Menu"
   },
   "home": {
     "hero": {
-      "title": "Les vols intérieurs en RDC, enfin clairs",
-      "subtitle": "Compagnies, jours de vol, horaires et prix indicatifs pour chaque route. Comparez avant d'appeler une agence.",
-      "cta": "Rechercher un vol",
-      "latestPrices": "Prix Récents",
-      "exploreAllRoutes": "Explorer tout les Trajets"
+      "eyebrow": "Relevés auprès des compagnies, datés et vérifiés",
+      "title": "Horaires et prix indicatifs des vols en RDC",
+      "subtitle": "Comparez les compagnies, les jours de vol et les prix observés, d'une ville à l'autre.",
+      "popular": "Trajets suivis :"
     },
-    "features": {
-      "fast": {
-        "title": "Toutes les compagnies",
-        "description": "Comparez les vols de chaque compagnie sur une même route."
+    "search": {
+      "label": "Rechercher un trajet",
+      "from": "Départ",
+      "to": "Arrivée",
+      "fromPlaceholder": "Ville de départ",
+      "toPlaceholder": "Ville d'arrivée",
+      "swap": "Inverser départ et arrivée",
+      "submit": "Rechercher",
+      "hint": "Pas besoin de date : nous affichons les prochains jours de vol.",
+      "missing": "Choisissez une ville de départ et une ville d'arrivée.",
+      "sameAirport": "Choisissez deux villes différentes."
+    },
+    "departures": {
+      "title": "Prochains départs",
+      "subtitle": "Les prochains vols connus, toutes compagnies confondues. Heures locales.",
+      "noPrice": "Prix non relevé"
+    },
+    "routes": {
+      "title": "Trajets suivis",
+      "subtitle": "Compagnies, nombre de vols et prix observés, trajet par trajet.",
+      "airlines_one": "{{count}} compagnie",
+      "airlines_other": "{{count}} compagnies",
+      "flights_one": "{{count}} vol en 7 jours",
+      "flights_other": "{{count}} vols en 7 jours"
+    },
+    "airports": {
+      "title": "État des aéroports",
+      "subtitle": "Aéroports fermés ou limités aux vols commerciaux. Nous le signalons aussi dès que vous choisissez l'un d'eux."
+    },
+    "method": {
+      "title": "Comment nous travaillons",
+      "subtitle": "Une information de vol n'est utile que si elle est exacte. Voici nos règles.",
+      "sources": {
+        "title": "Sources des compagnies",
+        "description": "Horaires relevés dans les programmes et sur les sites des compagnies."
       },
-      "global": {
-        "title": "Horaires et jours de vol",
-        "description": "Sachez quels jours chaque compagnie opère votre route."
+      "prices": {
+        "title": "Prix datés",
+        "description": "Chaque prix indique la date à laquelle il a été observé. Le tarif final est confirmé à la réservation."
       },
-      "support": {
-        "title": "Prix indicatifs datés",
-        "description": "Chaque prix indique sa date de vérification."
+      "freshness": {
+        "title": "Fraîcheur signalée",
+        "description": "Un horaire qui n'a pas été revérifié depuis 7 jours est marqué « À revérifier »."
+      },
+      "tickets": {
+        "title": "Pas de vente de billets",
+        "description": "Nous ne vendons pas de billets : vous réservez auprès de la compagnie ou de votre agence."
       }
     },
     "about": {
-      "title": "Pourquoi ce site ?",
-      "description": "Trouver un horaire ou un prix de vol en RDC demande souvent plusieurs appels. Nous rassemblons ces informations au même endroit, route par route, pour que vous puissiez comparer avant de réserver.",
       "cta": "Rechercher un vol"
     }
   },
@@ -83,8 +115,8 @@
       "title": "{{count}} vol trouvé",
       "title_plural": "{{count}} vols trouvés",
       "bestPrice": "Meilleur prix affiché",
-      "noResults": "Aucun vol trouvé pour cette route",
-      "tryDifferent": "Essayez de rechercher avec d'autres aéroports",
+      "noResults": "Aucun vol connu pour ce trajet",
+      "tryDifferent": "Nous n'avons pas d'horaire vérifié pour ce trajet en ce moment. Essayez un autre aéroport proche, ou demandez-nous de chercher pour vous.",
       "loading": "Recherche de vols...",
       "reset": "Réinitialiser la recherche",
       "nextDeparture": "Prochain départ",
@@ -99,7 +131,9 @@
         "fri": "V",
         "sat": "S",
         "sun": "D"
-      }
+      },
+      "askForHelp": "Demander de l'aide pour ce trajet",
+      "details": "Voir le détail"
     },
     "detail": {
       "back": "Retour à la recherche",
@@ -149,7 +183,27 @@
   },
   "footer": {
     "tagline": "Horaires et prix indicatifs des vols intérieurs en RDC.",
-    "quickLinks": "Liens Rapides",
+    "noTickets": "Nous ne vendons pas de billets.",
+    "explore": "Explorer",
+    "search": "Rechercher un vol",
+    "help": "Besoin d'aide pour un vol ?",
     "rights": "Tous droits réservés."
+  },
+  "airportPicker": {
+    "placeholder": "Choisir un aéroport",
+    "search": "Ville ou code IATA…",
+    "loading": "Chargement des aéroports…",
+    "empty": "Aucun aéroport trouvé.",
+    "status": {
+      "OPEN": "Ouvert",
+      "RESTRICTED": "Activité réduite",
+      "CLOSED": "Fermé"
+    },
+    "notice": {
+      "CLOSED": "{{city}} ({{code}}) : aéroport fermé aux vols commerciaux",
+      "RESTRICTED": "{{city}} ({{code}}) : activité réduite",
+      "since": "depuis le {{date}}",
+      "source": "Voir la source"
+    }
   }
 }

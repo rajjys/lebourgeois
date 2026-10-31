@@ -12,6 +12,7 @@ const price = new Intl.NumberFormat(LOCALE, {
 });
 const shortDate = new Intl.DateTimeFormat(LOCALE, { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
 const dayMonth = new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "short", timeZone: "UTC" });
+const dayMonthYear = new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 const longDate = new Intl.DateTimeFormat(LOCALE, { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 const relative = new Intl.RelativeTimeFormat("fr", { numeric: "auto" });
 const list = new Intl.ListFormat("fr", { type: "conjunction" });
@@ -26,6 +27,8 @@ export const formatPrice = (amount: number | string) => price.format(Number(amou
 export const formatDateShort = (d: Date) => shortDate.format(d);
 /** "30 oct." */
 export const formatDayMonth = (d: Date) => dayMonth.format(d);
+/** "6 juin 2026" */
+export const formatDayMonthYear = (d: Date) => dayMonthYear.format(d);
 /** "mardi 3 novembre 2026" */
 export const formatDateLong = (d: Date) => longDate.format(d);
 

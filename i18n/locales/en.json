@@ -1,36 +1,68 @@
 {
   "nav": {
     "home": "Home",
-    "requestQuote": "Request a Quote",
-    "exploreFlights": "Search flights",
+    "flights": "Flights",
     "about": "About",
-    "bookFlight": "Search flights"
+    "openMenu": "Open menu",
+    "menu": "Menu"
   },
   "home": {
     "hero": {
-      "title": "Domestic flights in the DRC, made clear",
-      "subtitle": "Airlines, operating days, times and indicative prices for every route. Compare before you call an agency.",
-      "cta": "Search flights",
-      "latestPrices": "Latest Prices",
-      "exploreAllRoutes": "Explore All Routes"
+      "eyebrow": "Collected from the airlines, dated and checked",
+      "title": "Schedules and indicative fares for flights in the DRC",
+      "subtitle": "Compare airlines, operating days and observed fares, from one city to another.",
+      "popular": "Routes we track:"
     },
-    "features": {
-      "fast": {
-        "title": "Every airline",
-        "description": "Compare each airline's flights on the same route."
+    "search": {
+      "label": "Search a route",
+      "from": "From",
+      "to": "To",
+      "fromPlaceholder": "Departure city",
+      "toPlaceholder": "Arrival city",
+      "swap": "Swap departure and arrival",
+      "submit": "Search",
+      "hint": "No date needed: we show the next days with flights.",
+      "missing": "Choose a departure city and an arrival city.",
+      "sameAirport": "Choose two different cities."
+    },
+    "departures": {
+      "title": "Next departures",
+      "subtitle": "The next known flights, all airlines. Local times.",
+      "noPrice": "Fare not recorded"
+    },
+    "routes": {
+      "title": "Routes we track",
+      "subtitle": "Airlines, number of flights and observed fares, route by route.",
+      "airlines_one": "{{count}} airline",
+      "airlines_other": "{{count}} airlines",
+      "flights_one": "{{count}} flight in 7 days",
+      "flights_other": "{{count}} flights in 7 days"
+    },
+    "airports": {
+      "title": "Airport status",
+      "subtitle": "Airports closed or limited for commercial flights. We also flag them as soon as you pick one."
+    },
+    "method": {
+      "title": "How we work",
+      "subtitle": "Flight information is only useful if it is accurate. These are our rules.",
+      "sources": {
+        "title": "Airline sources",
+        "description": "Schedules taken from the airlines' timetables and websites."
       },
-      "global": {
-        "title": "Schedules and operating days",
-        "description": "Know which days each airline flies your route."
+      "prices": {
+        "title": "Dated fares",
+        "description": "Every fare shows the date it was observed. The final fare is confirmed when you book."
       },
-      "support": {
-        "title": "Dated indicative prices",
-        "description": "Every price shows when it was last checked."
+      "freshness": {
+        "title": "Freshness flagged",
+        "description": "A schedule not re-checked for 7 days is marked \"Check again\"."
+      },
+      "tickets": {
+        "title": "No ticket sales",
+        "description": "We don't sell tickets: you book with the airline or your travel agency."
       }
     },
     "about": {
-      "title": "Why this site?",
-      "description": "Finding a flight time or price in the DRC often takes several phone calls. We gather that information in one place, route by route, so you can compare before you book.",
       "cta": "Search flights"
     }
   },
@@ -83,8 +115,8 @@
       "title": "Found {{count}} flight",
       "title_plural": "Found {{count}} flights",
       "bestPrice": "Best price shown",
-      "noResults": "No flights found for this route",
-      "tryDifferent": "Try searching with different airports",
+      "noResults": "No known flight for this route",
+      "tryDifferent": "We have no verified schedule for this route right now. Try a nearby airport, or ask us to look for you.",
       "loading": "Searching flights...",
       "reset": "Reset Search",
       "nextDeparture": "Next departure",
@@ -99,7 +131,9 @@
         "fri": "F",
         "sat": "S",
         "sun": "S"
-      }
+      },
+      "askForHelp": "Ask for help with this route",
+      "details": "View details"
     },
     "detail": {
       "back": "Back to Search",
@@ -148,8 +182,28 @@
     "cta": "Find your flight"
   },
   "footer": {
-    "tagline": "Schedules and indicative prices for domestic flights in the DRC.",
-    "quickLinks": "Quick Links",
+    "tagline": "Schedules and indicative fares for domestic flights in the DRC.",
+    "noTickets": "We don't sell tickets.",
+    "explore": "Explore",
+    "search": "Search a flight",
+    "help": "Need help with a flight?",
     "rights": "All rights reserved."
+  },
+  "airportPicker": {
+    "placeholder": "Choose an airport",
+    "search": "City or IATA code…",
+    "loading": "Loading airports…",
+    "empty": "No airport found.",
+    "status": {
+      "OPEN": "Open",
+      "RESTRICTED": "Restricted",
+      "CLOSED": "Closed"
+    },
+    "notice": {
+      "CLOSED": "{{city}} ({{code}}): closed to commercial flights",
+      "RESTRICTED": "{{city}} ({{code}}): restricted operations",
+      "since": "since {{date}}",
+      "source": "See the source"
+    }
   }
 }

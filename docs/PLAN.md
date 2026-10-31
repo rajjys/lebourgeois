@@ -91,15 +91,15 @@ These rules decide every trade-off. If a task breaks one of them, the task chang
 
 ## 5. Where we are today
 
-Snapshot on **2026-10-30**:
+Snapshot on **2026-10-31**:
 
 | Area | State |
 |---|---|
 | Security | ✅ Admin login, all write APIs protected, Next.js upgraded (4 critical vulnerabilities fixed), customer data no longer public. Deployed and verified in production (PR #1). |
 | Data model | ✅ Schema v2 in production (PR #3, merged 2026-10-30; the migration runs in the build, and the production deploy succeeded). Next: schema v3, route-centric ([ROUTE-MODEL.md](ROUTE-MODEL.md)). |
 | Data | ⚠️ All 30 schedules in production expired on 2026-02-28, **so the public site currently shows no flights.** Reference data (correct timezones, airline codes, statuses) is ready; the one-off production load waits on the owner (see [Waiting on](#9-waiting-on)). |
-| Brand and design | 🟡 Renamed to **Clerikaa** in code (still served from `lebourgeois.cd`). Design system v1: tokens, font, logo, components, `/dashboard/design`. In review. |
-| Public site | 🟡 Old agency copy and fake contacts removed. Pages are rendered in the browser, so search engines and AI crawlers see almost no content. They will be rebuilt on the route model (RW-5). |
+| Brand and design | ✅ **Clerikaa** in code (still served from `lebourgeois.cd`). Design system v1 merged (PR #5): tokens, font, logo, components, `/dashboard/design`. |
+| Public site | 🟡 Navigation and home rebuilt (P-9, in review): the home page is rendered on the server with its data, has the search in the hero and shows next departures, tracked routes and airport statuses. Search, flight detail and request pages are still rendered in the browser until RW-5. |
 | Leads | 🟡 Request form saves to the database; requests are visible in the dashboard. Email alerts are built but on hold. |
 | Environments | ✅ Separate local dev database. Production migrations run automatically on deploy. |
 
@@ -248,9 +248,9 @@ Verified on 2026-10-30.
 **Input:** approved data. **Output:** fast, clear, trustworthy pages on phones.
 
 **Today:**
-- Pages are rendered in the browser: home, search (`/explore`), flight detail, request form, about.
+- The home page is rendered on the server (P-9). Search (`/explore`), flight detail, request form and about are still rendered in the browser.
 - The FR/EN switch happens in the browser only.
-- Design system v1 is applied through tokens; the pages themselves are still the old layouts until RW-5.
+- Design system v1 is applied through tokens. Search, detail and request keep their old layouts until RW-5 and L-9.
 
 **Work items**
 - 🟡 **P-1:** Design research. Principles and references are in [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md#2-principles); a fuller competitor study is still to do. Study:
@@ -259,13 +259,11 @@ Verified on 2026-10-30.
   - local habits: WhatsApp sharing, Android, slow networks
 
   Output: research notes and design principles.
-- 🟡 **P-2:** Design system v1 (in review): tokens in a format a future mobile app can reuse (DTCG JSON), contrast checked in the build, Plus Jakarta Sans, Clerikaa logo, restyled primitives, product components (price, freshness, route title, airline mark, day strip), live reference at `/dashboard/design`. See [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md). Remaining components (search box, route card, schedule table…) come with RW-3 and RW-5.
-- ⬜ **P-3:** Server-rendered pages built from real data (= **RW-5**):
-  - home
-  - route page
-  - airline page
-  - airport page
-  - network status page
+- ✅ **P-2:** Design system v1 (PR #5, merged 2026-10-30): tokens in a format a future mobile app can reuse (DTCG JSON), contrast checked in the build, Plus Jakarta Sans, Clerikaa logo, restyled primitives, product components (price, freshness, route title, airline mark, day strip), live reference at `/dashboard/design`. See [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md). Remaining components (search box, route card, schedule table…) come with RW-3 and RW-5.
+- ⬜ **P-3:** Server-rendered pages built from real data:
+  - home (✅ done in P-9)
+  - route and route + airline pages (= **RW-5**)
+  - airline, airport and network status pages (= **E-1 → E-3**)
 
   URL plan in [SEO-AEO-GEO.md](SEO-AEO-GEO.md#3-urls-and-site-structure).
 - ⬜ **P-4:** Trust details everywhere:
@@ -276,6 +274,27 @@ Verified on 2026-10-30.
 - ⬜ **P-6:** Installable web app (PWA) that keeps recently viewed routes offline.
 - ⬜ **P-7:** Price history chart per route.
 - ⬜ **P-8:** Native mobile app, only if usage justifies it. It would reuse the design tokens.
+- 🟡 **P-9:** Navigation and home v2 (owner feedback, 2026-10-31; in review):
+  - navbar lists sections, not actions (no search link or button, no request link); mobile menu opens from the right
+  - home hero: "Horaires et prix indicatifs des vols en RDC" with the search form (origin, swap, destination; no date, one way)
+  - home sections rendered on the server: next departures (dated, nothing auto-moves), tracked routes, airport statuses, how we work
+  - search reads `?from=&to=`; closed or restricted airports warn on selection and when nothing is found; "ask for help" appears after a failed search
+  - request form moved to the footer and to failed searches; `/explore/[id]` set to `noindex` until RW-5
+  - back-office sidebar grouped (Données de vol, Clients, Administration), new icons, docks to an icon rail (Ctrl+B)
+- ⬜ **P-10:** Trust pages, server-rendered (M4): `/a-propos`, `/methodologie` (how we collect, date and verify), `/contact`. Contact is a text page (email address, what to write about: corrections, airlines, press) with a link to the request form. **No second form:** one form per job.
+- ⬜ **P-11:** "Ma ville": a visitor picks their city and the home and hub lists show its routes first (owner idea: someone in Kolwezi cares about Kolwezi first). After M4; airport pages (E-1) already serve this for search engines.
+
+**Airports and airlines as pages** (owner, 2026-10-31). They are hubs for internal links and answer their own searches ("aéroport de Goma", "Air Congo").
+- ⬜ **E-1:** Airport pages `/aeroports/[slug]` (M4):
+  - status, the date since when and the source, at the top (this is where Goma's and Bunia's closures live)
+  - routes from and to the airport, airlines serving it, next departures
+  - facts: codes, city, province, map, time zone
+  - a short note written by us (distance to town, practical tips)
+  - back office: a proper airport editor (status with source and date, facts, note, photos, preview), replacing today's plain form
+- ⬜ **E-2:** Airline pages `/compagnies/[slug]` (M4): status, routes, booking channels, facts, our notes; matching back-office editor.
+- ⬜ **E-3:** Network status page `/etat-du-reseau` (M4), built from airport and airline statuses.
+- ⬜ **E-4:** Facts from **Wikidata** through its API (CC0: free to reuse). **Not Wikipedia text:** it is CC BY-SA (attribution and share-alike) and copied paragraphs fall under Google's scraping policy. See [SEO-AEO-GEO.md §9](SEO-AEO-GEO.md#9-content-rules-and-spam-policies). (M4)
+- ⬜ **E-5:** Editorial content once there is traffic (M6): guides, photos (own or licensed and credited), real moderated testimonials.
 
 **Quality metrics:** Core Web Vitals (mobile), searches per visit, share of visits that reach a route page.
 
@@ -337,6 +356,7 @@ Verified on 2026-10-30.
 - ⬜ **L-6:** Route requests to partner agencies, with tracking.
 - ⬜ **L-7:** Commission agreement and reporting.
 - ⬜ **L-8:** Traveller price alerts. Needs user accounts, which reopens the authentication decision.
+- ⬜ **L-9:** Request page redesign (M7). It is reached from a failed search or a route page, prefilled with the route (`lib/links.ts`), and says what happens next. Renamed from "Demander un devis" to "Besoin d'aide ?" on 2026-10-31: we compare, we don't quote.
 
 **Quality metrics:** requests per week, time to first response, conversion rate (once a partner exists).
 
@@ -368,6 +388,8 @@ Verified on 2026-10-30.
 - ✅ **O-8:** Vercel stays (owner, 2026-10-30). Hobby is fine for the informational phase; upgrade to Pro before leads or commissions (M7), because Hobby forbids commercial use.
 - ⬜ **O-9:** First paid tools once there is revenue: Vercel Pro, AeroDataBox cross-check (~$7.50/month).
 - ⬜ **O-10:** Dev server note. If styles look stale in development, stop the dev server and move `.next/dev/cache/turbopack` aside. Seen on 2026-10-30 with Next.js 16.4.3. Documented in the README.
+- ⬜ **O-11:** Back-office "Utilisateurs" page, with O-7 (roles), under the sidebar's Administration group.
+- ⬜ **O-12:** Back-office "Paramètres" page, when there is something to set (freshness window, site texts).
 
 ---
 
@@ -379,12 +401,12 @@ The stages say *what* each part does. The milestones say *in which order* we bui
 |---|---|---|---|---|
 | M0 | **Secure** | security fixes | Admin and customer data protected in production, verified by tests. | ✅ done 2026-10-30 (PR #1) |
 | M1 | **Data foundation** | S-1 | Production runs schema v2 with correct timezones, airline codes and statuses. | 🟡 schema ✅ (PR #3); reference data load waiting on owner |
-| M2 | **Design system and brand** | P-2, rebrand in code | Tokens, components and `/dashboard/design` live; contrast checked in the build; Clerikaa name and logo everywhere. | 🟡 in review |
+| M2 | **Design system and brand** | P-2, rebrand in code, P-9 | Tokens, components and `/dashboard/design` live; contrast checked in the build; Clerikaa name and logo everywhere. | ✅ done 2026-10-30 (PR #5); P-9 follow-up in review |
 | M3 | **Route workspace** | RW-1 → RW-4 ([ROUTE-MODEL.md](ROUTE-MODEL.md#10-phased-plan)) | The owner manages at least 10 P1 routes in the back office; the Air Congo example takes under 2 minutes; the daily refresh takes under 15 minutes. | ⬜ next |
-| M4 | **Findable** | RW-5, P-5, F-1 → F-7, O-4 | P1 routes live, server-rendered, passing the page checklist, indexed in Search Console; good mobile Core Web Vitals. | ⬜ |
+| M4 | **Findable** | RW-5, P-5, P-10, E-1 → E-4, F-1 → F-7, O-4 | P1 routes live with their airline, airport and status pages, server-rendered, passing the page checklist, indexed in Search Console; good mobile Core Web Vitals. | ⬜ |
 | M5 | **Airline partnerships** | C-7 | At least one airline grants written permission or sends its timetable. | ⬜ |
-| M6 | **Trusted and fresh** | R-3, R-4, S-2/C-4, F-8, RW-6, RW-7, O-2, O-3 | Freshness targets met for 4 weeks in a row. | ⬜ |
-| M7 | **Leads** | L-1 → L-6, Vercel Pro | First agency partner receives leads. | ⬜ |
+| M6 | **Trusted and fresh** | R-3, R-4, S-2/C-4, F-8, RW-6, RW-7, E-5, P-11, O-2, O-3 | Freshness targets met for 4 weeks in a row. | ⬜ |
+| M7 | **Leads** | L-1 → L-6, L-9, Vercel Pro | First agency partner receives leads. | ⬜ |
 | M8 | **Product for agencies** | S-8, O-7, C-8, white-label | First paying agency. | ⬜ |
 
 The previous M2 ("working prototype": importer first) was replaced on 2026-10-30. The owner chose manual management through a proper route workspace before any automation.
@@ -424,6 +446,14 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | 2026-10-30 | Design system before the back office; back office desktop-first and in French. | Owner. Agencies work on computers. |
 | 2026-10-30 | Design: pink and white, Plus Jakarta Sans, light theme only, tokens with automatic contrast checks. | See [DESIGN-SYSTEM.md §15](DESIGN-SYSTEM.md#15-decisions-and-changelog). |
 | 2026-10-30 | No OAG or Cirium now. | No free licence allows publishing; both forbid resale. See [DATA-SOURCES.md](DATA-SOURCES.md#2-oag-and-cirium-can-they-help). |
+| 2026-10-31 | One page per direction; P1 list as proposed (priority can be set by hand later). | Owner, answering [ROUTE-MODEL.md §11](ROUTE-MODEL.md#11-open-questions-for-the-owner). |
+| 2026-10-31 | **Every airline on a route gets its page** (`/vols/a-b/caa`), even when it is the only one. Replaces "only with 2+ airlines". | Owner: the route page compares, the airline page details; pages must not appear and disappear. Content rules in [ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows). |
+| 2026-10-31 | **Service changes never remove or redirect a page.** Suspended, ended or closed: the page stays and says so. Stale pages stay indexed with honest dates (was `noindex`). | Owner. Google drops error and `noindex` pages and may take months to come back. |
+| 2026-10-31 | Airport status lives on the airport page; choosing a closed airport always shows a warning. | Owner. |
+| 2026-10-31 | Verification window: 7 days. | Owner; revisit after a month. |
+| 2026-10-31 | Navbar lists sections; the search is the home hero; the request form comes after a failed search and in the footer. Hero: "Horaires et prix indicatifs des vols en RDC". Search asks no date, one way. | Owner. Our job is search and compare, not requests. |
+| 2026-10-31 | No separate "schedules" calendar page. The route page shows next departures by date; the airport page shows departures from that airport. | A network-wide calendar adds work and moves away from comparison (owner's own doubt). |
+| 2026-10-31 | Airport and airline facts from Wikidata (CC0), never Wikipedia text. | Licence (CC BY-SA) and Google's scraping policy. |
 
 ---
 
@@ -432,8 +462,8 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | What | Who | Blocks |
 |---|---|---|
 | Run the one-off reference-data load on production (`ALLOW_REMOTE_DB=1 npx prisma db seed` with the production `DATABASE_URL`). Claude Code is blocked from production access, so the owner runs it or allows it. | Owner | M1 |
-| Review the design system (`/dashboard/design`) and merge it | Owner | M2 |
-| Answer the open questions in [ROUTE-MODEL.md §11](ROUTE-MODEL.md#11-open-questions-for-the-owner) (directions, P1 list, airline pages, status pages) | Owner | RW-1 (M3) |
+| Review and merge P-9 (navigation and home) | Owner | RW-1 starts after |
+| Keep the two route pages to closed airports (Kinshasa – Goma, Bunia – Beni)? Recommended yes ([ROUTE-MODEL.md §8](ROUTE-MODEL.md#8-which-routes-first)) | Owner | RW-5 |
 | Training crawlers: allow or block ([SEO-AEO-GEO.md §8](SEO-AEO-GEO.md#8-ai-engines-specifically)) | Owner | F-6 |
 | Buy `clerikaa.com` (available on 2026-10-30) | Owner | Rebrand track, L-4 |
 | Resend account verification | Owner / Resend | L-4 |

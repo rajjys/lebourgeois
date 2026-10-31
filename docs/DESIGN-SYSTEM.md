@@ -189,6 +189,8 @@ On phones, page titles step down one size (`text-2xl md:text-3xl`).
   - Decorative icons get `aria-hidden`. An icon-only button needs an `aria-label`.
 - **No airline logos** until we have permission to use them. `AirlineMark` shows the IATA code and the airline's name instead.
 - **Motion:** at most 150–200 ms, used for state changes only (hover, open, close). `prefers-reduced-motion` turns all of it off (`app/globals.css`).
+  - **Nothing moves on its own.** No auto-advancing carousels: the old home carousel moved every 3.5 s and was removed on 2026-10-31. On phones, a row of cards can be swiped; on larger screens it is a grid.
+- **Surfaces.** The home hero (`.hero-surface` in `app/globals.css`) is the one decorated surface: brand glows in two corners, a faint grain, rounded bottom corners. Inspired by yesim.app's gradient hero (owner's reference). Text on it uses `foreground` or `neutral-700`, which pass AA on every stop from brand-50 to brand-200 (`muted-foreground` fails on brand-200 at 3.85:1, so it isn't used there). Other sections stay white, with `muted` panels and bordered cards.
 
 ## 8. Data display rules
 
@@ -254,9 +256,16 @@ The same word and colour mean the same thing everywhere.
 | `DayStrip` | Operating days L M M J V S D. |
 | `Logo`, `LogoMark` | Brand (in `components/brand/`). |
 
+**Search and home** (2026-10-31)
+| Component | What it shows |
+|---|---|
+| `AirportCombobox` | Airport picker. Accepts a label or a bare IATA code (from a URL); shows the province for DRC airports; closed or restricted airports stay selectable with a badge (`AirportStatusBadge`). |
+| `AirportStatusNotice` (`components/search/`) | A danger or warning alert for each chosen airport that is closed or restricted: status, since when, note, source link. Shown on selection and stays visible when the search finds nothing. |
+| `HomeSearch` (`components/home/`) | Origin, swap, destination, search. **No date and no round-trip option**: results show the next days with flights, and the swap button is the return trip. |
+| Home sections (`components/home/HomeSections.tsx`) | Hero, next departures (dated cards), tracked routes, airport status, how we work. Each data section is hidden when it has no data. |
+
 ### Planned (built with the route workspace, see [ROUTE-MODEL.md](ROUTE-MODEL.md))
 - **Public:**
-  - SearchBox (origin and destination)
   - RouteCard
   - ScheduleTable
   - NextDepartures
@@ -275,7 +284,7 @@ The same word and colour mean the same thing everywhere.
 | | Public site | Back office |
 |---|---|---|
 | Designed for | Android phone, slow and expensive data | Desktop or laptop, all day |
-| Layout | Single column, 16 px gutters, cards | Fixed left sidebar (240 px), wide tables, side panels |
+| Layout | Single column, 16 px gutters, cards | Left sidebar (240 px, docks to a 64 px icon rail), wide tables, side panels |
 | Touch / click targets | 48 px for main actions | 36–40 px |
 | Density | Roomy, one idea per block | Dense: table rows about 40 px, many columns |
 | Input | Taps, few fields | Keyboard first (shortcuts planned), inline editing |
@@ -283,6 +292,25 @@ The same word and colour mean the same thing everywhere.
 | Images | None needed on data pages; OG image for sharing on WhatsApp | None |
 
 The back office still works on a phone (simple menu), but it is not designed for one, as decided by the owner on 2026-10-30.
+
+### Navigation
+
+**Public navbar** (2026-10-31): it lists **sections of the site, not actions**.
+- Logo (home) · Vols · À propos · language. Compagnies, Aéroports and État du réseau join when their pages exist (E-1 → E-3 in [PLAN.md](PLAN.md#stage-4-publish)).
+- No "search" link and no search button: the home hero is the search, and "Vols" leads to it from other pages.
+- No request link: help is offered after a search finds nothing, and in the footer.
+- On phones, the menu button is on the right, so the panel opens from the right.
+
+**Back-office sidebar** (2026-10-31): grouped, with icons that match their meaning.
+| Group | Items |
+|---|---|
+| (top) | Tableau de bord |
+| Données de vol | Programmes de vol (calendar), Compagnies (plane), Aéroports (pin) |
+| Clients | Demandes (inbox) |
+| Administration | Système de design (palette); Utilisateurs and Paramètres when those pages exist (O-11, O-12) |
+
+- **Docking:** the sidebar collapses to a 64 px icon rail with tooltips. Toggle with the button at the bottom or **Ctrl+B / ⌘B**. The choice is kept in the `bo_sidebar` cookie, so the server renders the right width with no flash.
+- Groups show their label when expanded and a thin divider when docked.
 
 ## 11. Writing
 
@@ -342,6 +370,10 @@ A native app is item **P-8** in the plan, and only if usage justifies it. The sy
 | 2026-10-30 | Light theme only in v1 | Halves design and QA work. Phones are used outdoors in bright light. Roles make dark mode a later, contained change. |
 | 2026-10-30 | Back office: desktop-first, French | Agencies work on computers all day (owner). French is the working language of DRC agencies. |
 | 2026-10-30 | No airline logos | No permission yet; codes and names are neutral. |
+| 2026-10-31 | Navbar lists sections, not actions; search lives in the home hero | Owner: the search link and the search button led to the same page, and the request form isn't our main job. |
+| 2026-10-31 | Search asks for no date, one way only | Owner: show the next days with flights instead of "no flight on that date". |
+| 2026-10-31 | Nothing moves on its own | Owner: the carousel moved too fast and showed no dates. |
+| 2026-10-31 | Back-office sidebar grouped and dockable | Owner. |
 
 **Changelog**
 - **v1 (2026-10-30):**
@@ -350,3 +382,8 @@ A native app is item **P-8** in the plan, and only if usage justifies it. The sy
   - product components: PriceTag, FreshnessBadge, RouteTitle, AirlineMark, DayStrip
   - `/dashboard/design` reference page
   - the old Le Bourgeois assets removed
+- **v1.1 (2026-10-31):**
+  - home rebuilt: hero surface with search, next departures, tracked routes, airport status, how we work
+  - `AirportStatusNotice`, `AirportStatusBadge`, `HomeSearch`
+  - public navbar and footer reorganised; back-office sidebar grouped and dockable
+  - `formatDayMonthYear` ("6 juin 2026") added to `lib/format.ts`
