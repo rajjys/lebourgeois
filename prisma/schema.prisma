@@ -237,3 +237,33 @@ enum RequestStatus {
   CONTACTED
   CLOSED
 }
+
+// A message from the contact page: a question, a correction, an airline getting in touch.
+// Separate from Request, which is help with one specific flight.
+model ContactMessage {
+  id        String        @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?       // WhatsApp-first, like requests
+  topic     ContactTopic
+  message   String
+  pageUrl   String?       // where the visitor came from, useful for corrections
+  status    MessageStatus @default(NEW)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([status, createdAt])
+}
+
+enum ContactTopic {
+  QUESTION    // a question about a flight, an airport or the site
+  CORRECTION  // information on the site is wrong or out of date
+  AIRLINE     // an airline or a partner
+  OTHER
+}
+
+enum MessageStatus {
+  NEW
+  ANSWERED
+  ARCHIVED
+}

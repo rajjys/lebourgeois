@@ -371,7 +371,7 @@ The owner said it: **we don't need every route, only the ones people search for.
 |---|---|---|
 | **P1** (first) | Kinshasa – Lubumbashi · Kinshasa – Mbuji-Mayi · Kinshasa – Kisangani · Kinshasa – Kolwezi · Kinshasa – Kananga · Kinshasa – Mbandaka · Kolwezi – Lubumbashi · Kinshasa – Kalemie · Kinshasa – Kindu | Highest frequencies; both airlines on most; Kalemie is a tracked search |
 | **P2** | Lubumbashi – Mbuji-Mayi · Lubumbashi – Kalemie · Kindu – Kalemie · Kinshasa – Muanda · Kinshasa – Gemena · Kisangani – Kindu | Regular but thinner service |
-| **Status** | Kinshasa – Goma · Bunia – Beni | Airports closed (Goma since Jan 2025; Bunia since 6 Jun 2026). The status lives on the airport pages `/aeroports/goma` and `/aeroports/bunia` (owner, 2026-10-31). ❓ Recommended: also keep these two route pages, because people type the route ("Prix avion Bunia Beni"); they show the airport banner and link to the airport page. No other routes to closed airports. |
+| **Status** | Kinshasa – Goma · Bunia – Beni | Airports closed (Goma since Jan 2025; Bunia since 6 Jun 2026). The status lives on the airport pages `/aeroports/goma` and `/aeroports/bunia` (owner, 2026-10-31). ✅ These two route pages are kept too (owner, 2026-10-31: the airports can reopen any time; people type the route, "Prix avion Bunia Beni"). They show the airport banner and link to the airport page. No other routes to closed airports. |
 
 The P1 list stands as proposed (owner, 2026-10-31). Priority can be set by hand later (the route `tier`).
 
@@ -422,7 +422,7 @@ Answered on 2026-10-31:
 | 1 | One page per direction (§5.2) | ✅ Yes. |
 | 2 | P1 route list (§8) | ✅ Keep the proposal. Priority can be set by hand later; location-based priority is a separate idea (P-11). |
 | 3 | Route + airline pages only when 2+ airlines (§7) | ❌ Changed: **always**, one page per airline on a route, even when it's the only one. Suspensions never remove or redirect a page (§7). |
-| 4 | Status pages for closed airports | ✅ The status lives on the airport page (E-1), with a warning whenever that airport is chosen in a search. ❓ Still open: keep the two route pages Kinshasa – Goma and Bunia – Beni (recommended, §8)? |
+| 4 | Status pages for closed airports | ✅ The status lives on the airport page (E-1), with a warning whenever that airport is chosen in a search. ✅ The two route pages Kinshasa – Goma and Bunia – Beni are kept as well (owner, 2026-10-31, §8). |
 | 5 | Verification window | ✅ **7 days** to start. *Tout est vérifié* stamps the next 7 days of flights; data unchecked for more than 7 days shows "À revérifier". Revisit after a month of use. |
 
 ## 12. Risks

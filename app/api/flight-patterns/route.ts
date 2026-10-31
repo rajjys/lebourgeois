@@ -4,6 +4,7 @@ import { ok, created, badRequest, internalError, generateRequestId } from "@/app
 import { withNextDepartureDate, withNextDepartureDates } from "@/lib/flightPatterns/nextDeparture";
 import { getSession, requireAdmin } from "@/lib/auth/session";
 import { PUBLIC_PATTERN_FILTER } from "@/lib/flightPatterns/visibility";
+import { refreshPublicPages } from "@/app/api/utils/db";
 
 /**
  * GET /api/flight-patterns
@@ -81,6 +82,7 @@ export async function POST(req: Request) {
       },
       include: { airline: true, origin: true, destination: true },
     });
+    refreshPublicPages();
     return created(withNextDepartureDate(createdRow), requestId);
   } catch (err) {
     return internalError("Failed to create flight pattern", (err as Error)?.message ?? null, requestId);

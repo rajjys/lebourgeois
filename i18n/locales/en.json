@@ -4,7 +4,9 @@
     "flights": "Flights",
     "about": "About",
     "openMenu": "Open menu",
-    "menu": "Menu"
+    "menu": "Menu",
+    "contact": "Contact",
+    "search": "Search flights"
   },
   "home": {
     "hero": {
@@ -187,7 +189,8 @@
     "explore": "Explore",
     "search": "Search a flight",
     "help": "Need help with a flight?",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "contact": "Contact us"
   },
   "airportPicker": {
     "placeholder": "Choose an airport",
@@ -204,6 +207,48 @@
       "RESTRICTED": "{{city}} ({{code}}): restricted operations",
       "since": "since {{date}}",
       "source": "See the source"
+    }
+  },
+  "contact": {
+    "title": "Contact us",
+    "intro": "A question, information that is wrong or out of date, or you represent an airline? Write to us.",
+    "noTickets": "We do not sell tickets: to book, change or cancel, contact the airline.",
+    "form": {
+      "name": "Your name",
+      "reply": "Email or WhatsApp number",
+      "replyHint": "Only used to reply to you.",
+      "topic": "Subject",
+      "topics": {
+        "QUESTION": "A question",
+        "CORRECTION": "Report a mistake",
+        "AIRLINE": "I represent an airline",
+        "OTHER": "Something else"
+      },
+      "message": "Message",
+      "messageHint": "For a mistake, tell us the page and what is wrong.",
+      "submit": "Send message",
+      "sending": "Sending…",
+      "failed": "Sending failed. Try again, or write to us at {{email}}."
+    },
+    "sent": {
+      "title": "Message sent",
+      "body": "Thank you {{name}}. We will reply to {{reply}}.",
+      "again": "Send another message"
+    },
+    "aside": {
+      "emailTitle": "Write directly",
+      "flightTitle": "About a specific flight",
+      "flightBody": "Tell us the route and the date: we will look with you.",
+      "flightCta": "Ask for help with a flight",
+      "correctionTitle": "A mistake on the site?",
+      "correctionBody": "Schedules change often. If something is wrong, tell us: it is the fastest way to fix it."
+    },
+    "errors": {
+      "name": "Enter your name.",
+      "reply": "Enter a valid email or phone number.",
+      "topic": "Choose a subject.",
+      "messageShort": "The message is too short (10 characters minimum).",
+      "messageLong": "The message is too long (3,000 characters maximum)."
     }
   }
 }

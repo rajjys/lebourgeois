@@ -19,6 +19,7 @@ const Footer = () => {
       title: SITE.name,
       links: [
         { href: "/about", label: t('nav.about') },
+        { href: "/contact", label: t('footer.contact') },
         { href: requestHref(), label: t('footer.help') },
       ],
     },

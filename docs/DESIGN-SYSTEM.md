@@ -295,22 +295,30 @@ The back office still works on a phone (simple menu), but it is not designed for
 
 ### Navigation
 
-**Public navbar** (2026-10-31): it lists **sections of the site, not actions**.
-- Logo (home) · Vols · À propos · language. Compagnies, Aéroports and État du réseau join when their pages exist (E-1 → E-3 in [PLAN.md](PLAN.md#stage-4-publish)).
-- No "search" link and no search button: the home hero is the search, and "Vols" leads to it from other pages.
-- No request link: help is offered after a search finds nothing, and in the footer.
-- On phones, the menu button is on the right, so the panel opens from the right.
+**Public navbar** (updated 2026-10-31, P-12):
+- **Left:** logo (home). **Centre:** sections: À propos, Contact. Vols (route index), Compagnies, Aéroports and État du réseau join when their pages exist (RW-5, E-1 → E-3 in [PLAN.md](PLAN.md#stage-4-publish)). **Right:** the **"Rechercher un vol"** button, then the language.
+- The button is the one way to the search. No nav link may lead to the same page ("Vols" returns only as the route index).
+- On a page with a search form (`id="recherche"`, from `SEARCH_ANCHOR` in `lib/links.ts`), the button scrolls back to the form and focuses "Départ", without motion if the visitor prefers reduced motion. Elsewhere it opens `/explore`.
+- No request link: help is offered after a search finds nothing, on the contact page and in the footer.
+- On phones: logo, the button (icon only under 360 px), then the menu button. The menu opens from the right and holds Accueil, the sections and the language.
 
 **Back-office sidebar** (2026-10-31): grouped, with icons that match their meaning.
 | Group | Items |
 |---|---|
 | (top) | Tableau de bord |
 | Données de vol | Programmes de vol (calendar), Compagnies (plane), Aéroports (pin) |
-| Clients | Demandes (inbox) |
+| Clients | Demandes (inbox), Messages (speech bubble) |
 | Administration | Système de design (palette); Utilisateurs and Paramètres when those pages exist (O-11, O-12) |
 
 - **Docking:** the sidebar collapses to a 64 px icon rail with tooltips. Toggle with the button at the bottom or **Ctrl+B / ⌘B**. The choice is kept in the `bo_sidebar` cookie, so the server renders the right width with no flash.
 - Groups show their label when expanded and a thin divider when docked.
+
+**Back-office edit screens** (P-12; `components/backoffice/FormParts.tsx`):
+- Header: back link to the list, the record's name, its status badge.
+- Two columns on desktop: what the record *is* on the left (identity, position, links), what the public *sees* on the right (status, visibility), with a live preview where the public sees something (the airport warning).
+- Every field has a label above it, "(facultatif)" when optional, and one line under it that shows the hint or, after a failed save, the error.
+- A sticky action bar: Enregistrer (disabled until something changes), Annuler, and Supprimer on the far right behind a confirmation.
+- Server errors appear at the top in a danger alert, in French, saying what to do instead (for example "changez plutôt son statut").
 
 ## 11. Writing
 

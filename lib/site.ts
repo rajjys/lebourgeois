@@ -9,4 +9,6 @@ export const SITE = {
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://lebourgeois.cd").replace(/\/$/, ""),
   description:
     "Horaires et prix indicatifs des vols intérieurs en RDC : compagnies, jours de vol et tarifs vérifiés, route par route.",
+  // The owner's address until a clerikaa.com mailbox exists.
+  contactEmail: "rajjysrachid@gmail.com",
 } as const;

@@ -86,8 +86,9 @@ export function AirportCombobox({
     });
   }, [airports, searchTerm]);
 
+  // min-w-0: in a grid or flex row, a long airport name must truncate, not widen the field.
   return (
-    <div className="space-y-2">
+    <div className="min-w-0 space-y-2">
       <label htmlFor={id} className="text-sm font-medium text-muted-foreground">
         {label}
         {required ? " *" : null}
@@ -98,7 +99,7 @@ export function AirportCombobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between px-4 py-8", triggerClassName)}
+          className={cn("w-full min-w-0 justify-between overflow-hidden px-4 py-8", triggerClassName)}
           id={id}
         >
           {(() => {
@@ -124,11 +125,11 @@ export function AirportCombobox({
                 {/* DESKTOP VIEW */}
                 <div className="hidden lg:block min-w-0 overflow-hidden">
                   <span className="flex items-center gap-2 text-base font-semibold truncate whitespace-nowrap">
-                    <span className="truncate">{airportLabel(selected)}</span>
+                    <span className="truncate">{selected.city} ({selected.code})</span>
                     <AirportStatusBadge status={selected.status} />
                   </span>
                   <span className="text-xs text-muted-foreground block truncate whitespace-nowrap">
-                    {placeLine(selected)}
+                    {selected.name} · {placeLine(selected)}
                   </span>
                 </div>
               </div>

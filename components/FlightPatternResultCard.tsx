@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils/cn-utils";
 import { formatDuration, formatTime, getWeekdayFromDate } from "@/lib/utils/datetime-utils";
 import { PriceTag } from "@/components/ds/PriceTag";
 import { formatDate } from "@/lib/utils/format-date-utils";
-import Image from "next/image";
+import { AirlineMark } from "@/components/ds/AirlineMark";
 import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 import { format } from "date-fns";
 import { WEEKDAY_ORDER } from "@/lib/types";
@@ -38,33 +38,13 @@ const link = `/explore/${encodeURIComponent(pattern.id)}${selectedDate ? `?date=
             <div className="flex gap-2 justify-between py-1">
               {/* Main Flight Info */}
               <div className="flex flex-row items-center justify-start gap-4 flex-nowrap">
-                {/* Airline & Route Info */}
-                <div className="flex items-start gap-4  min-w-0">
-                  {/* Airline emblem */}
-                  {pattern.airline.logo ? (
-                    <Image
-                      src={pattern.airline.logo}
-                      height={60}
-                      width={60}
-                      alt={pattern.airline.code}
-                      className="flex h-12 w-12 items-center justify-center rounded-full"
-                    />
-                  ) : (
-                    <div
-                      className="flex h-10 w-10 items-center justify-center rounded-full text-[10px] font-bold text-white"
-                      style={{ backgroundColor: pattern.airline?.color || "#33cc33" }}
-                      aria-label={pattern.airline.name}
-                      title={pattern.airline.name}
-                    >
-                      {pattern.airline.code}
-                    </div>
-                  )}
-                </div>
                 {/* Route Details */}
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-base md:text-lg font-semibold text-foreground mb-1 truncate">
-                    
-                  </h3>
+                  {/* No logos until airlines agree (docs/DESIGN-SYSTEM.md); the code and name identify them. */}
+                  <div className="mb-1 flex flex-wrap items-center gap-x-2">
+                    <AirlineMark code={pattern.airline.code} name={pattern.airline.name} />
+                    {pattern.flightNumber && <span className="text-xs text-muted-foreground">{pattern.flightNumber}</span>}
+                  </div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs md:text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
@@ -78,7 +58,7 @@ const link = `/explore/${encodeURIComponent(pattern.id)}${selectedDate ? `?date=
                         <span className="hidden sm:inline">{pattern.aircraft}</span>
                       </>
                     )}
-                    {pattern.stops && pattern.stops > 0 && (
+                    {pattern.stops != null && pattern.stops > 0 && (
                       <>
                         <span className="hidden sm:inline">•</span>
                         <span className="hidden sm:inline">{pattern.stops} stop{pattern.stops > 1 ? "s" : ""}</span>

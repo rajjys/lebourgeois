@@ -7,6 +7,7 @@ import { ArrowLeftRight, Search } from "lucide-react";
 import { AirportCombobox, airportCode } from "@/components/AirportCombobox";
 import { AirportStatusNotice } from "@/components/search/AirportStatusNotice";
 import { Button } from "@/components/ui/button";
+import { SEARCH_ANCHOR } from "@/lib/links";
 
 /**
  * Origin and destination only. No date: the results show the next days with flights,
@@ -33,12 +34,13 @@ export function HomeSearch() {
 
   return (
     <form
+      id={SEARCH_ANCHOR}
       onSubmit={submit}
       role="search"
       aria-label={t("home.search.label")}
       className="rounded-2xl border bg-card p-3 text-left shadow-popover sm:p-4"
     >
-      <div className="grid gap-2 md:grid-cols-[1fr_auto_1fr_auto] md:items-end md:gap-3">
+      <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] md:items-end md:gap-3">
         <AirportCombobox
           id="home-from"
           label={t("home.search.from")}
