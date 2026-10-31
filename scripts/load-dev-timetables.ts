@@ -3,15 +3,13 @@
  * Run after the reference seed: `npm run db:seed && npx tsx scripts/load-dev-timetables.ts`.
  *
  * Local databases only. This is for looking at the site with real routes, not for production:
- * neither PDF gives a validity period, so every row gets the same assumed window (VALID_*).
- *
- * Writes both models while they coexist: patterns for today's public search, and flights on
- * dates (schema v3) for the route back office (RW-2, RW-3). Patterns go in RW-7.
+ * neither PDF gives a validity period, so every week is repeated over the same assumed window
+ * (FLIGHTS_*). Writes flights on dates and publishes each airline on its routes, so the local
+ * search and the route back office both have data.
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
 
-import { DateTime } from "luxon";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type Prisma, type Weekday } from "../lib/generated/prisma/client";
 import { ensureRouteAirline } from "../lib/routes";
@@ -27,8 +25,6 @@ if (!["localhost", "127.0.0.1", "::1"].includes(host)) {
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) });
 
-const VALID_FROM = new Date("2026-10-20T00:00:00Z");
-const VALID_TO = new Date("2026-12-31T00:00:00Z"); // assumption: the PDFs give no end date
 const READ_ON = new Date("2026-10-31T12:00:00Z");  // day the PDFs were read
 // Flights: the same assumption over a shorter window, so "known until" has something to show.
 const FLIGHTS_FROM = "2026-10-20";
@@ -160,53 +156,6 @@ const airCongoLegs: Leg[] = [
   { days: ["TUE", "SAT"], from: "MDK", to: "FIH", dep: "15:30", arr: "16:50" },
 ].map((leg) => ({ ...leg, days: leg.days as Weekday[], flight: "" })); // no flight numbers published
 
-const WEEK_ORDER = EVERY_DAY;
-
-/** Same flight, leg and times on several days becomes one pattern. */
-function mergeDays(legs: Leg[]): Leg[] {
-  const byKey = new Map<string, Leg>();
-  for (const leg of legs) {
-    const key = [leg.flight, leg.from, leg.to, leg.dep, leg.arr].join("|");
-    const existing = byKey.get(key);
-    if (existing) existing.days = [...new Set([...existing.days, ...leg.days])];
-    else byKey.set(key, { ...leg, days: [...leg.days] });
-  }
-  for (const leg of byKey.values()) leg.days.sort((a, b) => WEEK_ORDER.indexOf(a) - WEEK_ORDER.indexOf(b));
-  return [...byKey.values()];
-}
-
-/** Block time from local times in each airport's zone; crossing midnight adds a day. */
-function minutesBetween(dep: string, depZone: string, arr: string, arrZone: string) {
-  const d = DateTime.fromISO(`2026-10-20T${dep}`, { zone: depZone });
-  let a = DateTime.fromISO(`2026-10-20T${arr}`, { zone: arrZone });
-  if (a < d) a = a.plus({ days: 1 });
-  return Math.round(a.diff(d, "minutes").minutes);
-}
-
-async function load(airlineCode: string, legs: Leg[], sourceUrl: string) {
-  const airline = await prisma.airline.findUniqueOrThrow({ where: { code: airlineCode } });
-  const airports = new Map((await prisma.airport.findMany()).map((a) => [a.code, a]));
-  const removed = await prisma.flightPattern.deleteMany({ where: { airlineId: airline.id, sourceUrl } });
-
-  const patterns = mergeDays(legs);
-  for (const leg of patterns) {
-    const origin = airports.get(leg.from);
-    const destination = airports.get(leg.to);
-    if (!origin || !destination) throw new Error(`Unknown airport in ${leg.flight} ${leg.from}-${leg.to}: run the seed first`);
-    await prisma.flightPattern.create({
-      data: {
-        airlineId: airline.id, originId: origin.id, destinationId: destination.id,
-        flightNumber: leg.flight, departureTime: leg.dep, arrivalTime: leg.arr, daysOfWeek: leg.days,
-        startDate: VALID_FROM, endDate: VALID_TO, aircraft: leg.aircraft,
-        durationInMin: minutesBetween(leg.dep, origin.timezone, leg.arr, destination.timezone),
-        stops: 0, active: true,
-        source: "AIRLINE_TIMETABLE", sourceUrl, verifiedAt: READ_ON, reviewStatus: "APPROVED",
-      },
-    });
-  }
-  console.log(`${airline.name}: ${patterns.length} patterns from ${legs.length} rows (replaced ${removed.count})`);
-}
-
 type Trip = { day: Weekday; flight: string | null; from: string; to: string; dep: string; arr: string; via: string[]; aircraft?: string };
 
 /**
@@ -264,7 +213,8 @@ async function loadFlights(airlineCode: string, legs: Leg[], sourceUrl: string) 
     let routeAirlineId = routeAirlineIds.get(pairKey);
     if (!routeAirlineId) {
       const routeAirline = await ensureRouteAirline(prisma, { airlineId: airline.id, originId: origin.id, destinationId: destination.id });
-      await prisma.routeAirline.update({ where: { id: routeAirline.id }, data: { verifiedAt: READ_ON, verifiedSourceUrl: sourceUrl } });
+      // Published so the local search shows them; in production the operator publishes by hand.
+      await prisma.routeAirline.update({ where: { id: routeAirline.id }, data: { verifiedAt: READ_ON, verifiedSourceUrl: sourceUrl, isPublished: true } });
       routeAirlineId = routeAirline.id;
       routeAirlineIds.set(pairKey, routeAirlineId);
     }
@@ -293,10 +243,9 @@ async function loadFlights(airlineCode: string, legs: Leg[], sourceUrl: string) 
 }
 
 async function main() {
-  const expired = await prisma.flightPattern.deleteMany({ where: { endDate: { lt: new Date() } } });
-  console.log(`Deleted ${expired.count} expired patterns`);
-  await load("BU", caaLegs, CAA_SOURCE);
-  await load("4H", airCongoLegs, AIR_CONGO_SOURCE);
+  // Schedules written by earlier versions of this script; the site reads dated flights now.
+  const old = await prisma.flightPattern.deleteMany({ where: { sourceUrl: { in: [CAA_SOURCE, AIR_CONGO_SOURCE] } } });
+  if (old.count) console.log(`Deleted ${old.count} old preview schedules`);
   await loadFlights("BU", caaLegs, CAA_SOURCE);
   await loadFlights("4H", airCongoLegs, AIR_CONGO_SOURCE);
 }

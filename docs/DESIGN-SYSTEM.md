@@ -253,7 +253,7 @@ The same word and colour mean the same thing everywhere.
 | `FreshnessBadge` | How recently data was verified, coloured by age. |
 | `RouteTitle` | Origin, arrow icon, destination (the screen reader hears "à"), as a heading or inline. |
 | `AirlineMark` | IATA code chip and airline name. |
-| `DayStrip` | Operating days L M M J V S D. |
+| `DayStrip` | Operating days L M M J V S D: flying days tinted, other days faded, one day solid (`highlight`: the date searched or the next departure). Letters and the spoken sentence can be passed in for English. |
 | `Logo`, `LogoMark` | Brand (in `components/brand/`). |
 
 **Search and home** (2026-10-31)
@@ -319,6 +319,12 @@ The back office still works on a phone (simple menu), but it is not designed for
 - Every field has a label above it, "(facultatif)" when optional, and one line under it that shows the hint or, after a failed save, the error.
 - A sticky action bar: Enregistrer (disabled until something changes), Annuler, and Supprimer on the far right behind a confirmation.
 - Server errors appear at the top in a danger alert, in French, saying what to do instead (for example "changez plutôt son statut").
+
+**Search results** (P-13; `components/search/`):
+- **Card:** airline name on top; the airline code in a tile on the left, where other sites put a logo; times large with airport codes under them; duration, a line and "Direct" or "1 escale" in the middle; price ("dès 244 $", "relevé le 30 oct.") and "Voir le vol" on the right. On phones, price and button move to a bar at the bottom. The whole card is one link target (the button's area is stretched over the card).
+- **What stays off the card:** flight number, aircraft, stop names (in a tooltip) and sources. They are on the flight page. The date is not repeated when the visitor chose one; otherwise "Prochain vol : dim. 1 nov.".
+- **Sort tabs:** four cells (two by two on phones), each with the value of its first result, so the trade-off shows before clicking. The selected tab is filled with the brand colour.
+- **Flight page:** the times block first, then facts (duration, number, aircraft) and flying days, other departures as chips, price with date and source, a booking button to the airline's own site, and the help card. A closed airport shows its warning above everything.
 
 **Bulk actions** (RW-3; `components/backoffice/workspace/`):
 - **Preview before saving.** A bulk action shows a live preview as the form changes: what will be added, changed, already up to date, or skipped with the reason. The save button says how many records it writes ("Enregistrer (6 vols)") and stays disabled when there is nothing to write.

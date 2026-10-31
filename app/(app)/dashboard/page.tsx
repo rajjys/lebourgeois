@@ -4,14 +4,11 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAirlines } from "@/hooks/useAirlines";
 import { useAirports } from "@/hooks/useAirports";
-import { useFlightPatterns } from "@/hooks/useFlightPatterns";
 import { Airline, Airport } from "@/lib/generated/prisma/client";
-import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 
 export default function DashboardPage() {
     const { airlines } = useAirlines();
     const { airports } = useAirports();
-    const { patterns } = useFlightPatterns();
 
   return (
     <div className="p-8">
@@ -105,46 +102,19 @@ export default function DashboardPage() {
     </Card>
 
     {/* ---------------------------------------------------------
-        FLIGHT PATTERNS
+        ROUTES (the dashboard itself is rebuilt in B-1)
     --------------------------------------------------------- */}
     <Card className="h-full flex flex-col">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Programmes</CardTitle>
-        <Link href="/dashboard/flight-patterns/new">
-          <Button>Nouveau programme</Button>
-        </Link>
+      <CardHeader>
+        <CardTitle>Routes</CardTitle>
       </CardHeader>
-
-      <CardContent className="flex flex-col flex-1">
-        {patterns?.length === 0 ? (
-          <div className="text-sm text-muted-foreground">
-            Aucun programme disponible.
-          </div>
-        ) : (
-          <ul className="divide-y">
-            {patterns?.slice(0, 6).map((fp: FlightPatternResponse) => (
-              <li key={fp.id} className="py-3 flex items-center justify-between">
-                <div>
-                  <strong>{fp.flightNumber}</strong>{" "}
-                  ({fp.origin.code} → {fp.destination.code})
-                  <div className="text-sm text-muted-foreground">
-                    {fp.daysOfWeek?.join(", ")}
-                  </div>
-                </div>
-                <Link href={`/dashboard/flight-patterns/${fp.id}`}>
-                  <Button variant="outline" size="sm">Modifier</Button>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <div className="border-t border-neutral-200 flex justify-center mt-auto">
-          <Link
-            href={`/dashboard/flight-patterns`}
-            className="pt-4 text-neutral-500 hover:text-neutral-600 font-medium"
-          >
-            Tous les programmes
+      <CardContent className="flex flex-col flex-1 gap-4">
+        <p className="text-sm text-muted-foreground">
+          Les vols se saisissent route par route : calendrier, horaires appliqués sur plusieurs semaines, vérification et retour en arrière.
+        </p>
+        <div className="mt-auto">
+          <Link href="/dashboard/routes">
+            <Button>Ouvrir les routes</Button>
           </Link>
         </div>
       </CardContent>

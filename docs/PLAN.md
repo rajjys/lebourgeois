@@ -97,9 +97,9 @@ Snapshot on **2026-10-31**:
 |---|---|
 | Security | ✅ Admin login, all write APIs protected, Next.js upgraded (4 critical vulnerabilities fixed), customer data no longer public. Deployed and verified in production (PR #1). |
 | Data model | ✅ Schema v3, route-centric, in production (**RW-1**, PR #8, 2026-10-31): routes with status and priority, airlines on routes, flights on dates, change history ([ROUTE-MODEL.md](ROUTE-MODEL.md)). |
-| Data | ⚠️ **Production:** reference data loaded by the owner on 2026-10-31 (checked on the live API: 17 airports with correct timezones, Goma and Bunia closed, Congo Airways suspended); the owner ran the seed again after RW-1, which adds the 34 priority routes. The old data (30 schedules expired on 2026-02-28, 30 prices copied from them) is still there: the clean-up script is ready (see [Waiting on](#9-waiting-on)). The public site shows no flights until the route workspace is used. **Local only:** preview data typed in from CAA's 20 Oct 2026 timetable and Air Congo's schedule PDF: 82 schedules for today's search, and 832 flights on dates (20 Oct → 29 Nov, 46 airline-on-route records) for the route back office. |
+| Data | ⚠️ **Production:** reference data loaded by the owner on 2026-10-31 (checked on the live API: 17 airports with correct timezones, Goma and Bunia closed, Congo Airways suspended); the owner ran the seed again after RW-1, which adds the 34 priority routes. The old data (30 schedules expired on 2026-02-28, 30 prices copied from them, 22 empty airline records, 8 empty routes) was deleted on 2026-10-31 with the owner's OK, after a backup. The public site shows flights once they are entered and published in the route workspace. **Local only:** preview data typed in from CAA's 20 Oct 2026 timetable and Air Congo's schedule PDF: 832 flights on dates (20 Oct → 29 Nov), published on 46 airline-on-route records; the 5 Air Congo prices are approved locally to preview prices (still pending in production). |
 | Brand and design | ✅ **Clerikaa** in code (still served from `lebourgeois.cd`). Design system v1 merged (PR #5): tokens, font, logo, components, `/dashboard/design`. |
-| Public site | 🟡 Home rebuilt and rendered on the server (P-9, PR #6). Navbar search button, contact page and form fixes live (P-12, PR #7). Search, flight detail and request pages are still rendered in the browser until RW-5. |
+| Public site | 🟡 Home rebuilt and rendered on the server (P-9, PR #6). Navbar search button, contact page and form fixes live (P-12, PR #7). Search results redesigned and read from dated flights, with a server-rendered flight page (P-13, in review). The search form and the request page are still rendered in the browser until RW-5. |
 | Leads | 🟡 Request form and contact form save to the database; both are visible in the back office (Demandes, Messages). Email alerts are built but on hold. |
 | Environments | ✅ Separate local dev database. Production migrations run automatically on deploy. |
 
@@ -293,6 +293,15 @@ Verified on 2026-10-30.
   - follow-up (RW-1 pull request): the owner's WhatsApp number on `/contact`, next to the email, and in the message shown when sending fails
   - follow-up (RW-2 pull request): "Accueil" in the navbar, before À propos and Contact (owner)
   - follow-up (RW-3 pull request): creating a route that already exists now says so as soon as both airports are picked, with an "Ouvrir" link to each existing direction (owner)
+- 🟡 **P-13:** Search results v2 (owner, 2026-10-31, after comparing with Skyscanner; in review):
+  - results come from dated flights (schema v3), grouped as **services**: one airline's flight with the same number, times and stops. One card per service, not per date.
+  - card: airline name on top, the code in a tile on the left (no logos yet, see Waiting on), departure and arrival times with airport codes, duration, direct or stops in the middle, price and "Voir le vol" on the right; price and button at the bottom on phones. Flight number and aircraft move to the flight page.
+  - the week view is redesigned (flying days tinted, the searched day or next departure solid) and stays on every card; "Prochain vol : …" shows only when no date was chosen.
+  - tabs **Recommandé · Moins cher · Plus rapide · Plus proche**, each showing its first result's value. Recommandé = direct flights first, then the best balance of departure, price and duration.
+  - `/explore/[id]` is now one departure (server-rendered): times and airports, duration, stops, number, aircraft, flying days, other departures, price with its date and source, "Réserver sur {site de la compagnie}", help link. Still `noindex` until RW-5.
+  - the home sections (next departures, tracked routes) read dated flights too.
+  - public rule: a flight shows once it is validated and scheduled, its airline is published, and the airline is published on that route.
+  - "Programmes de vol" retired from the back office (screens, API and helpers removed); the `FlightPattern` table is dropped in RW-7.
 - ⬜ **P-11:** "Ma ville": a visitor picks their city and the home and hub lists show its routes first (owner idea: someone in Kolwezi cares about Kolwezi first). After M4; airport pages (E-1) already serve this for search engines.
 
 **Airports and airlines as pages** (owner, 2026-10-31). They are hubs for internal links and answer their own searches ("aéroport de Goma", "Air Congo").
@@ -477,6 +486,7 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | 2026-10-31 | **Contact page with its own form** (questions, error reports, airlines), separate from flight-help requests; messages handled in the back office. Replaces "contact is a text page, no second form". No floating chat bubble for now. | Owner: some people only have a question. A bubble covers content on phones and loads on every page; revisit if messages show demand. |
 | 2026-10-31 | Keep the Kinshasa – Goma and Bunia – Beni route pages, with the airport banner. | Owner: those airports can reopen any time. |
 | 2026-10-31 | Public contact address: the owner's email until a `clerikaa.com` mailbox exists. WhatsApp: the owner's number, +243 975 092 470. | Owner. |
+| 2026-10-31 | **Search results v2** (P-13): one card per service; number and aircraft on the flight page only; the date is not repeated when the visitor chose one; four sort tabs (Recommandé, Moins cher, Plus rapide, Plus proche). "Programmes de vol" retired from the back office. | Owner, comparing with Skyscanner: clearer to read. The route workspace replaced the schedules screen, so keeping both invited typing the same data twice. |
 | 2026-10-31 | **Undo is a stack per airline on a route** (RW-3): every workspace action is one batch; "Défaire" reverts the latest one not yet undone, and can be repeated. No redo. | Undoing an older action while newer ones touched the same flights could not be explained or trusted. "Défaire" because "Annuler" already means cancelling flights. |
 | 2026-10-31 | **Delete the old production data** (owner): expired schedules, the prices copied from them, and the route records left empty. Priority routes, current fares, requests and messages stay. Replaces "keep expired patterns as hints" (ROUTE-MODEL §9). | Owner: the database is full of old data. A backup file and the change log keep what was deleted. |
 | 2026-10-31 | **Schema v3 details** (RW-1): a flight's number may be empty (Air Congo's timetable publishes none), so flights are unique per route-airline and date both by number and by departure time. Fares keep only their link to the airline-on-route; their own airline and city columns were dropped to avoid two sources of truth. The seed now only adds missing reference rows. | ROUTE-MODEL §4 said "unique by number", which cannot hold unnumbered flights. A seed that overwrote rows would undo edits made in the back office since P-12. |
@@ -487,8 +497,8 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 
 | What | Who | Blocks |
 |---|---|---|
-| Review and merge RW-3 (schedule tools). The production deploy adds the `ChangeBatch` table. | Owner | RW-4 starts after |
-| OK to delete the old production data: the preview ran on 2026-10-31 (30 expired schedules, 30 old prices, 22 empty airline-on-route records, 8 empty non-priority routes; 0 requests, 0 messages). Nothing is deleted before the owner says yes. | Owner | Clean production data |
+| Review and merge P-13 (search results v2, flight page, "Programmes de vol" retired) | Owner | RW-4 starts after |
+| Airline logos: use them on cards and flight pages? Logo files for CAA and Ethiopian are in `docs/`. For Air Congo, show Air Congo's logo, or "Ethiopian Airlines · opéré par Air Congo" as other sites do? | Owner | P-13 follow-up |
 | Training crawlers: allow or block ([SEO-AEO-GEO.md §8](SEO-AEO-GEO.md#8-ai-engines-specifically)) | Owner | F-6 |
 | Buy `clerikaa.com` (available on 2026-10-30) | Owner | Rebrand track, L-4 |
 | Resend account verification | Owner / Resend | L-4 |

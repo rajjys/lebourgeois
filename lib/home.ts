@@ -1,11 +1,12 @@
 import "server-only";
 import prisma from "@/lib/prisma";
-import { PUBLIC_PATTERN_FILTER } from "@/lib/flightPatterns/visibility";
-import { computeNextDepartureDate } from "@/lib/flightPatterns/nextDeparture";
+import { PUBLIC_FLIGHT, latestPrices } from "@/lib/search";
+import { dayOf, isUpcoming, localNow } from "@/lib/routeStatus";
+import { addDays } from "@/lib/schedule";
 
 /**
  * Data for the home page, read on the server so it is in the HTML (docs/SEO-AEO-GEO.md §4.1).
- * Reads FlightPattern for now; RW-1 swaps the source to dated flights and keeps these shapes.
+ * Read from dated flights, with the same visibility rule as the search (lib/search.ts).
  */
 
 type Place = { code: string; city: string; slug: string };
@@ -16,13 +17,15 @@ export type UpcomingDeparture = {
   date: string;
   departureTime: string;
   arrivalTime: string;
-  flightNumber: string;
+  flightNumber: string | null;
   origin: Place;
   destination: Place;
   airline: { code: string; name: string };
+  /** Latest validated price for this airline on this route, and when it was seen. */
   price: number | null;
-  /** When the owner last confirmed or edited the row; stands in as the price observation date. */
-  checkedAt: string;
+  priceObservedAt: string | null;
+  /** When the schedule was last checked. */
+  checkedAt: string | null;
 };
 
 export type TrackedRoute = {
@@ -32,7 +35,7 @@ export type TrackedRoute = {
   /** Departures in the next 7 days, all airlines. Counted from dates, so overlapping periods don't double count. */
   flightsNext7Days: number;
   minPrice: number | null;
-  minPriceCheckedAt: string | null;
+  minPriceObservedAt: string | null;
 };
 
 export type AirportAlert = {
@@ -44,30 +47,19 @@ export type AirportAlert = {
   sourceUrl: string | null;
 };
 
-const WEEKDAY_BY_UTC_DAY = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"] as const;
 const DAY_MS = 86_400_000;
-
-const utcDay = (d: Date) => Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
-
-function countDepartures(p: { daysOfWeek: string[]; startDate: Date; endDate: Date }, from: Date, days: number) {
-  const first = utcDay(p.startDate);
-  const last = utcDay(p.endDate);
-  let count = 0;
-  for (let i = 0; i < days; i++) {
-    const day = utcDay(from) + i * DAY_MS;
-    if (day < first || day > last) continue;
-    if (p.daysOfWeek.includes(WEEKDAY_BY_UTC_DAY[new Date(day).getUTCDay()])) count++;
-  }
-  return count;
-}
-
 const place = (a: { code: string; city: string; slug: string }): Place => ({ code: a.code, city: a.city, slug: a.slug });
 
 export async function getHomeData(now = new Date()) {
-  const [patterns, alerts] = await Promise.all([
-    prisma.flightPattern.findMany({
-      where: { ...PUBLIC_PATTERN_FILTER, endDate: { gte: now } },
-      include: { airline: true, origin: true, destination: true },
+  // From yesterday (UTC) so that early-morning departures in UTC+2 are not missed; each flight
+  // is then checked against its own airport's clock.
+  const from = new Date(`${dayOf(new Date(now.getTime() - DAY_MS))}T00:00:00Z`);
+  const until = new Date(`${addDays(dayOf(now), 7)}T00:00:00Z`);
+  const [flights, alerts] = await Promise.all([
+    prisma.flight.findMany({
+      where: { ...PUBLIC_FLIGHT, date: { gte: from, lte: until } },
+      include: { routeAirline: { include: { airline: true, route: { include: { origin: true, destination: true } } } } },
+      orderBy: [{ date: "asc" }, { departureTime: "asc" }],
     }),
     prisma.airport.findMany({
       where: { status: { not: "OPEN" } },
@@ -75,53 +67,54 @@ export async function getHomeData(now = new Date()) {
     }),
   ]);
 
+  const upcoming = flights.filter((f) => isUpcoming(f, localNow(f.routeAirline.route.origin.timezone, now)));
+  const prices = await latestPrices([...new Set(upcoming.map((f) => f.routeAirlineId))]);
+
+  // The next departure of each airline on each route, so one daily flight does not fill the list.
   const departures: UpcomingDeparture[] = [];
-  const routes = new Map<string, TrackedRoute & { airlines: Set<string> }>();
-
-  for (const p of patterns) {
-    const next = computeNextDepartureDate({
-      daysOfWeek: p.daysOfWeek,
-      departureTime: p.departureTime,
-      startDate: p.startDate,
-      endDate: p.endDate,
-      originTimezone: p.origin.timezone,
-      referenceDate: now,
-    });
-    if (!next) continue;
-
+  const seen = new Set<string>();
+  for (const f of upcoming) {
+    if (seen.has(f.routeAirlineId)) continue;
+    seen.add(f.routeAirlineId);
+    const { route, airline } = f.routeAirline;
+    const price = prices.get(f.routeAirlineId);
     departures.push({
-      id: p.id,
-      date: next.slice(0, 10),
-      departureTime: p.departureTime,
-      arrivalTime: p.arrivalTime,
-      flightNumber: p.flightNumber,
-      origin: place(p.origin),
-      destination: place(p.destination),
-      airline: { code: p.airline.code, name: p.airline.name },
-      price: p.price,
-      checkedAt: (p.verifiedAt ?? p.updatedAt).toISOString(),
+      id: f.id,
+      date: dayOf(f.date),
+      departureTime: f.departureTime,
+      arrivalTime: f.arrivalTime,
+      flightNumber: f.flightNumber,
+      origin: place(route.origin),
+      destination: place(route.destination),
+      airline: { code: airline.code, name: airline.name },
+      price: price?.amount ?? null,
+      priceObservedAt: price?.observedAt ?? null,
+      checkedAt: (f.verifiedAt ?? f.routeAirline.verifiedAt)?.toISOString() ?? null,
     });
+  }
 
-    const key = `${p.origin.code}-${p.destination.code}`;
-    const route = routes.get(key) ?? {
-      origin: place(p.origin),
-      destination: place(p.destination),
+  const routes = new Map<string, TrackedRoute & { airlines: Set<string> }>();
+  for (const f of upcoming) {
+    const { route } = f.routeAirline;
+    const key = route.slug;
+    const entry = routes.get(key) ?? {
+      origin: place(route.origin),
+      destination: place(route.destination),
       airlineCount: 0,
       flightsNext7Days: 0,
       minPrice: null,
-      minPriceCheckedAt: null,
+      minPriceObservedAt: null,
       airlines: new Set<string>(),
     };
-    route.airlines.add(p.airline.code);
-    route.flightsNext7Days += countDepartures(p, now, 7);
-    if (p.price != null && (route.minPrice == null || p.price < route.minPrice)) {
-      route.minPrice = p.price;
-      route.minPriceCheckedAt = (p.verifiedAt ?? p.updatedAt).toISOString();
+    entry.airlines.add(f.routeAirlineId);
+    if (dayOf(f.date) <= addDays(localNow(route.origin.timezone, now).day, 6)) entry.flightsNext7Days++;
+    const price = prices.get(f.routeAirlineId);
+    if (price && (entry.minPrice == null || price.amount < entry.minPrice)) {
+      entry.minPrice = price.amount;
+      entry.minPriceObservedAt = price.observedAt;
     }
-    routes.set(key, route);
+    routes.set(key, entry);
   }
-
-  departures.sort((a, b) => a.date.localeCompare(b.date) || a.departureTime.localeCompare(b.departureTime));
 
   return {
     departures: departures.slice(0, 8),

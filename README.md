@@ -62,7 +62,7 @@ After a reboot, run `npm run db:start` before `npm run dev`.
 | `npm run db:seed` | Loads reference data (airports, airlines, statuses, priority routes). Only adds what is missing, so it never undoes a back-office edit. Refuses non-local databases unless `ALLOW_REMOTE_DB=1`. |
 | `node scripts/hash-password.mjs '<password>'` | Produces the `ADMIN_PASSWORD_HASH` value |
 | `npx tsx scripts/clean-legacy-data.ts [--production] [--apply]` | Removes data from before the route model: expired schedules, prices copied from them, route records left empty (never priority routes, requests or messages). Previews by default; `--apply` writes a backup to `~/.lebourgeois/backups` first, then deletes in one transaction and logs each deletion. `--production` reads the database address from `.env`. |
-| `npx tsx scripts/load-dev-timetables.ts` | Local preview data: deletes expired schedules, then loads CAA's 20 Oct 2026 timetable and Air Congo's schedule PDF, typed in by hand, as schedules (today's search) and as flights on dates (route back office). Refuses any non-local database. |
+| `npx tsx scripts/load-dev-timetables.ts` | Local preview data: deletes expired schedules, then loads CAA's 20 Oct 2026 timetable and Air Congo's schedule PDF, typed in by hand, as flights on dates, and publishes each airline on its routes so the local search shows them. Refuses any non-local database. |
 
 ## Troubleshooting
 

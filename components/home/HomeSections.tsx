@@ -69,17 +69,17 @@ export function HomeHero({ popular }: { popular: TrackedRoute[] }) {
 
 function DepartureCard({ d }: { d: UpcomingDeparture }) {
   const { t } = useTranslation();
-  const checkedAt = new Date(d.checkedAt);
+  const checkedAt = d.checkedAt ? new Date(d.checkedAt) : null;
   return (
     <Link
-      href={routeHref(d.origin, d.destination)}
+      href={`/explore/${d.id}`}
       className="flex h-full flex-col rounded-xl border bg-card p-4 shadow-card transition-colors hover:border-primary"
     >
       <div className="flex items-baseline justify-between gap-2">
         <time dateTime={d.date} className="text-sm font-bold text-brand">
           {formatDateShort(new Date(d.date))}
         </time>
-        <span className="text-sm text-muted-foreground">{formatFlightNumber(d.flightNumber)}</span>
+        {d.flightNumber && <span className="text-sm text-muted-foreground">{formatFlightNumber(d.flightNumber)}</span>}
       </div>
       <RouteTitle as="h3" origin={d.origin.city} destination={d.destination.city} className="mt-2 text-lg leading-snug" />
       <p className="mt-1 text-sm text-foreground">
@@ -89,11 +89,11 @@ function DepartureCard({ d }: { d: UpcomingDeparture }) {
       <div className="mt-auto pt-4">
         <div className="flex flex-wrap items-end justify-between gap-2 border-t pt-3">
           {d.price != null ? (
-            <PriceTag amount={d.price} observedAt={checkedAt} />
+            <PriceTag amount={d.price} observedAt={new Date(d.priceObservedAt!)} />
           ) : (
             <span className="text-sm text-muted-foreground">{t("home.departures.noPrice")}</span>
           )}
-          {daysBetween(checkedAt, new Date()) > FRESH_DAYS && <FreshnessBadge verifiedAt={checkedAt} />}
+          {checkedAt && daysBetween(checkedAt, new Date()) > FRESH_DAYS && <FreshnessBadge verifiedAt={checkedAt} />}
         </div>
       </div>
     </Link>
@@ -141,8 +141,8 @@ export function TrackedRoutes({ routes }: { routes: TrackedRoute[] }) {
                   </span>
                 </span>
                 <span className="flex shrink-0 items-center gap-2">
-                  {r.minPrice != null && r.minPriceCheckedAt && (
-                    <PriceTag amount={r.minPrice} observedAt={new Date(r.minPriceCheckedAt)} className="text-right" />
+                  {r.minPrice != null && r.minPriceObservedAt && (
+                    <PriceTag amount={r.minPrice} observedAt={new Date(r.minPriceObservedAt)} className="text-right" />
                   )}
                   <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
                 </span>

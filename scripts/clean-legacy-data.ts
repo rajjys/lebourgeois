@@ -146,7 +146,7 @@ async function main() {
     await tx.routeAirline.deleteMany({ where: { id: { in: emptyRouteAirlines.map((ra) => ra.id) } } });
     await tx.route.deleteMany({ where: { id: { in: emptyRoutes.map((r) => r.id) } } });
     await tx.changeLog.createMany({ data: logs });
-  });
+  }, { timeout: 60_000, maxWait: 15_000 }); // a remote database from a laptop: well over the 5 s default
   console.log(
     `Deleted ${patterns.length} schedules, ${fares.length} fares, ${emptyRouteAirlines.length} airline-on-route records, ` +
       `${emptyRoutes.length} routes; ${logs.length} change-log entries written.`,

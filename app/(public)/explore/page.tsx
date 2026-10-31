@@ -7,7 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AirportCombobox, airportCode } from "@/components/AirportCombobox";
 import { AirportStatusNotice } from "@/components/search/AirportStatusNotice";
 import { requestHref, SEARCH_ANCHOR } from "@/lib/links";
-import FlightPatternResultCard from "@/components/FlightPatternResultCard";
+import { ResultCard } from "@/components/search/ResultCard";
+import { SortTabs } from "@/components/search/SortTabs";
 import { useTranslation } from 'react-i18next';
 import { Plane, ArrowLeftRight, X, CalendarIcon, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -15,7 +16,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns";
 import { enUS, fr } from "date-fns/locale";
 import { cn } from "@/lib/utils/cn-utils";
-import { FlightPatternResponse } from "@/lib/validations/flightPattern";
+import { sortServices, type SortKey } from "@/lib/searchResults";
+import { formatDateLong } from "@/lib/format";
+import type { SearchResult } from "@/lib/search";
 
 const ExploreFlights = () => {
   const { t, i18n } = useTranslation();
@@ -24,8 +27,13 @@ const ExploreFlights = () => {
   // ?from=FIH&to=FBM comes from the home search and from route links (lib/links.ts).
   const [from, setFrom] = useState(() => searchParams.get("from") ?? "");
   const [to, setTo] = useState(() => searchParams.get("to") ?? "");
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [searchResults, setSearchResults] = useState<FlightPatternResponse[]>([]);
+  // ?date=YYYY-MM-DD keeps a dated search shareable; without it, the next four weeks are shown.
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(() => {
+    const d = searchParams.get("date");
+    return d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? new Date(`${d}T00:00:00`) : undefined;
+  });
+  const [result, setResult] = useState<SearchResult | null>(null);
+  const [sort, setSort] = useState<SortKey>("best");
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -37,10 +45,11 @@ const ExploreFlights = () => {
   useEffect(() => {
     if (canSearch && fromIata && toIata) {
       // Keep the URL shareable; the page stays one entry in the history.
-      router.replace(`/explore?from=${fromIata}&to=${toIata}`, { scroll: false });
+      const date = selectedDate ? `&date=${format(selectedDate, "yyyy-MM-dd")}` : "";
+      router.replace(`/explore?from=${fromIata}&to=${toIata}${date}`, { scroll: false });
       performSearch(fromIata, toIata, selectedDate);
     } else {
-      setSearchResults([]);
+      setResult(null);
       setHasSearched(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,11 +74,10 @@ const ExploreFlights = () => {
         throw new Error('Failed to search flights');
       }
       
-      const data = await response.json();
-      setSearchResults(data || []);
+      setResult((await response.json()) as SearchResult);
     } catch (error) {
       console.error('Error searching flights:', error);
-      setSearchResults([]);
+      setResult(null);
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +96,7 @@ const ExploreFlights = () => {
     setFrom("");
     setTo("");
     setSelectedDate(undefined);
-    setSearchResults([]);
+    setResult(null);
     setHasSearched(false);
   };
 
@@ -244,24 +252,33 @@ const ExploreFlights = () => {
                 <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
                 <p className="text-muted-foreground">{t('explore.results.loading')}</p>
               </div>
-            ) : searchResults.length > 0 ? (
-              <div className="space-y-2 max-w-4xl mx-auto">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground">
-                    {searchResults.length === 1
+            ) : result && result.services.length > 0 ? (
+              <div className="mx-auto max-w-4xl space-y-4">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <h2 className="text-lg font-bold text-foreground md:text-xl">
+                    {result.services.length === 1
                       ? t('explore.results.title', { count: 1 })
-                      : t('explore.results.title_plural', { count: searchResults.length })}
+                      : t('explore.results.title_plural', { count: result.services.length })}
                   </h2>
+                  <p className="text-sm text-muted-foreground first-letter:uppercase">
+                    {result.date
+                      ? t('explore.results.onDate', { date: formatDateLong(new Date(`${result.date}T00:00:00Z`)) })
+                      : t('explore.results.window')}
+                  </p>
                 </div>
-                <div className="space-y-4">
-                  {searchResults.map((pattern) => (
-                    <FlightPatternResultCard
-                      key={pattern.id}
-                      pattern={pattern}
-                      selectedDate={selectedDate || undefined}
-                    />
+                <SortTabs services={result.services} value={sort} onChange={setSort} dateChosen={!!result.date} />
+                <ul className="space-y-3">
+                  {sortServices(result.services, sort).map((service) => (
+                    <li key={service.key}>
+                      <ResultCard
+                        service={service}
+                        origin={result.origin.code}
+                        destination={result.destination.code}
+                        dateChosen={!!result.date}
+                      />
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             ) : (
               <Card className="border-border bg-card">

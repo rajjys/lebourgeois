@@ -231,7 +231,7 @@ A "Tout est vérifié" button stamps both in one click. The public page shows "V
 - The rules for what becomes a public page are in [§7](#7-what-the-public-site-shows).
 
 ### 5.7 What we drop
-- `FlightPattern` as a way of managing schedules. Its rows are kept, read-only, as "last known schedule" hints (see [§9](#9-moving-from-todays-data)), then removed in RW-7.
+- `FlightPattern` as a way of managing schedules. Its screens and API are gone (P-13) and the expired rows were deleted on the owner's request (2026-10-31); the table is dropped in RW-7.
 - Prices on schedules. The `price` column was already marked deprecated.
 
 ## 6. The back office: managing a route
@@ -439,7 +439,7 @@ They are reviewed monthly.
 | `FareObservation` (35 pending) | Linked to its `RouteAirline`; routes are created if missing (e.g. Kinshasa → Muanda) | Review status kept. ✅ RW-1: the 35 local fares came out identical (airline, cities, amount, status) |
 | `Request` (free-text cities) | Matched to a route when both cities match an airport (code in brackets, or city name) and that route exists; new requests are matched when they are sent | Others stay unmatched. ✅ RW-1 |
 | — | The seed adds the priority routes of [§8](#8-which-routes-first) as drafts with their tier | ✅ RW-1 |
-| `/explore`, `/explore/[flightNumber]` | Replaced by `/vols/...` with permanent (301) redirects | RW-7 |
+| `/explore`, `/explore/[id]` | Read from dated flights since P-13 (`/explore/[id]` is one departure). Replaced by `/vols/...` with permanent (301) redirects | RW-7 |
 | Air Congo flight numbers | Stored as `ET…` under Air Congo | Never inferred from the 4H code |
 
 ## 10. Phased plan
@@ -450,11 +450,11 @@ Each phase is one PR, off `main`, never stacked. Each has an exit test. The IDs 
 |---|---|---|---|---|
 | **RW-1** | Schema v3 | `RouteAirline`, `Flight`, `ChangeLog`; route status, tier and notes; fare and request links; migration of existing data (§9); unit tests for the constraints | The dev database migrates cleanly. Duplicate flights are rejected. Existing patterns and fares are attached to the right route and airline. | ✅ PR #8 |
 | **RW-2** | Network board | `/dashboard/routes`: list, filters, computed next flight, "known until" and freshness; create a route (pick two airports, slug generated) | All draft and published routes are listed with correct computed values. A new route can be created in under 30 seconds. | ✅ PR #9 |
-| **RW-3** | Route workspace: schedules | Calendar (8 weeks × 7 days), click to edit, *Appliquer un horaire* with preview, *Copier une semaine*, *Annuler*, *Tout est vérifié*, undo by batch, both directions | The owner's example (§6.2) is done in under 2 minutes with no repeated typing. Undo restores the previous state. | 🟡 in review |
+| **RW-3** | Route workspace: schedules | Calendar (8 weeks × 7 days), click to edit, *Appliquer un horaire* with preview, *Copier une semaine*, *Annuler*, *Tout est vérifié*, undo by batch, both directions | The owner's example (§6.2) is done in under 2 minutes with no repeated typing. Undo restores the previous state. | ✅ PR #10 |
 | **RW-4** | Route workspace: prices and notes | *+ Prix observé* (3 fields), price list per airline, editorial notes, history panel; operator entries auto-approved; pending imports shown separately | A price change is logged in under 20 seconds. The 35 pending fares can be reviewed from the workspace. | ⬜ |
 | **RW-5** | Public route pages | `/vols`, `/vols/[route]`, `/vols/[route]/[airline]` rendered on the server from the model, following [SEO-AEO-GEO.md](SEO-AEO-GEO.md); sitemap from the database; request form linked to routes | P1 routes with real data are live, pass the page checklist and appear in the sitemap. | ⬜ |
 | **RW-6** | Helpers | "Also serves" for flights with stops; copy to the return route; keyboard shortcuts; bulk verify | Entering a flight with a stop on all three routes it serves takes one action. | ⬜ |
-| **RW-7** | Clean-up | Remove `FlightPattern` screens and API, the old `/explore` pages (with 301s) and the `price` column (S-3) | No code reads `FlightPattern`. Old URLs redirect. | ⬜ |
+| **RW-7** | Clean-up | Remove `FlightPattern` screens and API, the old `/explore` pages (with 301s) and the `price` column (S-3) | No code reads `FlightPattern`. Old URLs redirect. | 🟡 screens, API and public reads removed in P-13 (only the legacy clean-up script still names the table); the table drop and the 301s remain |
 
 The order is deliberate. The owner works in the back office (RW-1 → RW-4) before anything public changes (RW-5), so the public pages launch with real, fresh data.
 
