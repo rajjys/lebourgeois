@@ -20,11 +20,6 @@ export function normalizeFlightNumber(input: string | null | undefined): string 
   return FLIGHT_NUMBER_RE.test(value) ? value : undefined;
 }
 
-/** "BU1611" → "BU 1611", the way it is shown. */
-export function formatFlightNumber(value: string): string {
-  return FLIGHT_NUMBER_RE.test(value) ? `${value.slice(0, 2)} ${value.slice(2)}` : value;
-}
-
 const WEEKDAYS: Weekday[] = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]; // getUTCDay() order
 
 /** Day of the week of a calendar date ("2026-11-02" → "MON"). */

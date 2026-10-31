@@ -1,6 +1,6 @@
 # Route-centric model and back office
 
-> **Status:** proposal 2026-10-30; the owner answered the open questions on 2026-10-31 ([§11](#11-open-questions-for-the-owner)). **RW-1 (schema v3, [§4](#4-the-model)) is built and in review**; the back-office screens (RW-2 →) are next.
+> **Status:** proposal 2026-10-30; the owner answered the open questions on 2026-10-31 ([§11](#11-open-questions-for-the-owner)). **RW-1 (schema v3, [§4](#4-the-model)) is live** (PR #8); **RW-2 (network board, [§6.1](#61-network-board-dashboardroutes)) is in review**; the schedule tools (RW-3) are next.
 > **Replaces:** the "flight pattern" way of managing schedules.
 > **Plan:** phases **RW-1 → RW-7** below. They form milestone **M3** in [PLAN.md](PLAN.md#7-milestones).
 > **Depends on:** [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md) (done) and [SEO-AEO-GEO.md](SEO-AEO-GEO.md) (rules for public pages).
@@ -254,6 +254,31 @@ Kinshasa → Lubumbashi       1   BU · ET        mar. 3 nov.    22 nov.        
 - It is sorted by "needs attention": stale first, then tier.
 - Each row shows both directions on hover, and opens the route workspace.
 
+**Built in RW-2:**
+- **Columns:** route (with a link to the return route and a badge when an airport is closed or restricted), priority, airlines (suspended or ended ones struck through), next flight with flights in the next 7 days, "connu jusqu'au", freshness, prices (validated, to validate), requests, status.
+- **Order:**
+  1. never checked or old
+  2. to re-check
+  3. no airline yet
+  4. checked
+  5. archived
+
+  Then by priority, then by name.
+- **Freshness of a route:** that of its least recently checked *active* airline. Every airline that flies it must be checked; suspended and ended airlines don't count.
+  - Checked: up to 7 days ([§11](#11-open-questions-for-the-owner), question 5).
+  - To re-check: 8 to 14 days.
+  - Old: past 14 days.
+- **Times:** "next flight" uses the local time at the origin airport.
+- **Filters:** text (city, code, slug), status (archived routes hidden by default), priority, "à vérifier", "sans compagnie".
+- **"Nouvelle route":** a dialog with two airports, a priority, and "créer aussi le retour" ticked by default. The slug comes from the airports. A route that already exists is reported, not duplicated.
+- **The route page** (`/dashboard/routes/<slug>`) shows:
+  - settings: status, priority, public note
+  - the airlines on the route: verification, next flight, flights known
+  - departures for the next 14 days, cancelled and pending ones included
+  - the prices seen
+
+  Flights are entered in RW-3 and prices in RW-4. Until then, those lists are read-only. A route can be deleted only while it is a draft with no airline and no request; otherwise it is archived.
+
 ### 6.2 Route workspace: `/dashboard/routes/kinshasa-lubumbashi`
 
 ```
@@ -396,7 +421,7 @@ They are reviewed monthly.
 | Today | Becomes | Note |
 |---|---|---|
 | `Route` (backfilled in schema v2, unpublished) | `Route` with `status = DRAFT` and a tier | Nothing lost |
-| `FlightPattern` (30 rows in production, all expired 2026-02-28) | A `RouteAirline` for each route and airline pair found, unpublished. The patterns stay read-only as "dernier programme connu" hints that pre-fill *Appliquer un horaire*. | **No future flights are invented** from expired patterns. ✅ RW-1 |
+| `FlightPattern` (30 rows in production, all expired 2026-02-28) | A `RouteAirline` for each route and airline pair found, unpublished. The patterns stay read-only as "dernier programme connu" hints that pre-fill *Appliquer un horaire*. | **No future flights are invented** from expired patterns. ✅ RW-1. Changed 2026-10-31: the owner asked for the old data to be deleted. `scripts/clean-legacy-data.ts` removes the expired patterns, the 30 prices copied from them, and the records left empty. The weekly timetables are a better starting point than year-old patterns. |
 | `FareObservation` (35 pending) | Linked to its `RouteAirline`; routes are created if missing (e.g. Kinshasa → Muanda) | Review status kept. ✅ RW-1: the 35 local fares came out identical (airline, cities, amount, status) |
 | `Request` (free-text cities) | Matched to a route when both cities match an airport (code in brackets, or city name) and that route exists; new requests are matched when they are sent | Others stay unmatched. ✅ RW-1 |
 | — | The seed adds the priority routes of [§8](#8-which-routes-first) as drafts with their tier | ✅ RW-1 |
@@ -409,8 +434,8 @@ Each phase is one PR, off `main`, never stacked. Each has an exit test. The IDs 
 
 | ID | Phase | Contents | Exit test | Status |
 |---|---|---|---|---|
-| **RW-1** | Schema v3 | `RouteAirline`, `Flight`, `ChangeLog`; route status, tier and notes; fare and request links; migration of existing data (§9); unit tests for the constraints | The dev database migrates cleanly. Duplicate flights are rejected. Existing patterns and fares are attached to the right route and airline. | 🟡 in review |
-| **RW-2** | Network board | `/dashboard/routes`: list, filters, computed next flight, "known until" and freshness; create a route (pick two airports, slug generated) | All draft and published routes are listed with correct computed values. A new route can be created in under 30 seconds. | ⬜ |
+| **RW-1** | Schema v3 | `RouteAirline`, `Flight`, `ChangeLog`; route status, tier and notes; fare and request links; migration of existing data (§9); unit tests for the constraints | The dev database migrates cleanly. Duplicate flights are rejected. Existing patterns and fares are attached to the right route and airline. | ✅ PR #8 |
+| **RW-2** | Network board | `/dashboard/routes`: list, filters, computed next flight, "known until" and freshness; create a route (pick two airports, slug generated) | All draft and published routes are listed with correct computed values. A new route can be created in under 30 seconds. | 🟡 in review |
 | **RW-3** | Route workspace: schedules | Calendar (8 weeks × 7 days), click to edit, *Appliquer un horaire* with preview, *Copier une semaine*, *Annuler*, *Tout est vérifié*, undo by batch, both directions | The owner's example (§6.2) is done in under 2 minutes with no repeated typing. Undo restores the previous state. | ⬜ |
 | **RW-4** | Route workspace: prices and notes | *+ Prix observé* (3 fields), price list per airline, editorial notes, history panel; operator entries auto-approved; pending imports shown separately | A price change is logged in under 20 seconds. The 35 pending fares can be reviewed from the workspace. | ⬜ |
 | **RW-5** | Public route pages | `/vols`, `/vols/[route]`, `/vols/[route]/[airline]` rendered on the server from the model, following [SEO-AEO-GEO.md](SEO-AEO-GEO.md); sitemap from the database; request form linked to routes | P1 routes with real data are live, pass the page checklist and appear in the sitemap. | ⬜ |

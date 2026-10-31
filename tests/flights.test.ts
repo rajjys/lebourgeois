@@ -1,12 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import {
-  arrivalDayOffset,
-  datesOnWeekdays,
-  formatFlightNumber,
-  normalizeFlightNumber,
-  weekdayOf,
-} from "../lib/flights";
+import { arrivalDayOffset, datesOnWeekdays, normalizeFlightNumber, weekdayOf } from "../lib/flights";
+import { formatFlightNumber } from "../lib/format";
 import { changedFields } from "../lib/changeLog";
 import { codeInText, routeSlug } from "../lib/routes";
 
@@ -28,7 +23,7 @@ test("an empty flight number means none published; nonsense is rejected", () => 
 test("flight numbers are shown with a space after the designator", () => {
   assert.equal(formatFlightNumber("BU1611"), "BU 1611");
   assert.equal(formatFlightNumber("ET60"), "ET 60");
-  assert.equal(formatFlightNumber("weird"), "weird");
+  assert.equal(formatFlightNumber("bu1611"), "BU 1611");
 });
 
 test("the owner's example: Mon/Wed/Sat from 2 to 8 Nov", () => {

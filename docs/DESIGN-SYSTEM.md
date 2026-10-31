@@ -295,18 +295,18 @@ The back office still works on a phone (simple menu), but it is not designed for
 
 ### Navigation
 
-**Public navbar** (updated 2026-10-31, P-12):
-- **Left:** logo (home). **Centre:** sections: À propos, Contact. Vols (route index), Compagnies, Aéroports and État du réseau join when their pages exist (RW-5, E-1 → E-3 in [PLAN.md](PLAN.md#stage-4-publish)). **Right:** the **"Rechercher un vol"** button, then the language.
+**Public navbar** (updated 2026-10-31, P-12; Accueil added in RW-2 at the owner's request):
+- **Left:** logo (home). **Centre:** sections: Accueil, À propos, Contact. Vols (route index), Compagnies, Aéroports and État du réseau join when their pages exist (RW-5, E-1 → E-3 in [PLAN.md](PLAN.md#stage-4-publish)). **Right:** the **"Rechercher un vol"** button, then the language.
 - The button is the one way to the search. No nav link may lead to the same page ("Vols" returns only as the route index).
 - On a page with a search form (`id="recherche"`, from `SEARCH_ANCHOR` in `lib/links.ts`), the button scrolls back to the form and focuses "Départ", without motion if the visitor prefers reduced motion. Elsewhere it opens `/explore`.
 - No request link: help is offered after a search finds nothing, on the contact page and in the footer.
-- On phones: logo, the button (icon only under 360 px), then the menu button. The menu opens from the right and holds Accueil, the sections and the language.
+- On phones: logo, the button (icon only under 360 px), then the menu button. The menu opens from the right and holds the same sections and the language.
 
 **Back-office sidebar** (2026-10-31): grouped, with icons that match their meaning.
 | Group | Items |
 |---|---|
 | (top) | Tableau de bord |
-| Données de vol | Programmes de vol (calendar), Compagnies (plane), Aéroports (pin) |
+| Données de vol | Routes (route), Programmes de vol (calendar; goes in RW-7), Compagnies (plane), Aéroports (pin) |
 | Clients | Demandes (inbox), Messages (speech bubble) |
 | Administration | Système de design (palette); Utilisateurs and Paramètres when those pages exist (O-11, O-12) |
 

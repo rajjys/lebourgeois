@@ -37,7 +37,7 @@ export function changedFields(before: object, after: object): Record<string, [un
 }
 
 /** A record as stored in `changes` for a creation or a deletion. */
-export const snapshot = (record: object) => toJson(record) as Record<string, unknown>;
+export const snapshot = (record: object) => toJson(record) as Prisma.InputJsonObject;
 
 export function logChange(db: Db, entry: ChangeEntry) {
   const { changes, ...rest } = entry;
