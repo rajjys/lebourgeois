@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
-import { CircleAlert, CircleCheck, Mail, Plane, TriangleAlert } from "lucide-react";
+import { CircleAlert, CircleCheck, Mail, MessageCircle, Plane, Send, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,10 @@ import { CONTACT_TOPICS, ContactSchema, type ContactInput } from "@/lib/validati
 import { requestHref } from "@/lib/links";
 import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils/cn-utils";
+
+// "+243975092470" → "+243 975 092 470", the way Congolese numbers are written.
+const WHATSAPP_DISPLAY = SITE.whatsapp.replace(/^\+(\d{3})(\d{3})(\d{3})(\d{3})$/, "+$1 $2 $3 $4");
+const WHATSAPP_HREF = `https://wa.me/${SITE.whatsapp.replace(/^\+/, "")}`;
 
 // ?sujet=erreur&page=/vols/... lets any page link to "report a mistake on this page".
 const TOPIC_PARAM: Record<string, ContactInput["topic"]> = {
@@ -170,7 +174,7 @@ export function ContactView() {
               {failed && (
                 <Alert variant="danger">
                   <CircleAlert className="size-4" aria-hidden="true" />
-                  <AlertDescription>{t("contact.form.failed", { email: SITE.contactEmail })}</AlertDescription>
+                  <AlertDescription>{t("contact.form.failed", { email: SITE.contactEmail, whatsapp: WHATSAPP_DISPLAY })}</AlertDescription>
                 </Alert>
               )}
 
@@ -184,12 +188,23 @@ export function ContactView() {
         <aside className="space-y-4">
           <div className="rounded-2xl border p-5">
             <h2 className="flex items-center gap-2 font-semibold text-foreground">
-              <Mail className="size-4 text-brand" aria-hidden="true" />
+              <Send className="size-4 text-brand" aria-hidden="true" />
               {t("contact.aside.emailTitle")}
             </h2>
-            <a href={`mailto:${SITE.contactEmail}`} className="mt-2 inline-block break-all text-link underline">
-              {SITE.contactEmail}
-            </a>
+            <ul className="mt-2 space-y-2 text-sm">
+              <li className="flex items-center gap-2">
+                <Mail className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <a href={`mailto:${SITE.contactEmail}`} className="break-all text-link underline">
+                  {SITE.contactEmail}
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <MessageCircle className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className="text-link underline">
+                  {t("contact.aside.whatsapp", { number: WHATSAPP_DISPLAY })}
+                </a>
+              </li>
+            </ul>
           </div>
           <div className="rounded-2xl border p-5">
             <h2 className="flex items-center gap-2 font-semibold text-foreground">

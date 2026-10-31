@@ -74,6 +74,41 @@ export const TripType = {
 export type TripType = (typeof TripType)[keyof typeof TripType]
 
 
+export const RouteStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type RouteStatus = (typeof RouteStatus)[keyof typeof RouteStatus]
+
+
+export const RouteAirlineStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  ENDED: 'ENDED'
+} as const
+
+export type RouteAirlineStatus = (typeof RouteAirlineStatus)[keyof typeof RouteAirlineStatus]
+
+
+export const FlightStatus = {
+  SCHEDULED: 'SCHEDULED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type FlightStatus = (typeof FlightStatus)[keyof typeof FlightStatus]
+
+
+export const ChangeAction = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE'
+} as const
+
+export type ChangeAction = (typeof ChangeAction)[keyof typeof ChangeAction]
+
+
 export const RequestStatus = {
   NEW: 'NEW',
   CLAIMED: 'CLAIMED',

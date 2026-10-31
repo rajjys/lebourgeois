@@ -4,14 +4,18 @@
  *
  * Local databases only. This is for looking at the site with real routes, not for production:
  * neither PDF gives a validity period, so every row gets the same assumed window (VALID_*).
- * Replaced by real route data in RW-1 (docs/PLAN.md).
+ *
+ * Writes both models while they coexist: patterns for today's public search, and flights on
+ * dates (schema v3) for the route back office (RW-2, RW-3). Patterns go in RW-7.
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
 
 import { DateTime } from "luxon";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient, type Weekday } from "../lib/generated/prisma/client";
+import { PrismaClient, type Prisma, type Weekday } from "../lib/generated/prisma/client";
+import { ensureRouteAirline } from "../lib/routes";
+import { arrivalDayOffset, datesOnWeekdays } from "../lib/flights";
 
 const url = process.env.DATABASE_URL;
 if (!url) throw new Error("DATABASE_URL is not set");
@@ -26,6 +30,9 @@ const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url 
 const VALID_FROM = new Date("2026-10-20T00:00:00Z");
 const VALID_TO = new Date("2026-12-31T00:00:00Z"); // assumption: the PDFs give no end date
 const READ_ON = new Date("2026-10-31T12:00:00Z");  // day the PDFs were read
+// Flights: the same assumption over a shorter window, so "known until" has something to show.
+const FLIGHTS_FROM = "2026-10-20";
+const FLIGHTS_TO = "2026-11-29";
 
 type Leg = { days: Weekday[]; flight: string; from: string; to: string; dep: string; arr: string; aircraft?: string };
 
@@ -200,11 +207,98 @@ async function load(airlineCode: string, legs: Leg[], sourceUrl: string) {
   console.log(`${airline.name}: ${patterns.length} patterns from ${legs.length} rows (replaced ${removed.count})`);
 }
 
+type Trip = { day: Weekday; flight: string | null; from: string; to: string; dep: string; arr: string; via: string[]; aircraft?: string };
+
+/**
+ * Every trip a day's legs offer. The legs of one flight number that follow each other
+ * (BU1414 FIH→MJM, then MJM→FBM) also make the through trips (FIH→FBM via MJM), the way
+ * ROUTE-MODEL §5.3 stores them. Unnumbered legs (Air Congo) stay single: nothing says they connect.
+ */
+function trips(legs: Leg[]): Trip[] {
+  const out: Trip[] = [];
+  const byFlight = new Map<string, Leg[]>();
+  for (const leg of legs) {
+    for (const day of leg.days) {
+      if (!leg.flight) {
+        out.push({ day, flight: null, from: leg.from, to: leg.to, dep: leg.dep, arr: leg.arr, via: [], aircraft: leg.aircraft });
+        continue;
+      }
+      const key = `${day}|${leg.flight}`;
+      byFlight.set(key, [...(byFlight.get(key) ?? []), leg]);
+    }
+  }
+  for (const [key, group] of byFlight) {
+    const day = key.split("|")[0] as Weekday;
+    group.sort((a, b) => a.dep.localeCompare(b.dep));
+    for (let i = 0; i < group.length; i++) {
+      for (let j = i; j < group.length; j++) {
+        const follows = j === i || (group[j - 1].to === group[j].from && group[j].dep >= group[j - 1].arr);
+        if (!follows) break;
+        if (group[i].from === group[j].to) continue;
+        out.push({
+          day, flight: group[i].flight, from: group[i].from, to: group[j].to, dep: group[i].dep, arr: group[j].arr,
+          via: group.slice(i + 1, j + 1).map((leg) => leg.from), aircraft: group[i].aircraft,
+        });
+      }
+    }
+  }
+  return out;
+}
+
+async function loadFlights(airlineCode: string, legs: Leg[], sourceUrl: string) {
+  const airline = await prisma.airline.findUniqueOrThrow({ where: { code: airlineCode } });
+  const airports = new Map((await prisma.airport.findMany()).map((a) => [a.code, a]));
+  // Only rows this script wrote: same airline and source.
+  const removed = await prisma.flight.deleteMany({ where: { sourceUrl, routeAirline: { airlineId: airline.id } } });
+
+  const routeAirlineIds = new Map<string, string>();
+  const rows: Prisma.FlightCreateManyInput[] = [];
+  const taken = new Set<string>();
+  let skipped = 0;
+  const all = trips(legs);
+  for (const trip of all) {
+    const origin = airports.get(trip.from);
+    const destination = airports.get(trip.to);
+    if (!origin || !destination) throw new Error(`Unknown airport in ${trip.from}-${trip.to}: run the seed first`);
+    const pairKey = `${trip.from}-${trip.to}`;
+    let routeAirlineId = routeAirlineIds.get(pairKey);
+    if (!routeAirlineId) {
+      const routeAirline = await ensureRouteAirline(prisma, { airlineId: airline.id, originId: origin.id, destinationId: destination.id });
+      await prisma.routeAirline.update({ where: { id: routeAirline.id }, data: { verifiedAt: READ_ON, verifiedSourceUrl: sourceUrl } });
+      routeAirlineId = routeAirline.id;
+      routeAirlineIds.set(pairKey, routeAirlineId);
+    }
+    for (const date of datesOnWeekdays(FLIGHTS_FROM, FLIGHTS_TO, [trip.day])) {
+      // The two unique keys of Flight: one departure per time, one per flight number.
+      const keys = [`${routeAirlineId}|${date}|${trip.dep}`, trip.flight && `${routeAirlineId}|${date}|${trip.flight}`].filter(Boolean) as string[];
+      if (keys.some((k) => taken.has(k))) {
+        skipped++;
+        continue;
+      }
+      keys.forEach((k) => taken.add(k));
+      rows.push({
+        routeAirlineId, date: new Date(`${date}T00:00:00Z`), flightNumber: trip.flight,
+        departureTime: trip.dep, arrivalTime: trip.arr, arrivalDayOffset: arrivalDayOffset(trip.dep, trip.arr),
+        via: trip.via, aircraft: trip.aircraft,
+        source: "AIRLINE_TIMETABLE", sourceUrl, verifiedAt: READ_ON, reviewStatus: "APPROVED",
+      });
+    }
+  }
+  await prisma.flight.createMany({ data: rows });
+  const withStops = all.filter((t) => t.via.length > 0).length;
+  console.log(
+    `${airline.name}: ${rows.length} flights on ${routeAirlineIds.size} routes, ${FLIGHTS_FROM} to ${FLIGHTS_TO} ` +
+      `(${all.length} weekly trips, ${withStops} with stops; ${skipped} duplicates skipped; replaced ${removed.count})`,
+  );
+}
+
 async function main() {
   const expired = await prisma.flightPattern.deleteMany({ where: { endDate: { lt: new Date() } } });
   console.log(`Deleted ${expired.count} expired patterns`);
   await load("BU", caaLegs, CAA_SOURCE);
   await load("4H", airCongoLegs, AIR_CONGO_SOURCE);
+  await loadFlights("BU", caaLegs, CAA_SOURCE);
+  await loadFlights("4H", airCongoLegs, AIR_CONGO_SOURCE);
 }
 
 main()

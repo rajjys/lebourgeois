@@ -54,6 +54,9 @@ export const ModelName = {
   Airport: 'Airport',
   Airline: 'Airline',
   Route: 'Route',
+  RouteAirline: 'RouteAirline',
+  Flight: 'Flight',
+  ChangeLog: 'ChangeLog',
   FareObservation: 'FareObservation',
   FlightPattern: 'FlightPattern',
   Request: 'Request',
@@ -126,7 +129,9 @@ export const RouteScalarFieldEnum = {
   originId: 'originId',
   destinationId: 'destinationId',
   slug: 'slug',
-  isPublished: 'isPublished',
+  status: 'status',
+  tier: 'tier',
+  note: 'note',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -134,11 +139,67 @@ export const RouteScalarFieldEnum = {
 export type RouteScalarFieldEnum = (typeof RouteScalarFieldEnum)[keyof typeof RouteScalarFieldEnum]
 
 
+export const RouteAirlineScalarFieldEnum = {
+  id: 'id',
+  routeId: 'routeId',
+  airlineId: 'airlineId',
+  status: 'status',
+  isPublished: 'isPublished',
+  note: 'note',
+  bookingUrl: 'bookingUrl',
+  verifiedAt: 'verifiedAt',
+  verifiedSourceUrl: 'verifiedSourceUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RouteAirlineScalarFieldEnum = (typeof RouteAirlineScalarFieldEnum)[keyof typeof RouteAirlineScalarFieldEnum]
+
+
+export const FlightScalarFieldEnum = {
+  id: 'id',
+  routeAirlineId: 'routeAirlineId',
+  date: 'date',
+  flightNumber: 'flightNumber',
+  departureTime: 'departureTime',
+  arrivalTime: 'arrivalTime',
+  arrivalDayOffset: 'arrivalDayOffset',
+  via: 'via',
+  aircraft: 'aircraft',
+  status: 'status',
+  source: 'source',
+  sourceUrl: 'sourceUrl',
+  verifiedAt: 'verifiedAt',
+  reviewStatus: 'reviewStatus',
+  batchId: 'batchId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FlightScalarFieldEnum = (typeof FlightScalarFieldEnum)[keyof typeof FlightScalarFieldEnum]
+
+
+export const ChangeLogScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  actor: 'actor',
+  entity: 'entity',
+  entityId: 'entityId',
+  action: 'action',
+  routeId: 'routeId',
+  batchId: 'batchId',
+  summary: 'summary',
+  changes: 'changes'
+} as const
+
+export type ChangeLogScalarFieldEnum = (typeof ChangeLogScalarFieldEnum)[keyof typeof ChangeLogScalarFieldEnum]
+
+
 export const FareObservationScalarFieldEnum = {
   id: 'id',
-  airlineId: 'airlineId',
-  originId: 'originId',
-  destinationId: 'destinationId',
+  routeAirlineId: 'routeAirlineId',
+  fareName: 'fareName',
+  flightNumber: 'flightNumber',
   amount: 'amount',
   currency: 'currency',
   kind: 'kind',
@@ -200,6 +261,7 @@ export const RequestScalarFieldEnum = {
   travelDate: 'travelDate',
   travelClass: 'travelClass',
   travelers: 'travelers',
+  routeId: 'routeId',
   source: 'source',
   status: 'status',
   assignedToId: 'assignedToId',
@@ -235,6 +297,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull'
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -249,4 +319,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull',
+  AnyNull: 'AnyNull'
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

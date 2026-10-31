@@ -228,7 +228,7 @@
       "messageHint": "For a mistake, tell us the page and what is wrong.",
       "submit": "Send message",
       "sending": "Sending…",
-      "failed": "Sending failed. Try again, or write to us at {{email}}."
+      "failed": "Sending failed. Try again, or write to us at {{email}} or on WhatsApp at {{whatsapp}}."
     },
     "sent": {
       "title": "Message sent",
@@ -237,6 +237,7 @@
     },
     "aside": {
       "emailTitle": "Write directly",
+      "whatsapp": "WhatsApp: {{number}}",
       "flightTitle": "About a specific flight",
       "flightBody": "Tell us the route and the date: we will look with you.",
       "flightCta": "Ask for help with a flight",

@@ -46,6 +46,7 @@ export type RequestMinAggregateOutputType = {
   travelDate: Date | null
   travelClass: string | null
   travelers: number | null
+  routeId: string | null
   source: string | null
   status: $Enums.RequestStatus | null
   assignedToId: string | null
@@ -66,6 +67,7 @@ export type RequestMaxAggregateOutputType = {
   travelDate: Date | null
   travelClass: string | null
   travelers: number | null
+  routeId: string | null
   source: string | null
   status: $Enums.RequestStatus | null
   assignedToId: string | null
@@ -86,6 +88,7 @@ export type RequestCountAggregateOutputType = {
   travelDate: number
   travelClass: number
   travelers: number
+  routeId: number
   source: number
   status: number
   assignedToId: number
@@ -116,6 +119,7 @@ export type RequestMinAggregateInputType = {
   travelDate?: true
   travelClass?: true
   travelers?: true
+  routeId?: true
   source?: true
   status?: true
   assignedToId?: true
@@ -136,6 +140,7 @@ export type RequestMaxAggregateInputType = {
   travelDate?: true
   travelClass?: true
   travelers?: true
+  routeId?: true
   source?: true
   status?: true
   assignedToId?: true
@@ -156,6 +161,7 @@ export type RequestCountAggregateInputType = {
   travelDate?: true
   travelClass?: true
   travelers?: true
+  routeId?: true
   source?: true
   status?: true
   assignedToId?: true
@@ -263,6 +269,7 @@ export type RequestGroupByOutputType = {
   travelDate: Date
   travelClass: string
   travelers: number
+  routeId: string | null
   source: string
   status: $Enums.RequestStatus
   assignedToId: string | null
@@ -306,12 +313,14 @@ export type RequestWhereInput = {
   travelDate?: Prisma.DateTimeFilter<"Request"> | Date | string
   travelClass?: Prisma.StringFilter<"Request"> | string
   travelers?: Prisma.IntFilter<"Request"> | number
+  routeId?: Prisma.StringNullableFilter<"Request"> | string | null
   source?: Prisma.StringFilter<"Request"> | string
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
   assignedToId?: Prisma.StringNullableFilter<"Request"> | string | null
   claimedAt?: Prisma.DateTimeNullableFilter<"Request"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Request"> | Date | string
+  route?: Prisma.XOR<Prisma.RouteNullableScalarRelationFilter, Prisma.RouteWhereInput> | null
 }
 
 export type RequestOrderByWithRelationInput = {
@@ -326,12 +335,14 @@ export type RequestOrderByWithRelationInput = {
   travelDate?: Prisma.SortOrder
   travelClass?: Prisma.SortOrder
   travelers?: Prisma.SortOrder
+  routeId?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
   assignedToId?: Prisma.SortOrderInput | Prisma.SortOrder
   claimedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  route?: Prisma.RouteOrderByWithRelationInput
 }
 
 export type RequestWhereUniqueInput = Prisma.AtLeast<{
@@ -349,12 +360,14 @@ export type RequestWhereUniqueInput = Prisma.AtLeast<{
   travelDate?: Prisma.DateTimeFilter<"Request"> | Date | string
   travelClass?: Prisma.StringFilter<"Request"> | string
   travelers?: Prisma.IntFilter<"Request"> | number
+  routeId?: Prisma.StringNullableFilter<"Request"> | string | null
   source?: Prisma.StringFilter<"Request"> | string
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
   assignedToId?: Prisma.StringNullableFilter<"Request"> | string | null
   claimedAt?: Prisma.DateTimeNullableFilter<"Request"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Request"> | Date | string
+  route?: Prisma.XOR<Prisma.RouteNullableScalarRelationFilter, Prisma.RouteWhereInput> | null
 }, "id">
 
 export type RequestOrderByWithAggregationInput = {
@@ -369,6 +382,7 @@ export type RequestOrderByWithAggregationInput = {
   travelDate?: Prisma.SortOrder
   travelClass?: Prisma.SortOrder
   travelers?: Prisma.SortOrder
+  routeId?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
   assignedToId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -397,6 +411,7 @@ export type RequestScalarWhereWithAggregatesInput = {
   travelDate?: Prisma.DateTimeWithAggregatesFilter<"Request"> | Date | string
   travelClass?: Prisma.StringWithAggregatesFilter<"Request"> | string
   travelers?: Prisma.IntWithAggregatesFilter<"Request"> | number
+  routeId?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
   source?: Prisma.StringWithAggregatesFilter<"Request"> | string
   status?: Prisma.EnumRequestStatusWithAggregatesFilter<"Request"> | $Enums.RequestStatus
   assignedToId?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
@@ -423,6 +438,7 @@ export type RequestCreateInput = {
   claimedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  route?: Prisma.RouteCreateNestedOneWithoutRequestsInput
 }
 
 export type RequestUncheckedCreateInput = {
@@ -437,6 +453,7 @@ export type RequestUncheckedCreateInput = {
   travelDate: Date | string
   travelClass: string
   travelers: number
+  routeId?: string | null
   source?: string
   status?: $Enums.RequestStatus
   assignedToId?: string | null
@@ -463,6 +480,7 @@ export type RequestUpdateInput = {
   claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  route?: Prisma.RouteUpdateOneWithoutRequestsNestedInput
 }
 
 export type RequestUncheckedUpdateInput = {
@@ -477,6 +495,7 @@ export type RequestUncheckedUpdateInput = {
   travelDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   travelClass?: Prisma.StringFieldUpdateOperationsInput | string
   travelers?: Prisma.IntFieldUpdateOperationsInput | number
+  routeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -497,6 +516,7 @@ export type RequestCreateManyInput = {
   travelDate: Date | string
   travelClass: string
   travelers: number
+  routeId?: string | null
   source?: string
   status?: $Enums.RequestStatus
   assignedToId?: string | null
@@ -537,12 +557,23 @@ export type RequestUncheckedUpdateManyInput = {
   travelDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   travelClass?: Prisma.StringFieldUpdateOperationsInput | string
   travelers?: Prisma.IntFieldUpdateOperationsInput | number
+  routeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RequestListRelationFilter = {
+  every?: Prisma.RequestWhereInput
+  some?: Prisma.RequestWhereInput
+  none?: Prisma.RequestWhereInput
+}
+
+export type RequestOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type RequestCountOrderByAggregateInput = {
@@ -557,6 +588,7 @@ export type RequestCountOrderByAggregateInput = {
   travelDate?: Prisma.SortOrder
   travelClass?: Prisma.SortOrder
   travelers?: Prisma.SortOrder
+  routeId?: Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
   assignedToId?: Prisma.SortOrder
@@ -581,6 +613,7 @@ export type RequestMaxOrderByAggregateInput = {
   travelDate?: Prisma.SortOrder
   travelClass?: Prisma.SortOrder
   travelers?: Prisma.SortOrder
+  routeId?: Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
   assignedToId?: Prisma.SortOrder
@@ -601,6 +634,7 @@ export type RequestMinOrderByAggregateInput = {
   travelDate?: Prisma.SortOrder
   travelClass?: Prisma.SortOrder
   travelers?: Prisma.SortOrder
+  routeId?: Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
   assignedToId?: Prisma.SortOrder
@@ -613,16 +647,220 @@ export type RequestSumOrderByAggregateInput = {
   travelers?: Prisma.SortOrder
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type RequestCreateNestedManyWithoutRouteInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutRouteInput, Prisma.RequestUncheckedCreateWithoutRouteInput> | Prisma.RequestCreateWithoutRouteInput[] | Prisma.RequestUncheckedCreateWithoutRouteInput[]
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutRouteInput | Prisma.RequestCreateOrConnectWithoutRouteInput[]
+  createMany?: Prisma.RequestCreateManyRouteInputEnvelope
+  connect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+}
+
+export type RequestUncheckedCreateNestedManyWithoutRouteInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutRouteInput, Prisma.RequestUncheckedCreateWithoutRouteInput> | Prisma.RequestCreateWithoutRouteInput[] | Prisma.RequestUncheckedCreateWithoutRouteInput[]
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutRouteInput | Prisma.RequestCreateOrConnectWithoutRouteInput[]
+  createMany?: Prisma.RequestCreateManyRouteInputEnvelope
+  connect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+}
+
+export type RequestUpdateManyWithoutRouteNestedInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutRouteInput, Prisma.RequestUncheckedCreateWithoutRouteInput> | Prisma.RequestCreateWithoutRouteInput[] | Prisma.RequestUncheckedCreateWithoutRouteInput[]
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutRouteInput | Prisma.RequestCreateOrConnectWithoutRouteInput[]
+  upsert?: Prisma.RequestUpsertWithWhereUniqueWithoutRouteInput | Prisma.RequestUpsertWithWhereUniqueWithoutRouteInput[]
+  createMany?: Prisma.RequestCreateManyRouteInputEnvelope
+  set?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  disconnect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  delete?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  connect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  update?: Prisma.RequestUpdateWithWhereUniqueWithoutRouteInput | Prisma.RequestUpdateWithWhereUniqueWithoutRouteInput[]
+  updateMany?: Prisma.RequestUpdateManyWithWhereWithoutRouteInput | Prisma.RequestUpdateManyWithWhereWithoutRouteInput[]
+  deleteMany?: Prisma.RequestScalarWhereInput | Prisma.RequestScalarWhereInput[]
+}
+
+export type RequestUncheckedUpdateManyWithoutRouteNestedInput = {
+  create?: Prisma.XOR<Prisma.RequestCreateWithoutRouteInput, Prisma.RequestUncheckedCreateWithoutRouteInput> | Prisma.RequestCreateWithoutRouteInput[] | Prisma.RequestUncheckedCreateWithoutRouteInput[]
+  connectOrCreate?: Prisma.RequestCreateOrConnectWithoutRouteInput | Prisma.RequestCreateOrConnectWithoutRouteInput[]
+  upsert?: Prisma.RequestUpsertWithWhereUniqueWithoutRouteInput | Prisma.RequestUpsertWithWhereUniqueWithoutRouteInput[]
+  createMany?: Prisma.RequestCreateManyRouteInputEnvelope
+  set?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  disconnect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  delete?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  connect?: Prisma.RequestWhereUniqueInput | Prisma.RequestWhereUniqueInput[]
+  update?: Prisma.RequestUpdateWithWhereUniqueWithoutRouteInput | Prisma.RequestUpdateWithWhereUniqueWithoutRouteInput[]
+  updateMany?: Prisma.RequestUpdateManyWithWhereWithoutRouteInput | Prisma.RequestUpdateManyWithWhereWithoutRouteInput[]
+  deleteMany?: Prisma.RequestScalarWhereInput | Prisma.RequestScalarWhereInput[]
 }
 
 export type EnumRequestStatusFieldUpdateOperationsInput = {
   set?: $Enums.RequestStatus
+}
+
+export type RequestCreateWithoutRouteInput = {
+  id?: string
+  clientName: string
+  clientEmail?: string | null
+  clientPhone?: string | null
+  prefersWhatsapp?: boolean
+  flightNumber: string
+  originCity: string
+  destinationCity: string
+  travelDate: Date | string
+  travelClass: string
+  travelers: number
+  source?: string
+  status?: $Enums.RequestStatus
+  assignedToId?: string | null
+  claimedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type RequestUncheckedCreateWithoutRouteInput = {
+  id?: string
+  clientName: string
+  clientEmail?: string | null
+  clientPhone?: string | null
+  prefersWhatsapp?: boolean
+  flightNumber: string
+  originCity: string
+  destinationCity: string
+  travelDate: Date | string
+  travelClass: string
+  travelers: number
+  source?: string
+  status?: $Enums.RequestStatus
+  assignedToId?: string | null
+  claimedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type RequestCreateOrConnectWithoutRouteInput = {
+  where: Prisma.RequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.RequestCreateWithoutRouteInput, Prisma.RequestUncheckedCreateWithoutRouteInput>
+}
+
+export type RequestCreateManyRouteInputEnvelope = {
+  data: Prisma.RequestCreateManyRouteInput | Prisma.RequestCreateManyRouteInput[]
+  skipDuplicates?: boolean
+}
+
+export type RequestUpsertWithWhereUniqueWithoutRouteInput = {
+  where: Prisma.RequestWhereUniqueInput
+  update: Prisma.XOR<Prisma.RequestUpdateWithoutRouteInput, Prisma.RequestUncheckedUpdateWithoutRouteInput>
+  create: Prisma.XOR<Prisma.RequestCreateWithoutRouteInput, Prisma.RequestUncheckedCreateWithoutRouteInput>
+}
+
+export type RequestUpdateWithWhereUniqueWithoutRouteInput = {
+  where: Prisma.RequestWhereUniqueInput
+  data: Prisma.XOR<Prisma.RequestUpdateWithoutRouteInput, Prisma.RequestUncheckedUpdateWithoutRouteInput>
+}
+
+export type RequestUpdateManyWithWhereWithoutRouteInput = {
+  where: Prisma.RequestScalarWhereInput
+  data: Prisma.XOR<Prisma.RequestUpdateManyMutationInput, Prisma.RequestUncheckedUpdateManyWithoutRouteInput>
+}
+
+export type RequestScalarWhereInput = {
+  AND?: Prisma.RequestScalarWhereInput | Prisma.RequestScalarWhereInput[]
+  OR?: Prisma.RequestScalarWhereInput[]
+  NOT?: Prisma.RequestScalarWhereInput | Prisma.RequestScalarWhereInput[]
+  id?: Prisma.StringFilter<"Request"> | string
+  clientName?: Prisma.StringFilter<"Request"> | string
+  clientEmail?: Prisma.StringNullableFilter<"Request"> | string | null
+  clientPhone?: Prisma.StringNullableFilter<"Request"> | string | null
+  prefersWhatsapp?: Prisma.BoolFilter<"Request"> | boolean
+  flightNumber?: Prisma.StringFilter<"Request"> | string
+  originCity?: Prisma.StringFilter<"Request"> | string
+  destinationCity?: Prisma.StringFilter<"Request"> | string
+  travelDate?: Prisma.DateTimeFilter<"Request"> | Date | string
+  travelClass?: Prisma.StringFilter<"Request"> | string
+  travelers?: Prisma.IntFilter<"Request"> | number
+  routeId?: Prisma.StringNullableFilter<"Request"> | string | null
+  source?: Prisma.StringFilter<"Request"> | string
+  status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
+  assignedToId?: Prisma.StringNullableFilter<"Request"> | string | null
+  claimedAt?: Prisma.DateTimeNullableFilter<"Request"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Request"> | Date | string
+}
+
+export type RequestCreateManyRouteInput = {
+  id?: string
+  clientName: string
+  clientEmail?: string | null
+  clientPhone?: string | null
+  prefersWhatsapp?: boolean
+  flightNumber: string
+  originCity: string
+  destinationCity: string
+  travelDate: Date | string
+  travelClass: string
+  travelers: number
+  source?: string
+  status?: $Enums.RequestStatus
+  assignedToId?: string | null
+  claimedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type RequestUpdateWithoutRouteInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.StringFieldUpdateOperationsInput | string
+  clientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  prefersWhatsapp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  flightNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  originCity?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationCity?: Prisma.StringFieldUpdateOperationsInput | string
+  travelDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  travelClass?: Prisma.StringFieldUpdateOperationsInput | string
+  travelers?: Prisma.IntFieldUpdateOperationsInput | number
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RequestUncheckedUpdateWithoutRouteInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.StringFieldUpdateOperationsInput | string
+  clientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  prefersWhatsapp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  flightNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  originCity?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationCity?: Prisma.StringFieldUpdateOperationsInput | string
+  travelDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  travelClass?: Prisma.StringFieldUpdateOperationsInput | string
+  travelers?: Prisma.IntFieldUpdateOperationsInput | number
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RequestUncheckedUpdateManyWithoutRouteInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientName?: Prisma.StringFieldUpdateOperationsInput | string
+  clientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  prefersWhatsapp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  flightNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  originCity?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationCity?: Prisma.StringFieldUpdateOperationsInput | string
+  travelDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  travelClass?: Prisma.StringFieldUpdateOperationsInput | string
+  travelers?: Prisma.IntFieldUpdateOperationsInput | number
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -639,12 +877,14 @@ export type RequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   travelDate?: boolean
   travelClass?: boolean
   travelers?: boolean
+  routeId?: boolean
   source?: boolean
   status?: boolean
   assignedToId?: boolean
   claimedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  route?: boolean | Prisma.Request$routeArgs<ExtArgs>
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -659,12 +899,14 @@ export type RequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   travelDate?: boolean
   travelClass?: boolean
   travelers?: boolean
+  routeId?: boolean
   source?: boolean
   status?: boolean
   assignedToId?: boolean
   claimedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  route?: boolean | Prisma.Request$routeArgs<ExtArgs>
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -679,12 +921,14 @@ export type RequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   travelDate?: boolean
   travelClass?: boolean
   travelers?: boolean
+  routeId?: boolean
   source?: boolean
   status?: boolean
   assignedToId?: boolean
   claimedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  route?: boolean | Prisma.Request$routeArgs<ExtArgs>
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectScalar = {
@@ -699,6 +943,7 @@ export type RequestSelectScalar = {
   travelDate?: boolean
   travelClass?: boolean
   travelers?: boolean
+  routeId?: boolean
   source?: boolean
   status?: boolean
   assignedToId?: boolean
@@ -707,11 +952,22 @@ export type RequestSelectScalar = {
   updatedAt?: boolean
 }
 
-export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clientName" | "clientEmail" | "clientPhone" | "prefersWhatsapp" | "flightNumber" | "originCity" | "destinationCity" | "travelDate" | "travelClass" | "travelers" | "source" | "status" | "assignedToId" | "claimedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["request"]>
+export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clientName" | "clientEmail" | "clientPhone" | "prefersWhatsapp" | "flightNumber" | "originCity" | "destinationCity" | "travelDate" | "travelClass" | "travelers" | "routeId" | "source" | "status" | "assignedToId" | "claimedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["request"]>
+export type RequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  route?: boolean | Prisma.Request$routeArgs<ExtArgs>
+}
+export type RequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  route?: boolean | Prisma.Request$routeArgs<ExtArgs>
+}
+export type RequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  route?: boolean | Prisma.Request$routeArgs<ExtArgs>
+}
 
 export type $RequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Request"
-  objects: {}
+  objects: {
+    route: Prisma.$RoutePayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     clientName: string
@@ -724,6 +980,7 @@ export type $RequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     travelDate: Date
     travelClass: string
     travelers: number
+    routeId: string | null
     source: string
     status: $Enums.RequestStatus
     assignedToId: string | null
@@ -1124,6 +1381,7 @@ readonly fields: RequestFieldRefs;
  */
 export interface Prisma__RequestClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  route<T extends Prisma.Request$routeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Request$routeArgs<ExtArgs>>): Prisma.Prisma__RouteClient<runtime.Types.Result.GetResult<Prisma.$RoutePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1164,6 +1422,7 @@ export interface RequestFieldRefs {
   readonly travelDate: Prisma.FieldRef<"Request", 'DateTime'>
   readonly travelClass: Prisma.FieldRef<"Request", 'String'>
   readonly travelers: Prisma.FieldRef<"Request", 'Int'>
+  readonly routeId: Prisma.FieldRef<"Request", 'String'>
   readonly source: Prisma.FieldRef<"Request", 'String'>
   readonly status: Prisma.FieldRef<"Request", 'RequestStatus'>
   readonly assignedToId: Prisma.FieldRef<"Request", 'String'>
@@ -1187,6 +1446,10 @@ export type RequestFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  /**
    * Filter, which Request to fetch.
    */
   where: Prisma.RequestWhereUniqueInput
@@ -1205,6 +1468,10 @@ export type RequestFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  /**
    * Filter, which Request to fetch.
    */
   where: Prisma.RequestWhereUniqueInput
@@ -1222,6 +1489,10 @@ export type RequestFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Request
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
   /**
    * Filter, which Request to fetch.
    */
@@ -1271,6 +1542,10 @@ export type RequestFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  /**
    * Filter, which Request to fetch.
    */
   where?: Prisma.RequestWhereInput
@@ -1319,6 +1594,10 @@ export type RequestFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  /**
    * Filter, which Requests to fetch.
    */
   where?: Prisma.RequestWhereInput
@@ -1362,6 +1641,10 @@ export type RequestCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  /**
    * The data needed to create a Request.
    */
   data: Prisma.XOR<Prisma.RequestCreateInput, Prisma.RequestUncheckedCreateInput>
@@ -1395,6 +1678,10 @@ export type RequestCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.RequestCreateManyInput | Prisma.RequestCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1409,6 +1696,10 @@ export type RequestUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Request
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
   /**
    * The data needed to update a Request.
    */
@@ -1461,6 +1752,10 @@ export type RequestUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Requests to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1475,6 +1770,10 @@ export type RequestUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Request
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
   /**
    * The filter to search for the Request to update in case it exists.
    */
@@ -1502,6 +1801,10 @@ export type RequestDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  /**
    * Filter which Request to delete.
    */
   where: Prisma.RequestWhereUniqueInput
@@ -1522,6 +1825,25 @@ export type RequestDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * Request.route
+ */
+export type Request$routeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Route
+   */
+  select?: Prisma.RouteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Route
+   */
+  omit?: Prisma.RouteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RouteInclude<ExtArgs> | null
+  where?: Prisma.RouteWhereInput
+}
+
+/**
  * Request without action
  */
 export type RequestDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1533,4 +1855,8 @@ export type RequestDefaultArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Request
    */
   omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
 }

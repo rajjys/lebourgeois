@@ -20,8 +20,18 @@ export type RouteModel = runtime.Types.Result.DefaultSelection<Prisma.$RoutePayl
 
 export type AggregateRoute = {
   _count: RouteCountAggregateOutputType | null
+  _avg: RouteAvgAggregateOutputType | null
+  _sum: RouteSumAggregateOutputType | null
   _min: RouteMinAggregateOutputType | null
   _max: RouteMaxAggregateOutputType | null
+}
+
+export type RouteAvgAggregateOutputType = {
+  tier: number | null
+}
+
+export type RouteSumAggregateOutputType = {
+  tier: number | null
 }
 
 export type RouteMinAggregateOutputType = {
@@ -29,7 +39,9 @@ export type RouteMinAggregateOutputType = {
   originId: string | null
   destinationId: string | null
   slug: string | null
-  isPublished: boolean | null
+  status: $Enums.RouteStatus | null
+  tier: number | null
+  note: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -39,7 +51,9 @@ export type RouteMaxAggregateOutputType = {
   originId: string | null
   destinationId: string | null
   slug: string | null
-  isPublished: boolean | null
+  status: $Enums.RouteStatus | null
+  tier: number | null
+  note: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -49,19 +63,31 @@ export type RouteCountAggregateOutputType = {
   originId: number
   destinationId: number
   slug: number
-  isPublished: number
+  status: number
+  tier: number
+  note: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
 
+export type RouteAvgAggregateInputType = {
+  tier?: true
+}
+
+export type RouteSumAggregateInputType = {
+  tier?: true
+}
+
 export type RouteMinAggregateInputType = {
   id?: true
   originId?: true
   destinationId?: true
   slug?: true
-  isPublished?: true
+  status?: true
+  tier?: true
+  note?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -71,7 +97,9 @@ export type RouteMaxAggregateInputType = {
   originId?: true
   destinationId?: true
   slug?: true
-  isPublished?: true
+  status?: true
+  tier?: true
+  note?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -81,7 +109,9 @@ export type RouteCountAggregateInputType = {
   originId?: true
   destinationId?: true
   slug?: true
-  isPublished?: true
+  status?: true
+  tier?: true
+  note?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -125,6 +155,18 @@ export type RouteAggregateArgs<ExtArgs extends runtime.Types.Extensions.Internal
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: RouteAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: RouteSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: RouteMinAggregateInputType
@@ -155,6 +197,8 @@ export type RouteGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   _count?: RouteCountAggregateInputType | true
+  _avg?: RouteAvgAggregateInputType
+  _sum?: RouteSumAggregateInputType
   _min?: RouteMinAggregateInputType
   _max?: RouteMaxAggregateInputType
 }
@@ -164,10 +208,14 @@ export type RouteGroupByOutputType = {
   originId: string
   destinationId: string
   slug: string
-  isPublished: boolean
+  status: $Enums.RouteStatus
+  tier: number
+  note: string | null
   createdAt: Date
   updatedAt: Date
   _count: RouteCountAggregateOutputType | null
+  _avg: RouteAvgAggregateOutputType | null
+  _sum: RouteSumAggregateOutputType | null
   _min: RouteMinAggregateOutputType | null
   _max: RouteMaxAggregateOutputType | null
 }
@@ -195,11 +243,15 @@ export type RouteWhereInput = {
   originId?: Prisma.StringFilter<"Route"> | string
   destinationId?: Prisma.StringFilter<"Route"> | string
   slug?: Prisma.StringFilter<"Route"> | string
-  isPublished?: Prisma.BoolFilter<"Route"> | boolean
+  status?: Prisma.EnumRouteStatusFilter<"Route"> | $Enums.RouteStatus
+  tier?: Prisma.IntFilter<"Route"> | number
+  note?: Prisma.StringNullableFilter<"Route"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Route"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Route"> | Date | string
   origin?: Prisma.XOR<Prisma.AirportScalarRelationFilter, Prisma.AirportWhereInput>
   destination?: Prisma.XOR<Prisma.AirportScalarRelationFilter, Prisma.AirportWhereInput>
+  airlines?: Prisma.RouteAirlineListRelationFilter
+  requests?: Prisma.RequestListRelationFilter
 }
 
 export type RouteOrderByWithRelationInput = {
@@ -207,11 +259,15 @@ export type RouteOrderByWithRelationInput = {
   originId?: Prisma.SortOrder
   destinationId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
+  note?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   origin?: Prisma.AirportOrderByWithRelationInput
   destination?: Prisma.AirportOrderByWithRelationInput
+  airlines?: Prisma.RouteAirlineOrderByRelationAggregateInput
+  requests?: Prisma.RequestOrderByRelationAggregateInput
 }
 
 export type RouteWhereUniqueInput = Prisma.AtLeast<{
@@ -223,11 +279,15 @@ export type RouteWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.RouteWhereInput | Prisma.RouteWhereInput[]
   originId?: Prisma.StringFilter<"Route"> | string
   destinationId?: Prisma.StringFilter<"Route"> | string
-  isPublished?: Prisma.BoolFilter<"Route"> | boolean
+  status?: Prisma.EnumRouteStatusFilter<"Route"> | $Enums.RouteStatus
+  tier?: Prisma.IntFilter<"Route"> | number
+  note?: Prisma.StringNullableFilter<"Route"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Route"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Route"> | Date | string
   origin?: Prisma.XOR<Prisma.AirportScalarRelationFilter, Prisma.AirportWhereInput>
   destination?: Prisma.XOR<Prisma.AirportScalarRelationFilter, Prisma.AirportWhereInput>
+  airlines?: Prisma.RouteAirlineListRelationFilter
+  requests?: Prisma.RequestListRelationFilter
 }, "id" | "slug" | "originId_destinationId">
 
 export type RouteOrderByWithAggregationInput = {
@@ -235,12 +295,16 @@ export type RouteOrderByWithAggregationInput = {
   originId?: Prisma.SortOrder
   destinationId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
+  note?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.RouteCountOrderByAggregateInput
+  _avg?: Prisma.RouteAvgOrderByAggregateInput
   _max?: Prisma.RouteMaxOrderByAggregateInput
   _min?: Prisma.RouteMinOrderByAggregateInput
+  _sum?: Prisma.RouteSumOrderByAggregateInput
 }
 
 export type RouteScalarWhereWithAggregatesInput = {
@@ -251,7 +315,9 @@ export type RouteScalarWhereWithAggregatesInput = {
   originId?: Prisma.StringWithAggregatesFilter<"Route"> | string
   destinationId?: Prisma.StringWithAggregatesFilter<"Route"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Route"> | string
-  isPublished?: Prisma.BoolWithAggregatesFilter<"Route"> | boolean
+  status?: Prisma.EnumRouteStatusWithAggregatesFilter<"Route"> | $Enums.RouteStatus
+  tier?: Prisma.IntWithAggregatesFilter<"Route"> | number
+  note?: Prisma.StringNullableWithAggregatesFilter<"Route"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Route"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Route"> | Date | string
 }
@@ -259,11 +325,15 @@ export type RouteScalarWhereWithAggregatesInput = {
 export type RouteCreateInput = {
   id?: string
   slug: string
-  isPublished?: boolean
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   origin: Prisma.AirportCreateNestedOneWithoutRoutesFromInput
   destination: Prisma.AirportCreateNestedOneWithoutRoutesToInput
+  airlines?: Prisma.RouteAirlineCreateNestedManyWithoutRouteInput
+  requests?: Prisma.RequestCreateNestedManyWithoutRouteInput
 }
 
 export type RouteUncheckedCreateInput = {
@@ -271,19 +341,27 @@ export type RouteUncheckedCreateInput = {
   originId: string
   destinationId: string
   slug: string
-  isPublished?: boolean
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  airlines?: Prisma.RouteAirlineUncheckedCreateNestedManyWithoutRouteInput
+  requests?: Prisma.RequestUncheckedCreateNestedManyWithoutRouteInput
 }
 
 export type RouteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   origin?: Prisma.AirportUpdateOneRequiredWithoutRoutesFromNestedInput
   destination?: Prisma.AirportUpdateOneRequiredWithoutRoutesToNestedInput
+  airlines?: Prisma.RouteAirlineUpdateManyWithoutRouteNestedInput
+  requests?: Prisma.RequestUpdateManyWithoutRouteNestedInput
 }
 
 export type RouteUncheckedUpdateInput = {
@@ -291,9 +369,13 @@ export type RouteUncheckedUpdateInput = {
   originId?: Prisma.StringFieldUpdateOperationsInput | string
   destinationId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  airlines?: Prisma.RouteAirlineUncheckedUpdateManyWithoutRouteNestedInput
+  requests?: Prisma.RequestUncheckedUpdateManyWithoutRouteNestedInput
 }
 
 export type RouteCreateManyInput = {
@@ -301,7 +383,9 @@ export type RouteCreateManyInput = {
   originId: string
   destinationId: string
   slug: string
-  isPublished?: boolean
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -309,7 +393,9 @@ export type RouteCreateManyInput = {
 export type RouteUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -319,7 +405,9 @@ export type RouteUncheckedUpdateManyInput = {
   originId?: Prisma.StringFieldUpdateOperationsInput | string
   destinationId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -344,9 +432,15 @@ export type RouteCountOrderByAggregateInput = {
   originId?: Prisma.SortOrder
   destinationId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
+  note?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type RouteAvgOrderByAggregateInput = {
+  tier?: Prisma.SortOrder
 }
 
 export type RouteMaxOrderByAggregateInput = {
@@ -354,7 +448,9 @@ export type RouteMaxOrderByAggregateInput = {
   originId?: Prisma.SortOrder
   destinationId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
+  note?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -364,9 +460,25 @@ export type RouteMinOrderByAggregateInput = {
   originId?: Prisma.SortOrder
   destinationId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  tier?: Prisma.SortOrder
+  note?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type RouteSumOrderByAggregateInput = {
+  tier?: Prisma.SortOrder
+}
+
+export type RouteScalarRelationFilter = {
+  is?: Prisma.RouteWhereInput
+  isNot?: Prisma.RouteWhereInput
+}
+
+export type RouteNullableScalarRelationFilter = {
+  is?: Prisma.RouteWhereInput | null
+  isNot?: Prisma.RouteWhereInput | null
 }
 
 export type RouteCreateNestedManyWithoutOriginInput = {
@@ -453,22 +565,72 @@ export type RouteUncheckedUpdateManyWithoutDestinationNestedInput = {
   deleteMany?: Prisma.RouteScalarWhereInput | Prisma.RouteScalarWhereInput[]
 }
 
+export type EnumRouteStatusFieldUpdateOperationsInput = {
+  set?: $Enums.RouteStatus
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type RouteCreateNestedOneWithoutAirlinesInput = {
+  create?: Prisma.XOR<Prisma.RouteCreateWithoutAirlinesInput, Prisma.RouteUncheckedCreateWithoutAirlinesInput>
+  connectOrCreate?: Prisma.RouteCreateOrConnectWithoutAirlinesInput
+  connect?: Prisma.RouteWhereUniqueInput
+}
+
+export type RouteUpdateOneRequiredWithoutAirlinesNestedInput = {
+  create?: Prisma.XOR<Prisma.RouteCreateWithoutAirlinesInput, Prisma.RouteUncheckedCreateWithoutAirlinesInput>
+  connectOrCreate?: Prisma.RouteCreateOrConnectWithoutAirlinesInput
+  upsert?: Prisma.RouteUpsertWithoutAirlinesInput
+  connect?: Prisma.RouteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RouteUpdateToOneWithWhereWithoutAirlinesInput, Prisma.RouteUpdateWithoutAirlinesInput>, Prisma.RouteUncheckedUpdateWithoutAirlinesInput>
+}
+
+export type RouteCreateNestedOneWithoutRequestsInput = {
+  create?: Prisma.XOR<Prisma.RouteCreateWithoutRequestsInput, Prisma.RouteUncheckedCreateWithoutRequestsInput>
+  connectOrCreate?: Prisma.RouteCreateOrConnectWithoutRequestsInput
+  connect?: Prisma.RouteWhereUniqueInput
+}
+
+export type RouteUpdateOneWithoutRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.RouteCreateWithoutRequestsInput, Prisma.RouteUncheckedCreateWithoutRequestsInput>
+  connectOrCreate?: Prisma.RouteCreateOrConnectWithoutRequestsInput
+  upsert?: Prisma.RouteUpsertWithoutRequestsInput
+  disconnect?: Prisma.RouteWhereInput | boolean
+  delete?: Prisma.RouteWhereInput | boolean
+  connect?: Prisma.RouteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RouteUpdateToOneWithWhereWithoutRequestsInput, Prisma.RouteUpdateWithoutRequestsInput>, Prisma.RouteUncheckedUpdateWithoutRequestsInput>
+}
+
 export type RouteCreateWithoutOriginInput = {
   id?: string
   slug: string
-  isPublished?: boolean
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   destination: Prisma.AirportCreateNestedOneWithoutRoutesToInput
+  airlines?: Prisma.RouteAirlineCreateNestedManyWithoutRouteInput
+  requests?: Prisma.RequestCreateNestedManyWithoutRouteInput
 }
 
 export type RouteUncheckedCreateWithoutOriginInput = {
   id?: string
   destinationId: string
   slug: string
-  isPublished?: boolean
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  airlines?: Prisma.RouteAirlineUncheckedCreateNestedManyWithoutRouteInput
+  requests?: Prisma.RequestUncheckedCreateNestedManyWithoutRouteInput
 }
 
 export type RouteCreateOrConnectWithoutOriginInput = {
@@ -484,19 +646,27 @@ export type RouteCreateManyOriginInputEnvelope = {
 export type RouteCreateWithoutDestinationInput = {
   id?: string
   slug: string
-  isPublished?: boolean
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   origin: Prisma.AirportCreateNestedOneWithoutRoutesFromInput
+  airlines?: Prisma.RouteAirlineCreateNestedManyWithoutRouteInput
+  requests?: Prisma.RequestCreateNestedManyWithoutRouteInput
 }
 
 export type RouteUncheckedCreateWithoutDestinationInput = {
   id?: string
   originId: string
   slug: string
-  isPublished?: boolean
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  airlines?: Prisma.RouteAirlineUncheckedCreateNestedManyWithoutRouteInput
+  requests?: Prisma.RequestUncheckedCreateNestedManyWithoutRouteInput
 }
 
 export type RouteCreateOrConnectWithoutDestinationInput = {
@@ -533,7 +703,9 @@ export type RouteScalarWhereInput = {
   originId?: Prisma.StringFilter<"Route"> | string
   destinationId?: Prisma.StringFilter<"Route"> | string
   slug?: Prisma.StringFilter<"Route"> | string
-  isPublished?: Prisma.BoolFilter<"Route"> | boolean
+  status?: Prisma.EnumRouteStatusFilter<"Route"> | $Enums.RouteStatus
+  tier?: Prisma.IntFilter<"Route"> | number
+  note?: Prisma.StringNullableFilter<"Route"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Route"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Route"> | Date | string
 }
@@ -554,11 +726,149 @@ export type RouteUpdateManyWithWhereWithoutDestinationInput = {
   data: Prisma.XOR<Prisma.RouteUpdateManyMutationInput, Prisma.RouteUncheckedUpdateManyWithoutDestinationInput>
 }
 
+export type RouteCreateWithoutAirlinesInput = {
+  id?: string
+  slug: string
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  origin: Prisma.AirportCreateNestedOneWithoutRoutesFromInput
+  destination: Prisma.AirportCreateNestedOneWithoutRoutesToInput
+  requests?: Prisma.RequestCreateNestedManyWithoutRouteInput
+}
+
+export type RouteUncheckedCreateWithoutAirlinesInput = {
+  id?: string
+  originId: string
+  destinationId: string
+  slug: string
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  requests?: Prisma.RequestUncheckedCreateNestedManyWithoutRouteInput
+}
+
+export type RouteCreateOrConnectWithoutAirlinesInput = {
+  where: Prisma.RouteWhereUniqueInput
+  create: Prisma.XOR<Prisma.RouteCreateWithoutAirlinesInput, Prisma.RouteUncheckedCreateWithoutAirlinesInput>
+}
+
+export type RouteUpsertWithoutAirlinesInput = {
+  update: Prisma.XOR<Prisma.RouteUpdateWithoutAirlinesInput, Prisma.RouteUncheckedUpdateWithoutAirlinesInput>
+  create: Prisma.XOR<Prisma.RouteCreateWithoutAirlinesInput, Prisma.RouteUncheckedCreateWithoutAirlinesInput>
+  where?: Prisma.RouteWhereInput
+}
+
+export type RouteUpdateToOneWithWhereWithoutAirlinesInput = {
+  where?: Prisma.RouteWhereInput
+  data: Prisma.XOR<Prisma.RouteUpdateWithoutAirlinesInput, Prisma.RouteUncheckedUpdateWithoutAirlinesInput>
+}
+
+export type RouteUpdateWithoutAirlinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  origin?: Prisma.AirportUpdateOneRequiredWithoutRoutesFromNestedInput
+  destination?: Prisma.AirportUpdateOneRequiredWithoutRoutesToNestedInput
+  requests?: Prisma.RequestUpdateManyWithoutRouteNestedInput
+}
+
+export type RouteUncheckedUpdateWithoutAirlinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  originId?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationId?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requests?: Prisma.RequestUncheckedUpdateManyWithoutRouteNestedInput
+}
+
+export type RouteCreateWithoutRequestsInput = {
+  id?: string
+  slug: string
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  origin: Prisma.AirportCreateNestedOneWithoutRoutesFromInput
+  destination: Prisma.AirportCreateNestedOneWithoutRoutesToInput
+  airlines?: Prisma.RouteAirlineCreateNestedManyWithoutRouteInput
+}
+
+export type RouteUncheckedCreateWithoutRequestsInput = {
+  id?: string
+  originId: string
+  destinationId: string
+  slug: string
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  airlines?: Prisma.RouteAirlineUncheckedCreateNestedManyWithoutRouteInput
+}
+
+export type RouteCreateOrConnectWithoutRequestsInput = {
+  where: Prisma.RouteWhereUniqueInput
+  create: Prisma.XOR<Prisma.RouteCreateWithoutRequestsInput, Prisma.RouteUncheckedCreateWithoutRequestsInput>
+}
+
+export type RouteUpsertWithoutRequestsInput = {
+  update: Prisma.XOR<Prisma.RouteUpdateWithoutRequestsInput, Prisma.RouteUncheckedUpdateWithoutRequestsInput>
+  create: Prisma.XOR<Prisma.RouteCreateWithoutRequestsInput, Prisma.RouteUncheckedCreateWithoutRequestsInput>
+  where?: Prisma.RouteWhereInput
+}
+
+export type RouteUpdateToOneWithWhereWithoutRequestsInput = {
+  where?: Prisma.RouteWhereInput
+  data: Prisma.XOR<Prisma.RouteUpdateWithoutRequestsInput, Prisma.RouteUncheckedUpdateWithoutRequestsInput>
+}
+
+export type RouteUpdateWithoutRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  origin?: Prisma.AirportUpdateOneRequiredWithoutRoutesFromNestedInput
+  destination?: Prisma.AirportUpdateOneRequiredWithoutRoutesToNestedInput
+  airlines?: Prisma.RouteAirlineUpdateManyWithoutRouteNestedInput
+}
+
+export type RouteUncheckedUpdateWithoutRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  originId?: Prisma.StringFieldUpdateOperationsInput | string
+  destinationId?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  airlines?: Prisma.RouteAirlineUncheckedUpdateManyWithoutRouteNestedInput
+}
+
 export type RouteCreateManyOriginInput = {
   id?: string
   destinationId: string
   slug: string
-  isPublished?: boolean
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -567,7 +877,9 @@ export type RouteCreateManyDestinationInput = {
   id?: string
   originId: string
   slug: string
-  isPublished?: boolean
+  status?: $Enums.RouteStatus
+  tier?: number
+  note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -575,26 +887,36 @@ export type RouteCreateManyDestinationInput = {
 export type RouteUpdateWithoutOriginInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   destination?: Prisma.AirportUpdateOneRequiredWithoutRoutesToNestedInput
+  airlines?: Prisma.RouteAirlineUpdateManyWithoutRouteNestedInput
+  requests?: Prisma.RequestUpdateManyWithoutRouteNestedInput
 }
 
 export type RouteUncheckedUpdateWithoutOriginInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   destinationId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  airlines?: Prisma.RouteAirlineUncheckedUpdateManyWithoutRouteNestedInput
+  requests?: Prisma.RequestUncheckedUpdateManyWithoutRouteNestedInput
 }
 
 export type RouteUncheckedUpdateManyWithoutOriginInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   destinationId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -602,30 +924,78 @@ export type RouteUncheckedUpdateManyWithoutOriginInput = {
 export type RouteUpdateWithoutDestinationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   origin?: Prisma.AirportUpdateOneRequiredWithoutRoutesFromNestedInput
+  airlines?: Prisma.RouteAirlineUpdateManyWithoutRouteNestedInput
+  requests?: Prisma.RequestUpdateManyWithoutRouteNestedInput
 }
 
 export type RouteUncheckedUpdateWithoutDestinationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   originId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  airlines?: Prisma.RouteAirlineUncheckedUpdateManyWithoutRouteNestedInput
+  requests?: Prisma.RequestUncheckedUpdateManyWithoutRouteNestedInput
 }
 
 export type RouteUncheckedUpdateManyWithoutDestinationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   originId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumRouteStatusFieldUpdateOperationsInput | $Enums.RouteStatus
+  tier?: Prisma.IntFieldUpdateOperationsInput | number
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type RouteCountOutputType
+ */
+
+export type RouteCountOutputType = {
+  airlines: number
+  requests: number
+}
+
+export type RouteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  airlines?: boolean | RouteCountOutputTypeCountAirlinesArgs
+  requests?: boolean | RouteCountOutputTypeCountRequestsArgs
+}
+
+/**
+ * RouteCountOutputType without action
+ */
+export type RouteCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RouteCountOutputType
+   */
+  select?: Prisma.RouteCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * RouteCountOutputType without action
+ */
+export type RouteCountOutputTypeCountAirlinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RouteAirlineWhereInput
+}
+
+/**
+ * RouteCountOutputType without action
+ */
+export type RouteCountOutputTypeCountRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RequestWhereInput
+}
 
 
 export type RouteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -633,11 +1003,16 @@ export type RouteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   originId?: boolean
   destinationId?: boolean
   slug?: boolean
-  isPublished?: boolean
+  status?: boolean
+  tier?: boolean
+  note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   origin?: boolean | Prisma.AirportDefaultArgs<ExtArgs>
   destination?: boolean | Prisma.AirportDefaultArgs<ExtArgs>
+  airlines?: boolean | Prisma.Route$airlinesArgs<ExtArgs>
+  requests?: boolean | Prisma.Route$requestsArgs<ExtArgs>
+  _count?: boolean | Prisma.RouteCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["route"]>
 
 export type RouteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -645,7 +1020,9 @@ export type RouteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   originId?: boolean
   destinationId?: boolean
   slug?: boolean
-  isPublished?: boolean
+  status?: boolean
+  tier?: boolean
+  note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   origin?: boolean | Prisma.AirportDefaultArgs<ExtArgs>
@@ -657,7 +1034,9 @@ export type RouteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   originId?: boolean
   destinationId?: boolean
   slug?: boolean
-  isPublished?: boolean
+  status?: boolean
+  tier?: boolean
+  note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   origin?: boolean | Prisma.AirportDefaultArgs<ExtArgs>
@@ -669,15 +1048,20 @@ export type RouteSelectScalar = {
   originId?: boolean
   destinationId?: boolean
   slug?: boolean
-  isPublished?: boolean
+  status?: boolean
+  tier?: boolean
+  note?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type RouteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "originId" | "destinationId" | "slug" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["route"]>
+export type RouteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "originId" | "destinationId" | "slug" | "status" | "tier" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["route"]>
 export type RouteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   origin?: boolean | Prisma.AirportDefaultArgs<ExtArgs>
   destination?: boolean | Prisma.AirportDefaultArgs<ExtArgs>
+  airlines?: boolean | Prisma.Route$airlinesArgs<ExtArgs>
+  requests?: boolean | Prisma.Route$requestsArgs<ExtArgs>
+  _count?: boolean | Prisma.RouteCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RouteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   origin?: boolean | Prisma.AirportDefaultArgs<ExtArgs>
@@ -693,13 +1077,17 @@ export type $RoutePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     origin: Prisma.$AirportPayload<ExtArgs>
     destination: Prisma.$AirportPayload<ExtArgs>
+    airlines: Prisma.$RouteAirlinePayload<ExtArgs>[]
+    requests: Prisma.$RequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     originId: string
     destinationId: string
     slug: string
-    isPublished: boolean
+    status: $Enums.RouteStatus
+    tier: number
+    note: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["route"]>
@@ -1098,6 +1486,8 @@ export interface Prisma__RouteClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   origin<T extends Prisma.AirportDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AirportDefaultArgs<ExtArgs>>): Prisma.Prisma__AirportClient<runtime.Types.Result.GetResult<Prisma.$AirportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   destination<T extends Prisma.AirportDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AirportDefaultArgs<ExtArgs>>): Prisma.Prisma__AirportClient<runtime.Types.Result.GetResult<Prisma.$AirportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  airlines<T extends Prisma.Route$airlinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Route$airlinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RouteAirlinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  requests<T extends Prisma.Route$requestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Route$requestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1131,7 +1521,9 @@ export interface RouteFieldRefs {
   readonly originId: Prisma.FieldRef<"Route", 'String'>
   readonly destinationId: Prisma.FieldRef<"Route", 'String'>
   readonly slug: Prisma.FieldRef<"Route", 'String'>
-  readonly isPublished: Prisma.FieldRef<"Route", 'Boolean'>
+  readonly status: Prisma.FieldRef<"Route", 'RouteStatus'>
+  readonly tier: Prisma.FieldRef<"Route", 'Int'>
+  readonly note: Prisma.FieldRef<"Route", 'String'>
   readonly createdAt: Prisma.FieldRef<"Route", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Route", 'DateTime'>
 }
@@ -1527,6 +1919,54 @@ export type RouteDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Routes to delete.
    */
   limit?: number
+}
+
+/**
+ * Route.airlines
+ */
+export type Route$airlinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RouteAirline
+   */
+  select?: Prisma.RouteAirlineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RouteAirline
+   */
+  omit?: Prisma.RouteAirlineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RouteAirlineInclude<ExtArgs> | null
+  where?: Prisma.RouteAirlineWhereInput
+  orderBy?: Prisma.RouteAirlineOrderByWithRelationInput | Prisma.RouteAirlineOrderByWithRelationInput[]
+  cursor?: Prisma.RouteAirlineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RouteAirlineScalarFieldEnum | Prisma.RouteAirlineScalarFieldEnum[]
+}
+
+/**
+ * Route.requests
+ */
+export type Route$requestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Request
+   */
+  select?: Prisma.RequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Request
+   */
+  omit?: Prisma.RequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RequestInclude<ExtArgs> | null
+  where?: Prisma.RequestWhereInput
+  orderBy?: Prisma.RequestOrderByWithRelationInput | Prisma.RequestOrderByWithRelationInput[]
+  cursor?: Prisma.RequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RequestScalarFieldEnum | Prisma.RequestScalarFieldEnum[]
 }
 
 /**

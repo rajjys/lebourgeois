@@ -4,6 +4,7 @@ import { ok, created, badRequest, internalError, generateRequestId } from "../ut
 import { notifyTeamOfRequest } from "@/services/notifications";
 import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth/session";
+import { routeIdForCities } from "@/lib/routes";
 
 /**
  * GET /api/requests - List all requests (admin only)
@@ -41,8 +42,11 @@ export async function POST(request: NextRequest) {
       return badRequest("Validation failed", validationResult.error.format(), requestId);
     }
 
+    const data = validationResult.data;
+    // Counts as demand for a route when both cities match one (ROUTE-MODEL §9).
+    const routeId = await routeIdForCities(prisma, data.originCity, data.destinationCity);
     const newRequest = await prisma.request.create({
-      data: validationResult.data,
+      data: { ...data, routeId },
     });
 
     // Notification failures are logged but never fail the submission.

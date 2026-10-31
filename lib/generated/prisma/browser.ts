@@ -33,6 +33,21 @@ export type Airline = Prisma.AirlineModel
  */
 export type Route = Prisma.RouteModel
 /**
+ * Model RouteAirline
+ * 
+ */
+export type RouteAirline = Prisma.RouteAirlineModel
+/**
+ * Model Flight
+ * 
+ */
+export type Flight = Prisma.FlightModel
+/**
+ * Model ChangeLog
+ * 
+ */
+export type ChangeLog = Prisma.ChangeLogModel
+/**
  * Model FareObservation
  * 
  */

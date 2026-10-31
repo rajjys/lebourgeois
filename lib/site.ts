@@ -11,4 +11,6 @@ export const SITE = {
     "Horaires et prix indicatifs des vols intérieurs en RDC : compagnies, jours de vol et tarifs vérifiés, route par route.",
   // The owner's address until a clerikaa.com mailbox exists.
   contactEmail: "rajjysrachid@gmail.com",
+  // The owner's WhatsApp, international format without spaces (wa.me needs the digits).
+  whatsapp: "+243975092470",
 } as const;

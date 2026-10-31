@@ -279,7 +279,7 @@ export type AirlineWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Airline"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Airline"> | Date | string
   patterns?: Prisma.FlightPatternListRelationFilter
-  fares?: Prisma.FareObservationListRelationFilter
+  routes?: Prisma.RouteAirlineListRelationFilter
 }
 
 export type AirlineOrderByWithRelationInput = {
@@ -301,7 +301,7 @@ export type AirlineOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   patterns?: Prisma.FlightPatternOrderByRelationAggregateInput
-  fares?: Prisma.FareObservationOrderByRelationAggregateInput
+  routes?: Prisma.RouteAirlineOrderByRelationAggregateInput
 }
 
 export type AirlineWhereUniqueInput = Prisma.AtLeast<{
@@ -326,7 +326,7 @@ export type AirlineWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Airline"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Airline"> | Date | string
   patterns?: Prisma.FlightPatternListRelationFilter
-  fares?: Prisma.FareObservationListRelationFilter
+  routes?: Prisma.RouteAirlineListRelationFilter
 }, "id" | "code" | "slug">
 
 export type AirlineOrderByWithAggregationInput = {
@@ -394,7 +394,7 @@ export type AirlineCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   patterns?: Prisma.FlightPatternCreateNestedManyWithoutAirlineInput
-  fares?: Prisma.FareObservationCreateNestedManyWithoutAirlineInput
+  routes?: Prisma.RouteAirlineCreateNestedManyWithoutAirlineInput
 }
 
 export type AirlineUncheckedCreateInput = {
@@ -416,7 +416,7 @@ export type AirlineUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   patterns?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutAirlineInput
-  fares?: Prisma.FareObservationUncheckedCreateNestedManyWithoutAirlineInput
+  routes?: Prisma.RouteAirlineUncheckedCreateNestedManyWithoutAirlineInput
 }
 
 export type AirlineUpdateInput = {
@@ -438,7 +438,7 @@ export type AirlineUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patterns?: Prisma.FlightPatternUpdateManyWithoutAirlineNestedInput
-  fares?: Prisma.FareObservationUpdateManyWithoutAirlineNestedInput
+  routes?: Prisma.RouteAirlineUpdateManyWithoutAirlineNestedInput
 }
 
 export type AirlineUncheckedUpdateInput = {
@@ -460,7 +460,7 @@ export type AirlineUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   patterns?: Prisma.FlightPatternUncheckedUpdateManyWithoutAirlineNestedInput
-  fares?: Prisma.FareObservationUncheckedUpdateManyWithoutAirlineNestedInput
+  routes?: Prisma.RouteAirlineUncheckedUpdateManyWithoutAirlineNestedInput
 }
 
 export type AirlineCreateManyInput = {
@@ -596,18 +596,18 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type AirlineCreateNestedOneWithoutFaresInput = {
-  create?: Prisma.XOR<Prisma.AirlineCreateWithoutFaresInput, Prisma.AirlineUncheckedCreateWithoutFaresInput>
-  connectOrCreate?: Prisma.AirlineCreateOrConnectWithoutFaresInput
+export type AirlineCreateNestedOneWithoutRoutesInput = {
+  create?: Prisma.XOR<Prisma.AirlineCreateWithoutRoutesInput, Prisma.AirlineUncheckedCreateWithoutRoutesInput>
+  connectOrCreate?: Prisma.AirlineCreateOrConnectWithoutRoutesInput
   connect?: Prisma.AirlineWhereUniqueInput
 }
 
-export type AirlineUpdateOneRequiredWithoutFaresNestedInput = {
-  create?: Prisma.XOR<Prisma.AirlineCreateWithoutFaresInput, Prisma.AirlineUncheckedCreateWithoutFaresInput>
-  connectOrCreate?: Prisma.AirlineCreateOrConnectWithoutFaresInput
-  upsert?: Prisma.AirlineUpsertWithoutFaresInput
+export type AirlineUpdateOneRequiredWithoutRoutesNestedInput = {
+  create?: Prisma.XOR<Prisma.AirlineCreateWithoutRoutesInput, Prisma.AirlineUncheckedCreateWithoutRoutesInput>
+  connectOrCreate?: Prisma.AirlineCreateOrConnectWithoutRoutesInput
+  upsert?: Prisma.AirlineUpsertWithoutRoutesInput
   connect?: Prisma.AirlineWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AirlineUpdateToOneWithWhereWithoutFaresInput, Prisma.AirlineUpdateWithoutFaresInput>, Prisma.AirlineUncheckedUpdateWithoutFaresInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AirlineUpdateToOneWithWhereWithoutRoutesInput, Prisma.AirlineUpdateWithoutRoutesInput>, Prisma.AirlineUncheckedUpdateWithoutRoutesInput>
 }
 
 export type AirlineCreateNestedOneWithoutPatternsInput = {
@@ -624,7 +624,7 @@ export type AirlineUpdateOneRequiredWithoutPatternsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AirlineUpdateToOneWithWhereWithoutPatternsInput, Prisma.AirlineUpdateWithoutPatternsInput>, Prisma.AirlineUncheckedUpdateWithoutPatternsInput>
 }
 
-export type AirlineCreateWithoutFaresInput = {
+export type AirlineCreateWithoutRoutesInput = {
   id?: string
   code: string
   slug: string
@@ -645,7 +645,7 @@ export type AirlineCreateWithoutFaresInput = {
   patterns?: Prisma.FlightPatternCreateNestedManyWithoutAirlineInput
 }
 
-export type AirlineUncheckedCreateWithoutFaresInput = {
+export type AirlineUncheckedCreateWithoutRoutesInput = {
   id?: string
   code: string
   slug: string
@@ -666,23 +666,23 @@ export type AirlineUncheckedCreateWithoutFaresInput = {
   patterns?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutAirlineInput
 }
 
-export type AirlineCreateOrConnectWithoutFaresInput = {
+export type AirlineCreateOrConnectWithoutRoutesInput = {
   where: Prisma.AirlineWhereUniqueInput
-  create: Prisma.XOR<Prisma.AirlineCreateWithoutFaresInput, Prisma.AirlineUncheckedCreateWithoutFaresInput>
+  create: Prisma.XOR<Prisma.AirlineCreateWithoutRoutesInput, Prisma.AirlineUncheckedCreateWithoutRoutesInput>
 }
 
-export type AirlineUpsertWithoutFaresInput = {
-  update: Prisma.XOR<Prisma.AirlineUpdateWithoutFaresInput, Prisma.AirlineUncheckedUpdateWithoutFaresInput>
-  create: Prisma.XOR<Prisma.AirlineCreateWithoutFaresInput, Prisma.AirlineUncheckedCreateWithoutFaresInput>
+export type AirlineUpsertWithoutRoutesInput = {
+  update: Prisma.XOR<Prisma.AirlineUpdateWithoutRoutesInput, Prisma.AirlineUncheckedUpdateWithoutRoutesInput>
+  create: Prisma.XOR<Prisma.AirlineCreateWithoutRoutesInput, Prisma.AirlineUncheckedCreateWithoutRoutesInput>
   where?: Prisma.AirlineWhereInput
 }
 
-export type AirlineUpdateToOneWithWhereWithoutFaresInput = {
+export type AirlineUpdateToOneWithWhereWithoutRoutesInput = {
   where?: Prisma.AirlineWhereInput
-  data: Prisma.XOR<Prisma.AirlineUpdateWithoutFaresInput, Prisma.AirlineUncheckedUpdateWithoutFaresInput>
+  data: Prisma.XOR<Prisma.AirlineUpdateWithoutRoutesInput, Prisma.AirlineUncheckedUpdateWithoutRoutesInput>
 }
 
-export type AirlineUpdateWithoutFaresInput = {
+export type AirlineUpdateWithoutRoutesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
@@ -703,7 +703,7 @@ export type AirlineUpdateWithoutFaresInput = {
   patterns?: Prisma.FlightPatternUpdateManyWithoutAirlineNestedInput
 }
 
-export type AirlineUncheckedUpdateWithoutFaresInput = {
+export type AirlineUncheckedUpdateWithoutRoutesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
@@ -742,7 +742,7 @@ export type AirlineCreateWithoutPatternsInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  fares?: Prisma.FareObservationCreateNestedManyWithoutAirlineInput
+  routes?: Prisma.RouteAirlineCreateNestedManyWithoutAirlineInput
 }
 
 export type AirlineUncheckedCreateWithoutPatternsInput = {
@@ -763,7 +763,7 @@ export type AirlineUncheckedCreateWithoutPatternsInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  fares?: Prisma.FareObservationUncheckedCreateNestedManyWithoutAirlineInput
+  routes?: Prisma.RouteAirlineUncheckedCreateNestedManyWithoutAirlineInput
 }
 
 export type AirlineCreateOrConnectWithoutPatternsInput = {
@@ -800,7 +800,7 @@ export type AirlineUpdateWithoutPatternsInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  fares?: Prisma.FareObservationUpdateManyWithoutAirlineNestedInput
+  routes?: Prisma.RouteAirlineUpdateManyWithoutAirlineNestedInput
 }
 
 export type AirlineUncheckedUpdateWithoutPatternsInput = {
@@ -821,7 +821,7 @@ export type AirlineUncheckedUpdateWithoutPatternsInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  fares?: Prisma.FareObservationUncheckedUpdateManyWithoutAirlineNestedInput
+  routes?: Prisma.RouteAirlineUncheckedUpdateManyWithoutAirlineNestedInput
 }
 
 
@@ -831,12 +831,12 @@ export type AirlineUncheckedUpdateWithoutPatternsInput = {
 
 export type AirlineCountOutputType = {
   patterns: number
-  fares: number
+  routes: number
 }
 
 export type AirlineCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patterns?: boolean | AirlineCountOutputTypeCountPatternsArgs
-  fares?: boolean | AirlineCountOutputTypeCountFaresArgs
+  routes?: boolean | AirlineCountOutputTypeCountRoutesArgs
 }
 
 /**
@@ -859,8 +859,8 @@ export type AirlineCountOutputTypeCountPatternsArgs<ExtArgs extends runtime.Type
 /**
  * AirlineCountOutputType without action
  */
-export type AirlineCountOutputTypeCountFaresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.FareObservationWhereInput
+export type AirlineCountOutputTypeCountRoutesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RouteAirlineWhereInput
 }
 
 
@@ -883,7 +883,7 @@ export type AirlineSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   updatedAt?: boolean
   patterns?: boolean | Prisma.Airline$patternsArgs<ExtArgs>
-  fares?: boolean | Prisma.Airline$faresArgs<ExtArgs>
+  routes?: boolean | Prisma.Airline$routesArgs<ExtArgs>
   _count?: boolean | Prisma.AirlineCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["airline"]>
 
@@ -950,7 +950,7 @@ export type AirlineSelectScalar = {
 export type AirlineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "slug" | "icao" | "name" | "countryCode" | "logo" | "color" | "website" | "bookingUrl" | "status" | "statusNote" | "statusSince" | "statusSourceUrl" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["airline"]>
 export type AirlineInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patterns?: boolean | Prisma.Airline$patternsArgs<ExtArgs>
-  fares?: boolean | Prisma.Airline$faresArgs<ExtArgs>
+  routes?: boolean | Prisma.Airline$routesArgs<ExtArgs>
   _count?: boolean | Prisma.AirlineCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AirlineIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -960,7 +960,7 @@ export type $AirlinePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Airline"
   objects: {
     patterns: Prisma.$FlightPatternPayload<ExtArgs>[]
-    fares: Prisma.$FareObservationPayload<ExtArgs>[]
+    routes: Prisma.$RouteAirlinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1375,7 +1375,7 @@ readonly fields: AirlineFieldRefs;
 export interface Prisma__AirlineClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   patterns<T extends Prisma.Airline$patternsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Airline$patternsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FlightPatternPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  fares<T extends Prisma.Airline$faresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Airline$faresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FareObservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  routes<T extends Prisma.Airline$routesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Airline$routesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RouteAirlinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1834,27 +1834,27 @@ export type Airline$patternsArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * Airline.fares
+ * Airline.routes
  */
-export type Airline$faresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Airline$routesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the FareObservation
+   * Select specific fields to fetch from the RouteAirline
    */
-  select?: Prisma.FareObservationSelect<ExtArgs> | null
+  select?: Prisma.RouteAirlineSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the FareObservation
+   * Omit specific fields from the RouteAirline
    */
-  omit?: Prisma.FareObservationOmit<ExtArgs> | null
+  omit?: Prisma.RouteAirlineOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.FareObservationInclude<ExtArgs> | null
-  where?: Prisma.FareObservationWhereInput
-  orderBy?: Prisma.FareObservationOrderByWithRelationInput | Prisma.FareObservationOrderByWithRelationInput[]
-  cursor?: Prisma.FareObservationWhereUniqueInput
+  include?: Prisma.RouteAirlineInclude<ExtArgs> | null
+  where?: Prisma.RouteAirlineWhereInput
+  orderBy?: Prisma.RouteAirlineOrderByWithRelationInput | Prisma.RouteAirlineOrderByWithRelationInput[]
+  cursor?: Prisma.RouteAirlineWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.FareObservationScalarFieldEnum | Prisma.FareObservationScalarFieldEnum[]
+  distinct?: Prisma.RouteAirlineScalarFieldEnum | Prisma.RouteAirlineScalarFieldEnum[]
 }
 
 /**
