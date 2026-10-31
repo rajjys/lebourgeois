@@ -14,6 +14,7 @@ config({ path: [".env.local", ".env"] });
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type Prisma } from "../lib/generated/prisma/client";
 import { ensureRoute, ensureRouteAirline } from "../lib/routes";
+import { PRIORITY_ROUTES } from "../lib/priorityRoutes";
 
 const url = process.env.DATABASE_URL;
 if (!url) throw new Error("DATABASE_URL is not set");
@@ -97,20 +98,6 @@ const airCongoFromFares: { dest: string; amount: number }[] = [
   { dest: "FBM", amount: 244 },
 ];
 
-// Priority city pairs (docs/ROUTE-MODEL.md §8, confirmed by the owner 2026-10-31). Both directions.
-// Tier 3 for the two routes kept for closed airports: there is no schedule to maintain.
-const priorityRoutes: { tier: 1 | 2 | 3; pairs: [string, string][] }[] = [
-  {
-    tier: 1,
-    pairs: [
-      ["FIH", "FBM"], ["FIH", "MJM"], ["FIH", "FKI"], ["FIH", "KWZ"], ["FIH", "KGA"],
-      ["FIH", "MDK"], ["KWZ", "FBM"], ["FIH", "FMI"], ["FIH", "KND"],
-    ],
-  },
-  { tier: 2, pairs: [["FBM", "MJM"], ["FBM", "FMI"], ["KND", "FMI"], ["FIH", "MNB"], ["FIH", "GMA"], ["FKI", "KND"]] },
-  { tier: 3, pairs: [["FIH", "GOM"], ["BUX", "BNC"]] },
-];
-
 async function main() {
   for (const a of airports) {
     await prisma.airport.upsert({ where: { code: a.code }, create: a, update: {} });
@@ -131,7 +118,7 @@ async function main() {
     if (!found) throw new Error(`Unknown airport ${code}`);
     return found;
   };
-  for (const { tier, pairs } of priorityRoutes) {
+  for (const { tier, pairs } of PRIORITY_ROUTES) {
     for (const [a, b] of pairs) {
       for (const [from, to] of [[a, b], [b, a]]) {
         const route = await ensureRoute(prisma, id(from), id(to));

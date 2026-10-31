@@ -13,7 +13,7 @@ import CountryFlag from "react-country-flag"
 import { SITE } from "@/lib/site";
 import { SEARCH_ANCHOR } from "@/lib/links";
 
-// Logo left, sections in the middle, the search button and language on the right.
+// Logo left, sections in the middle (Accueil, À propos, Contact), the search button and language on the right.
 // The search button is the only way to /explore, so there is no "Vols" link doing the same.
 // Vols (route index), Compagnies and Aéroports join when their pages exist (docs/PLAN.md, RW-5, E-1, E-2).
 const Navbar = () => {
@@ -21,10 +21,12 @@ const Navbar = () => {
   const { t, i18n } = useTranslation();
 
   const navLinks = [
+    { href: "/", label: t('nav.home') },
     { href: "/about", label: t('nav.about') },
     { href: "/contact", label: t('nav.contact') },
   ];
-  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
   const linkClass = (active: boolean) =>
     cn(
       "rounded-md px-3 py-2 text-sm font-medium transition-colors",
@@ -102,8 +104,8 @@ const Navbar = () => {
               <SheetContent side="right" className="w-72 px-4" aria-describedby={undefined}>
                 <SheetTitle className="sr-only">{t('nav.menu')}</SheetTitle>
                 <div className="mt-8 flex flex-col gap-1">
-                  {[{ href: "/", label: t('nav.home') }, ...navLinks].map((link) => {
-                    const active = link.href === "/" ? pathname === "/" : isActive(link.href);
+                  {navLinks.map((link) => {
+                    const active = isActive(link.href);
                     return (
                       <SheetClose asChild key={link.href}>
                         <Link href={link.href} aria-current={active ? "page" : undefined} className={linkClass(active)}>

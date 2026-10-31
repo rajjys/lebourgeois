@@ -17,6 +17,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Plane,
+  Route,
 } from 'lucide-react';
 import { Logo, LogoMark } from '@/components/brand/Logo';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -35,6 +36,7 @@ const navGroups: NavGroup[] = [
   {
     label: 'Données de vol',
     items: [
+      { name: 'Routes', href: '/dashboard/routes', icon: Route },
       { name: 'Programmes de vol', href: '/dashboard/flight-patterns', icon: CalendarDays },
       { name: 'Compagnies', href: '/dashboard/airlines', icon: Plane },
       { name: 'Aéroports', href: '/dashboard/airports', icon: MapPin },
