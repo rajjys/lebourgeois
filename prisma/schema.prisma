@@ -57,6 +57,29 @@ enum TripType {
   ROUND_TRIP
 }
 
+enum RouteStatus {
+  DRAFT      // being prepared, no public page
+  PUBLISHED  // has a public page; stays published when service stops (ROUTE-MODEL §7)
+  ARCHIVED   // withdrawn by the operator
+}
+
+enum RouteAirlineStatus {
+  ACTIVE
+  SUSPENDED  // the airline paused this route; the page stays and says so
+  ENDED      // the airline no longer flies it; the page stays as a dated record
+}
+
+enum FlightStatus {
+  SCHEDULED
+  CANCELLED  // kept, so the history shows it
+}
+
+enum ChangeAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
 model Airport {
   id          String    @id @default(uuid())
   code        String    @unique  // IATA
@@ -81,8 +104,6 @@ model Airport {
   arrivals        FlightPattern[]   @relation("destination")
   routesFrom      Route[]           @relation("routeOrigin")
   routesTo        Route[]           @relation("routeDestination")
-  faresFrom       FareObservation[] @relation("fareOrigin")
-  faresTo         FareObservation[] @relation("fareDestination")
 }
 
 model Airline {
@@ -106,33 +127,108 @@ model Airline {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   patterns    FlightPattern[]   @relation("airline")
-  fares       FareObservation[]
+  routes      RouteAirline[]
 }
 
-// A directional city pair that can have its own public page.
+// A trip from one city to another, in one direction: the permanent unit (docs/ROUTE-MODEL.md).
+// Stops belong to flights, not to the route: Kinshasa → Kalemie via Kindu is this route.
 model Route {
-  id            String   @id @default(uuid())
+  id            String      @id @default(uuid())
   originId      String
-  origin        Airport  @relation("routeOrigin", fields: [originId], references: [id])
+  origin        Airport     @relation("routeOrigin", fields: [originId], references: [id])
   destinationId String
-  destination   Airport  @relation("routeDestination", fields: [destinationId], references: [id])
-  slug          String   @unique  // "kinshasa-lubumbashi"
-  isPublished   Boolean  @default(false)  // only routes with verified data get a page
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  destination   Airport     @relation("routeDestination", fields: [destinationId], references: [id])
+  slug          String      @unique  // "kinshasa-lubumbashi"
+  status        RouteStatus @default(DRAFT)
+  tier          Int         @default(3)  // 1 = first priority (ROUTE-MODEL §8)
+  note          String?     // public editorial note, French
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  airlines      RouteAirline[]
+  requests      Request[]
 
   @@unique([originId, destinationId])
 }
 
+// One airline on one route: what /vols/<route>/<airline> is about.
+model RouteAirline {
+  id                String             @id @default(uuid())
+  routeId           String
+  route             Route              @relation(fields: [routeId], references: [id])
+  airlineId         String
+  airline           Airline            @relation(fields: [airlineId], references: [id])
+  status            RouteAirlineStatus @default(ACTIVE)
+  isPublished       Boolean            @default(false)  // prepared out of sight until published
+  note              String?            // public: baggage, fare names, how to book
+  bookingUrl        String?            // overrides the airline's default
+  // Last time someone checked the airline's own information for this route, even if nothing changed.
+  verifiedAt        DateTime?
+  verifiedSourceUrl String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  flights           Flight[]
+  fares             FareObservation[]
+
+  @@unique([routeId, airlineId])
+  @@index([airlineId])
+}
+
+// One departure on one date. Weekly patterns, "next departure" and "known until" are computed from these.
+model Flight {
+  id               String       @id @default(uuid())
+  routeAirlineId   String
+  routeAirline     RouteAirline @relation(fields: [routeAirlineId], references: [id])
+  date             DateTime     @db.Date  // departure date, local at the origin
+  flightNumber     String?      // as written ("BU1611", "ET60"); null when the airline publishes none
+  departureTime    String       // "13:45", local at the origin
+  arrivalTime      String       // local at the destination
+  arrivalDayOffset Int          @default(0)  // 1 when it lands the next day
+  via              String[]     @default([])  // stop airport codes in order; empty = direct
+  aircraft         String?
+  status           FlightStatus @default(SCHEDULED)
+
+  source           DataSource   @default(MANUAL)
+  sourceUrl        String?
+  verifiedAt       DateTime?
+  reviewStatus     ReviewStatus @default(APPROVED)  // imports start PENDING
+  batchId          String?      // the bulk action that created it, so it can be undone
+
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  // A flight number departs once a day per route; unnumbered flights are told apart by their time.
+  @@unique([routeAirlineId, date, flightNumber])
+  @@unique([routeAirlineId, date, departureTime])
+  @@index([date])
+  @@index([batchId])
+}
+
+// Who changed what, and when. Written on every back-office write; never edited.
+model ChangeLog {
+  id        String       @id @default(cuid())
+  createdAt DateTime     @default(now())
+  actor     String       // the admin's login, or "seed" / "script"
+  entity    String       // model name: "Airport", "Flight", …
+  entityId  String
+  action    ChangeAction
+  routeId   String?      // set for route data, for the route's history panel; no foreign key, so it outlives deletes
+  batchId   String?
+  summary   String       // one line in French
+  changes   Json?        // { field: [before, after] } for updates, the record for creates and deletes
+
+  @@index([entity, entityId, createdAt])
+  @@index([routeId, createdAt])
+}
+
 // One price seen at one moment. Prices are history, not a property of a schedule.
 model FareObservation {
-  id            String       @id @default(uuid())
-  airlineId     String
-  airline       Airline      @relation(fields: [airlineId], references: [id])
-  originId      String
-  origin        Airport      @relation("fareOrigin", fields: [originId], references: [id])
-  destinationId String
-  destination   Airport      @relation("fareDestination", fields: [destinationId], references: [id])
+  id             String       @id @default(uuid())
+  routeAirlineId String
+  routeAirline   RouteAirline @relation(fields: [routeAirlineId], references: [id])
+  fareName       String?      // as the airline names it: "Economy Classic"
+  flightNumber   String?      // when the price was shown for one flight
 
   amount        Decimal      @db.Decimal(10, 2)
   currency      String       @default("USD")
@@ -150,7 +246,7 @@ model FareObservation {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
-  @@index([originId, destinationId, observedAt])
+  @@index([routeAirlineId, observedAt])
   @@index([reviewStatus])
 }
 
@@ -218,6 +314,10 @@ model Request {
   travelDate       DateTime
   travelClass      String
   travelers        Int
+
+  // Demand per route: set when both cities match airports
+  routeId          String?
+  route            Route?   @relation(fields: [routeId], references: [id], onDelete: SetNull)
 
   // Metadata
   source           String   @default("web")

@@ -1,6 +1,9 @@
 /**
- * Reference data: airports, airlines and their public status.
- * Idempotent (upserts by code). Run with `npx prisma db seed`.
+ * Reference data: airports, airlines, their public status and the priority routes.
+ * Idempotent. Run with `npx prisma db seed`.
+ *
+ * Only fills in what is missing: rows that already exist are left alone, because the back
+ * office is where they are edited now (re-running the seed must not undo an edit).
  *
  * Refuses to touch a non-local database unless ALLOW_REMOTE_DB=1, so it can
  * never hit production by accident.
@@ -10,6 +13,7 @@ config({ path: [".env.local", ".env"] });
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type Prisma } from "../lib/generated/prisma/client";
+import { ensureRoute, ensureRouteAirline } from "../lib/routes";
 
 const url = process.env.DATABASE_URL;
 if (!url) throw new Error("DATABASE_URL is not set");
@@ -93,34 +97,63 @@ const airCongoFromFares: { dest: string; amount: number }[] = [
   { dest: "FBM", amount: 244 },
 ];
 
+// Priority city pairs (docs/ROUTE-MODEL.md §8, confirmed by the owner 2026-10-31). Both directions.
+// Tier 3 for the two routes kept for closed airports: there is no schedule to maintain.
+const priorityRoutes: { tier: 1 | 2 | 3; pairs: [string, string][] }[] = [
+  {
+    tier: 1,
+    pairs: [
+      ["FIH", "FBM"], ["FIH", "MJM"], ["FIH", "FKI"], ["FIH", "KWZ"], ["FIH", "KGA"],
+      ["FIH", "MDK"], ["KWZ", "FBM"], ["FIH", "FMI"], ["FIH", "KND"],
+    ],
+  },
+  { tier: 2, pairs: [["FBM", "MJM"], ["FBM", "FMI"], ["KND", "FMI"], ["FIH", "MNB"], ["FIH", "GMA"], ["FKI", "KND"]] },
+  { tier: 3, pairs: [["FIH", "GOM"], ["BUX", "BNC"]] },
+];
+
 async function main() {
   for (const a of airports) {
-    await prisma.airport.upsert({ where: { code: a.code }, create: a, update: a });
+    await prisma.airport.upsert({ where: { code: a.code }, create: a, update: {} });
   }
 
   for (const { previousCode, ...a } of airlines) {
-    const existing =
-      (await prisma.airline.findUnique({ where: { code: a.code } })) ??
-      (previousCode ? await prisma.airline.findUnique({ where: { code: previousCode } }) : null);
-    if (existing) await prisma.airline.update({ where: { id: existing.id }, data: a });
+    if (await prisma.airline.findUnique({ where: { code: a.code } })) continue;
+    // One-time rename of rows created before IATA codes (e.g. "CAA" → "BU").
+    const renamed = previousCode ? await prisma.airline.findUnique({ where: { code: previousCode } }) : null;
+    if (renamed) await prisma.airline.update({ where: { id: renamed.id }, data: a });
     else await prisma.airline.create({ data: a });
+  }
+
+  // Draft routes with their tier. A tier changed in the back office (anything but the default 3) is kept.
+  const airportId = new Map((await prisma.airport.findMany({ select: { id: true, code: true } })).map((a) => [a.code, a.id]));
+  const id = (code: string) => {
+    const found = airportId.get(code);
+    if (!found) throw new Error(`Unknown airport ${code}`);
+    return found;
+  };
+  for (const { tier, pairs } of priorityRoutes) {
+    for (const [a, b] of pairs) {
+      for (const [from, to] of [[a, b], [b, a]]) {
+        const route = await ensureRoute(prisma, id(from), id(to));
+        if (route.tier === 3 && tier !== 3) await prisma.route.update({ where: { id: route.id }, data: { tier } });
+      }
+    }
   }
 
   // Placeholder flights ("XX 291") from the hidden airline must not be shown.
   await prisma.flightPattern.updateMany({ where: { airline: { code: "MG" } }, data: { active: false } });
 
   const airCongo = await prisma.airline.findUniqueOrThrow({ where: { code: "4H" } });
-  const fih = await prisma.airport.findUniqueOrThrow({ where: { code: "FIH" } });
   const observedAt = new Date("2026-10-30T00:00:00Z");
   for (const f of airCongoFromFares) {
-    const dest = await prisma.airport.findUniqueOrThrow({ where: { code: f.dest } });
+    const routeAirline = await ensureRouteAirline(prisma, { airlineId: airCongo.id, originId: id("FIH"), destinationId: id(f.dest) });
     const exists = await prisma.fareObservation.findFirst({
-      where: { airlineId: airCongo.id, originId: fih.id, destinationId: dest.id, observedAt, sourceUrl: AIR_CONGO_HOME },
+      where: { routeAirlineId: routeAirline.id, observedAt, sourceUrl: AIR_CONGO_HOME },
     });
     if (exists) continue;
     await prisma.fareObservation.create({
       data: {
-        airlineId: airCongo.id, originId: fih.id, destinationId: dest.id,
+        routeAirlineId: routeAirline.id,
         amount: f.amount, currency: "USD", kind: "FROM_PRICE", tripType: "ONE_WAY",
         observedAt, source: "AIRLINE_WEBSITE", sourceUrl: AIR_CONGO_HOME, reviewStatus: "PENDING",
         note: "Prix « From USD » affiché sur la page d'accueil. Origine non précisée (Kinshasa présumée) ; aller simple présumé (les tarifs internationaux sont marqués « Round-trip »).",
@@ -131,6 +164,8 @@ async function main() {
   const counts = {
     airports: await prisma.airport.count(),
     airlines: await prisma.airline.count(),
+    routes: await prisma.route.count(),
+    routesByTier: await prisma.route.groupBy({ by: ["tier"], _count: true, orderBy: { tier: "asc" } }),
     pendingFares: await prisma.fareObservation.count({ where: { reviewStatus: "PENDING" } }),
   };
   console.log("Reference data applied:", counts);

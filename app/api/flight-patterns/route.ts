@@ -2,7 +2,9 @@ import prisma from "@/lib/prisma";
 import { FlightPatternSchema } from "@/lib/validations/flightPattern";
 import { ok, created, badRequest, internalError, generateRequestId } from "@/app/api/utils/http";
 import { withNextDepartureDate, withNextDepartureDates } from "@/lib/flightPatterns/nextDeparture";
-import { getSession, requireAdmin } from "@/lib/auth/session";
+import { currentActor, getSession, requireAdmin } from "@/lib/auth/session";
+import { ensureRouteAirline } from "@/lib/routes";
+import { logChange, snapshot } from "@/lib/changeLog";
 import { PUBLIC_PATTERN_FILTER } from "@/lib/flightPatterns/visibility";
 import { refreshPublicPages } from "@/app/api/utils/db";
 
@@ -63,24 +65,37 @@ export async function POST(req: Request) {
       return badRequest("Invalid flight pattern payload", parsed.error.format(), requestId);
     }
     const data = parsed.data;
-    const createdRow = await prisma.flightPattern.create({
-      data: {
-        airlineId: data.airlineId,
-        originId: data.originId,
-        destinationId: data.destinationId,
-        flightNumber: data.flightNumber,
-        departureTime: data.departureTime,
-        arrivalTime: data.arrivalTime,
-        daysOfWeek: data.daysOfWeek ?? [],
-        startDate: data.startDate,
-        endDate: data.endDate,
-        price: data.price,
-        currency: data.currency,
-        aircraft: data.aircraft,
-        capacity: data.capacity,
-        active: data.active ?? true,
-      },
-      include: { airline: true, origin: true, destination: true },
+    if (data.originId === data.destinationId) return badRequest("Départ et arrivée identiques", null, requestId);
+    const actor = await currentActor();
+    const createdRow = await prisma.$transaction(async (tx) => {
+      // Keeps the route model in step until schedules are managed per route (RW-3).
+      const routeAirline = await ensureRouteAirline(tx, data);
+      const row = await tx.flightPattern.create({
+        data: {
+          airlineId: data.airlineId,
+          originId: data.originId,
+          destinationId: data.destinationId,
+          flightNumber: data.flightNumber,
+          departureTime: data.departureTime,
+          arrivalTime: data.arrivalTime,
+          daysOfWeek: data.daysOfWeek ?? [],
+          startDate: data.startDate,
+          endDate: data.endDate,
+          price: data.price,
+          currency: data.currency,
+          aircraft: data.aircraft,
+          capacity: data.capacity,
+          active: data.active ?? true,
+        },
+      });
+      await logChange(tx, {
+        actor, entity: "FlightPattern", entityId: row.id, action: "CREATE", routeId: routeAirline.routeId,
+        summary: `Programme ${row.flightNumber} créé`, changes: snapshot(row),
+      });
+      return tx.flightPattern.findUniqueOrThrow({
+        where: { id: row.id },
+        include: { airline: true, origin: true, destination: true },
+      });
     });
     refreshPublicPages();
     return created(withNextDepartureDate(createdRow), requestId);

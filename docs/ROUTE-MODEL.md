@@ -1,6 +1,6 @@
 # Route-centric model and back office
 
-> **Status:** proposal 2026-10-30; the owner answered the open questions on 2026-10-31 ([§11](#11-open-questions-for-the-owner)). Nothing in this document is built yet; RW-1 is next.
+> **Status:** proposal 2026-10-30; the owner answered the open questions on 2026-10-31 ([§11](#11-open-questions-for-the-owner)). **RW-1 (schema v3, [§4](#4-the-model)) is built and in review**; the back-office screens (RW-2 →) are next.
 > **Replaces:** the "flight pattern" way of managing schedules.
 > **Plan:** phases **RW-1 → RW-7** below. They form milestone **M3** in [PLAN.md](PLAN.md#7-milestones).
 > **Depends on:** [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md) (done) and [SEO-AEO-GEO.md](SEO-AEO-GEO.md) (rules for public pages).
@@ -124,14 +124,15 @@ erDiagram
 | **RouteAirline** | One airline on one route. This is what `/vols/…/caa` is about. | CAA on Kinshasa → Lubumbashi | When an airline starts or stops a route |
 | **Flight** | One departure on one date. | 3 Nov 2026, BU 1611, 13:45 → 17:15, direct | Weekly, by the operator or an import |
 | **FareObservation** | One price seen at one moment (exists since schema v2). | 244 $, Economy, seen 30 Oct on air-congo.com | Whenever a price is seen |
-| **ChangeLog** | Who changed what, and when (plan item S-5). | "Copied week of 2 Nov to 9 and 16 Nov" | Every write |
+| **ChangeLog** | Who changed what, and when (plan item S-5): actor, record, action, the route it concerns, the batch, a one-line summary and the changed fields with their old and new values. | "Copied week of 2 Nov to 9 and 16 Nov" | Every write, in the same transaction |
 
 ### Fields (proposed schema v3)
 
 **Route**: adds to the existing table:
 - `status`: `DRAFT | PUBLISHED | ARCHIVED`. It replaces `isPublished`.
-- `tier`: 1, 2 or 3. Priority, see [§8](#8-which-routes-first).
+- `tier`: 1, 2 or 3 (default 3). Priority, see [§8](#8-which-routes-first).
 - `note`: a short, human-written editorial note in French.
+- The database refuses a route from an airport to itself.
 
 The slug (`kinshasa-lubumbashi`) and the unique origin + destination pair already exist.
 
@@ -149,7 +150,7 @@ The slug (`kinshasa-lubumbashi`) and the unique origin + destination pair alread
 |---|---|
 | `routeAirlineId` | Which airline-on-route it belongs to. |
 | `date` | Departure date, local at the origin (date only). |
-| `flightNumber` | Stored as written: `BU1611`, `ET60`. |
+| `flightNumber` | Stored as written, uppercase without spaces: `BU1611`, `ET60`. Empty when the airline publishes none (Air Congo's timetable PDF). |
 | `departureTime`, `arrivalTime`, `arrivalDayOffset` | Local times at each airport; the offset is 0 or 1. |
 | `via` | Ordered list of stop codes, e.g. `["KND"]`. Empty means direct. |
 | `aircraft` | Optional. |
@@ -157,12 +158,16 @@ The slug (`kinshasa-lubumbashi`) and the unique origin + destination pair alread
 | `source`, `sourceUrl`, `verifiedAt`, `reviewStatus` | Where it came from and how sure we are. Operator entries are `APPROVED`; imports start `PENDING`. |
 | `batchId` | Which bulk action created it, so that action can be undone. |
 
-There is **one row per route-airline, date and flight number** (enforced unique).
+There is **one row per route-airline, date and flight number**, and **one per route-airline, date and departure time**. Both are enforced by the database. The second rule is needed because a flight number can be empty: two unnumbered flights are told apart by their time (decided in RW-1).
+
+The database also checks the written forms: times `HH:MM`, an arrival day offset of 0 or 1, flight numbers like `BU1611`, stops as airport codes.
 
 **FareObservation**: adds:
 - `routeAirlineId`
 - `fareName` (e.g. "Economy Classic")
 - optionally the `flightNumber` the price was seen for
+
+Its own airline, origin and destination columns are dropped: the airline-on-route carries them (RW-1).
 
 **Request**: adds `routeId`, so every request counts as demand for a route.
 
@@ -285,7 +290,7 @@ Kinshasa → Lubumbashi       1   BU · ET        mar. 3 nov.    22 nov.        
 | **Appliquer un horaire** | Flight number, days, times, stops and date range create all matching flights. A preview shows what will be added or changed before saving. | Creating a pattern |
 | **Copier une semaine** | Copies a week to the next N weeks, skipping days that already have flights | Re-creating patterns |
 | **Annuler des vols** | Marks selected flights as cancelled. The history is kept. | Editing end dates |
-| **Tout est vérifié** | Stamps today's date on the airline-on-route and its next 14 days of flights | Nothing (did not exist) |
+| **Tout est vérifié** | Stamps today's date on the airline-on-route and its next 7 days of flights ([§11](#11-open-questions-for-the-owner), question 5) | Nothing (did not exist) |
 | **+ Prix observé** | Amount, fare name and source URL. The observed date defaults to today, and the travel date is optional. 3 fields, under 20 seconds. | Creating a pattern with a new price |
 | **Undo** | Every bulk action can be undone as a whole (`batchId`) | Nothing |
 | **Historique** | The ChangeLog for this route | Nothing |
@@ -391,9 +396,10 @@ They are reviewed monthly.
 | Today | Becomes | Note |
 |---|---|---|
 | `Route` (backfilled in schema v2, unpublished) | `Route` with `status = DRAFT` and a tier | Nothing lost |
-| `FlightPattern` (30 rows in production, all expired 2026-02-28) | A `RouteAirline` for each route and airline pair found, unpublished. The patterns stay read-only as "dernier programme connu" hints that pre-fill *Appliquer un horaire*. | **No future flights are invented** from expired patterns |
-| `FareObservation` (35 pending) | Linked to its `RouteAirline`; routes are created if missing (e.g. Kinshasa → Muanda) | Review status kept |
-| `Request` (free-text cities) | Matched to a route when the cities match | Others stay unmatched |
+| `FlightPattern` (30 rows in production, all expired 2026-02-28) | A `RouteAirline` for each route and airline pair found, unpublished. The patterns stay read-only as "dernier programme connu" hints that pre-fill *Appliquer un horaire*. | **No future flights are invented** from expired patterns. ✅ RW-1 |
+| `FareObservation` (35 pending) | Linked to its `RouteAirline`; routes are created if missing (e.g. Kinshasa → Muanda) | Review status kept. ✅ RW-1: the 35 local fares came out identical (airline, cities, amount, status) |
+| `Request` (free-text cities) | Matched to a route when both cities match an airport (code in brackets, or city name) and that route exists; new requests are matched when they are sent | Others stay unmatched. ✅ RW-1 |
+| — | The seed adds the priority routes of [§8](#8-which-routes-first) as drafts with their tier | ✅ RW-1 |
 | `/explore`, `/explore/[flightNumber]` | Replaced by `/vols/...` with permanent (301) redirects | RW-7 |
 | Air Congo flight numbers | Stored as `ET…` under Air Congo | Never inferred from the 4H code |
 
@@ -403,7 +409,7 @@ Each phase is one PR, off `main`, never stacked. Each has an exit test. The IDs 
 
 | ID | Phase | Contents | Exit test | Status |
 |---|---|---|---|---|
-| **RW-1** | Schema v3 | `RouteAirline`, `Flight`, `ChangeLog`; route status, tier and notes; fare and request links; migration of existing data (§9); unit tests for the constraints | The dev database migrates cleanly. Duplicate flights are rejected. Existing patterns and fares are attached to the right route and airline. | ⬜ next |
+| **RW-1** | Schema v3 | `RouteAirline`, `Flight`, `ChangeLog`; route status, tier and notes; fare and request links; migration of existing data (§9); unit tests for the constraints | The dev database migrates cleanly. Duplicate flights are rejected. Existing patterns and fares are attached to the right route and airline. | 🟡 in review |
 | **RW-2** | Network board | `/dashboard/routes`: list, filters, computed next flight, "known until" and freshness; create a route (pick two airports, slug generated) | All draft and published routes are listed with correct computed values. A new route can be created in under 30 seconds. | ⬜ |
 | **RW-3** | Route workspace: schedules | Calendar (8 weeks × 7 days), click to edit, *Appliquer un horaire* with preview, *Copier une semaine*, *Annuler*, *Tout est vérifié*, undo by batch, both directions | The owner's example (§6.2) is done in under 2 minutes with no repeated typing. Undo restores the previous state. | ⬜ |
 | **RW-4** | Route workspace: prices and notes | *+ Prix observé* (3 fields), price list per airline, editorial notes, history panel; operator entries auto-approved; pending imports shown separately | A price change is logged in under 20 seconds. The 35 pending fares can be reviewed from the workspace. | ⬜ |

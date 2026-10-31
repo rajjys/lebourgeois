@@ -110,7 +110,7 @@ export function EditorHeader({
 
 /** For records that flights or fares may still use: the API refuses those deletes. */
 export const IN_USE_NOTE =
-  "La suppression est définitive. Si des vols ou des prix y sont liés, elle sera refusée : changez plutôt le statut.";
+  "La suppression est définitive. Si des routes ou des vols y sont liés, elle sera refusée : changez plutôt le statut.";
 
 /** Delete with a confirmation step. */
 export function DeleteButton({

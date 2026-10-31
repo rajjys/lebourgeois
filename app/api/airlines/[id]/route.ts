@@ -2,12 +2,13 @@ import prisma from "@/lib/prisma";
 import { AirlineSchema, airlineData } from "@/lib/validations/airline";
 import { ok, badRequest, conflict, notFound, internalError, generateRequestId } from "@/app/api/utils/http";
 import { dbErrorKind, refreshPublicPages } from "@/app/api/utils/db";
-import { requireAdmin } from "@/lib/auth/session";
+import { currentActor, requireAdmin } from "@/lib/auth/session";
+import { changedFields, logChange, snapshot } from "@/lib/changeLog";
 
 /**
  * GET /api/airlines/:id
  * PUT /api/airlines/:id
- * DELETE /api/airlines/:id (409 while flights or fares still use it)
+ * DELETE /api/airlines/:id (409 while routes or schedules still use it)
  */
 export async function GET(
   _req: Request,
@@ -36,7 +37,16 @@ export async function PUT(
     const body = await req.json();
     const parsed = AirlineSchema.safeParse(body);
     if (!parsed.success) return badRequest("Champs invalides", parsed.error.format(), requestId);
-    const airline = await prisma.airline.update({ where: { id }, data: airlineData(parsed.data) });
+    const actor = await currentActor();
+    const airline = await prisma.$transaction(async (tx) => {
+      const before = await tx.airline.findUniqueOrThrow({ where: { id } });
+      const after = await tx.airline.update({ where: { id }, data: airlineData(parsed.data) });
+      const changes = changedFields(before, after);
+      if (Object.keys(changes).length > 0) {
+        await logChange(tx, { actor, entity: "Airline", entityId: id, action: "UPDATE", summary: `Compagnie ${after.name} modifiée`, changes });
+      }
+      return after;
+    });
     refreshPublicPages();
     return ok(airline, requestId);
   } catch (err) {
@@ -56,14 +66,18 @@ export async function DELETE(
   const requestId = generateRequestId();
   try {
     const { id } = await context.params;
-    await prisma.airline.delete({ where: { id } });
+    const actor = await currentActor();
+    await prisma.$transaction(async (tx) => {
+      const airline = await tx.airline.delete({ where: { id } });
+      await logChange(tx, { actor, entity: "Airline", entityId: id, action: "DELETE", summary: `Compagnie ${airline.name} supprimée`, changes: snapshot(airline) });
+    });
     refreshPublicPages();
     return ok({ deleted: true }, requestId);
   } catch (err) {
     const kind = dbErrorKind(err);
     if (kind === "notFound") return notFound("Compagnie introuvable", null, requestId);
     if (kind === "inUse") {
-      return conflict("Des programmes de vol ou des prix utilisent cette compagnie. Changez plutôt son statut, ou retirez-la du site.", null, requestId);
+      return conflict("Des routes ou des programmes de vol utilisent cette compagnie. Changez plutôt son statut, ou retirez-la du site.", null, requestId);
     }
     return internalError("Failed to delete airline", (err as Error)?.message ?? null, requestId);
   }

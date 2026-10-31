@@ -312,8 +312,6 @@ export type AirportWhereInput = {
   arrivals?: Prisma.FlightPatternListRelationFilter
   routesFrom?: Prisma.RouteListRelationFilter
   routesTo?: Prisma.RouteListRelationFilter
-  faresFrom?: Prisma.FareObservationListRelationFilter
-  faresTo?: Prisma.FareObservationListRelationFilter
 }
 
 export type AirportOrderByWithRelationInput = {
@@ -337,8 +335,6 @@ export type AirportOrderByWithRelationInput = {
   arrivals?: Prisma.FlightPatternOrderByRelationAggregateInput
   routesFrom?: Prisma.RouteOrderByRelationAggregateInput
   routesTo?: Prisma.RouteOrderByRelationAggregateInput
-  faresFrom?: Prisma.FareObservationOrderByRelationAggregateInput
-  faresTo?: Prisma.FareObservationOrderByRelationAggregateInput
 }
 
 export type AirportWhereUniqueInput = Prisma.AtLeast<{
@@ -365,8 +361,6 @@ export type AirportWhereUniqueInput = Prisma.AtLeast<{
   arrivals?: Prisma.FlightPatternListRelationFilter
   routesFrom?: Prisma.RouteListRelationFilter
   routesTo?: Prisma.RouteListRelationFilter
-  faresFrom?: Prisma.FareObservationListRelationFilter
-  faresTo?: Prisma.FareObservationListRelationFilter
 }, "id" | "code" | "slug">
 
 export type AirportOrderByWithAggregationInput = {
@@ -436,8 +430,6 @@ export type AirportCreateInput = {
   arrivals?: Prisma.FlightPatternCreateNestedManyWithoutDestinationInput
   routesFrom?: Prisma.RouteCreateNestedManyWithoutOriginInput
   routesTo?: Prisma.RouteCreateNestedManyWithoutDestinationInput
-  faresFrom?: Prisma.FareObservationCreateNestedManyWithoutOriginInput
-  faresTo?: Prisma.FareObservationCreateNestedManyWithoutDestinationInput
 }
 
 export type AirportUncheckedCreateInput = {
@@ -461,8 +453,6 @@ export type AirportUncheckedCreateInput = {
   arrivals?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutDestinationInput
   routesFrom?: Prisma.RouteUncheckedCreateNestedManyWithoutOriginInput
   routesTo?: Prisma.RouteUncheckedCreateNestedManyWithoutDestinationInput
-  faresFrom?: Prisma.FareObservationUncheckedCreateNestedManyWithoutOriginInput
-  faresTo?: Prisma.FareObservationUncheckedCreateNestedManyWithoutDestinationInput
 }
 
 export type AirportUpdateInput = {
@@ -486,8 +476,6 @@ export type AirportUpdateInput = {
   arrivals?: Prisma.FlightPatternUpdateManyWithoutDestinationNestedInput
   routesFrom?: Prisma.RouteUpdateManyWithoutOriginNestedInput
   routesTo?: Prisma.RouteUpdateManyWithoutDestinationNestedInput
-  faresFrom?: Prisma.FareObservationUpdateManyWithoutOriginNestedInput
-  faresTo?: Prisma.FareObservationUpdateManyWithoutDestinationNestedInput
 }
 
 export type AirportUncheckedUpdateInput = {
@@ -511,8 +499,6 @@ export type AirportUncheckedUpdateInput = {
   arrivals?: Prisma.FlightPatternUncheckedUpdateManyWithoutDestinationNestedInput
   routesFrom?: Prisma.RouteUncheckedUpdateManyWithoutOriginNestedInput
   routesTo?: Prisma.RouteUncheckedUpdateManyWithoutDestinationNestedInput
-  faresFrom?: Prisma.FareObservationUncheckedUpdateManyWithoutOriginNestedInput
-  faresTo?: Prisma.FareObservationUncheckedUpdateManyWithoutDestinationNestedInput
 }
 
 export type AirportCreateManyInput = {
@@ -700,34 +686,6 @@ export type AirportUpdateOneRequiredWithoutRoutesToNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AirportUpdateToOneWithWhereWithoutRoutesToInput, Prisma.AirportUpdateWithoutRoutesToInput>, Prisma.AirportUncheckedUpdateWithoutRoutesToInput>
 }
 
-export type AirportCreateNestedOneWithoutFaresFromInput = {
-  create?: Prisma.XOR<Prisma.AirportCreateWithoutFaresFromInput, Prisma.AirportUncheckedCreateWithoutFaresFromInput>
-  connectOrCreate?: Prisma.AirportCreateOrConnectWithoutFaresFromInput
-  connect?: Prisma.AirportWhereUniqueInput
-}
-
-export type AirportCreateNestedOneWithoutFaresToInput = {
-  create?: Prisma.XOR<Prisma.AirportCreateWithoutFaresToInput, Prisma.AirportUncheckedCreateWithoutFaresToInput>
-  connectOrCreate?: Prisma.AirportCreateOrConnectWithoutFaresToInput
-  connect?: Prisma.AirportWhereUniqueInput
-}
-
-export type AirportUpdateOneRequiredWithoutFaresFromNestedInput = {
-  create?: Prisma.XOR<Prisma.AirportCreateWithoutFaresFromInput, Prisma.AirportUncheckedCreateWithoutFaresFromInput>
-  connectOrCreate?: Prisma.AirportCreateOrConnectWithoutFaresFromInput
-  upsert?: Prisma.AirportUpsertWithoutFaresFromInput
-  connect?: Prisma.AirportWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AirportUpdateToOneWithWhereWithoutFaresFromInput, Prisma.AirportUpdateWithoutFaresFromInput>, Prisma.AirportUncheckedUpdateWithoutFaresFromInput>
-}
-
-export type AirportUpdateOneRequiredWithoutFaresToNestedInput = {
-  create?: Prisma.XOR<Prisma.AirportCreateWithoutFaresToInput, Prisma.AirportUncheckedCreateWithoutFaresToInput>
-  connectOrCreate?: Prisma.AirportCreateOrConnectWithoutFaresToInput
-  upsert?: Prisma.AirportUpsertWithoutFaresToInput
-  connect?: Prisma.AirportWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AirportUpdateToOneWithWhereWithoutFaresToInput, Prisma.AirportUpdateWithoutFaresToInput>, Prisma.AirportUncheckedUpdateWithoutFaresToInput>
-}
-
 export type AirportCreateNestedOneWithoutDeparturesInput = {
   create?: Prisma.XOR<Prisma.AirportCreateWithoutDeparturesInput, Prisma.AirportUncheckedCreateWithoutDeparturesInput>
   connectOrCreate?: Prisma.AirportCreateOrConnectWithoutDeparturesInput
@@ -776,8 +734,6 @@ export type AirportCreateWithoutRoutesFromInput = {
   departures?: Prisma.FlightPatternCreateNestedManyWithoutOriginInput
   arrivals?: Prisma.FlightPatternCreateNestedManyWithoutDestinationInput
   routesTo?: Prisma.RouteCreateNestedManyWithoutDestinationInput
-  faresFrom?: Prisma.FareObservationCreateNestedManyWithoutOriginInput
-  faresTo?: Prisma.FareObservationCreateNestedManyWithoutDestinationInput
 }
 
 export type AirportUncheckedCreateWithoutRoutesFromInput = {
@@ -800,8 +756,6 @@ export type AirportUncheckedCreateWithoutRoutesFromInput = {
   departures?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutOriginInput
   arrivals?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutDestinationInput
   routesTo?: Prisma.RouteUncheckedCreateNestedManyWithoutDestinationInput
-  faresFrom?: Prisma.FareObservationUncheckedCreateNestedManyWithoutOriginInput
-  faresTo?: Prisma.FareObservationUncheckedCreateNestedManyWithoutDestinationInput
 }
 
 export type AirportCreateOrConnectWithoutRoutesFromInput = {
@@ -829,8 +783,6 @@ export type AirportCreateWithoutRoutesToInput = {
   departures?: Prisma.FlightPatternCreateNestedManyWithoutOriginInput
   arrivals?: Prisma.FlightPatternCreateNestedManyWithoutDestinationInput
   routesFrom?: Prisma.RouteCreateNestedManyWithoutOriginInput
-  faresFrom?: Prisma.FareObservationCreateNestedManyWithoutOriginInput
-  faresTo?: Prisma.FareObservationCreateNestedManyWithoutDestinationInput
 }
 
 export type AirportUncheckedCreateWithoutRoutesToInput = {
@@ -853,8 +805,6 @@ export type AirportUncheckedCreateWithoutRoutesToInput = {
   departures?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutOriginInput
   arrivals?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutDestinationInput
   routesFrom?: Prisma.RouteUncheckedCreateNestedManyWithoutOriginInput
-  faresFrom?: Prisma.FareObservationUncheckedCreateNestedManyWithoutOriginInput
-  faresTo?: Prisma.FareObservationUncheckedCreateNestedManyWithoutDestinationInput
 }
 
 export type AirportCreateOrConnectWithoutRoutesToInput = {
@@ -893,8 +843,6 @@ export type AirportUpdateWithoutRoutesFromInput = {
   departures?: Prisma.FlightPatternUpdateManyWithoutOriginNestedInput
   arrivals?: Prisma.FlightPatternUpdateManyWithoutDestinationNestedInput
   routesTo?: Prisma.RouteUpdateManyWithoutDestinationNestedInput
-  faresFrom?: Prisma.FareObservationUpdateManyWithoutOriginNestedInput
-  faresTo?: Prisma.FareObservationUpdateManyWithoutDestinationNestedInput
 }
 
 export type AirportUncheckedUpdateWithoutRoutesFromInput = {
@@ -917,8 +865,6 @@ export type AirportUncheckedUpdateWithoutRoutesFromInput = {
   departures?: Prisma.FlightPatternUncheckedUpdateManyWithoutOriginNestedInput
   arrivals?: Prisma.FlightPatternUncheckedUpdateManyWithoutDestinationNestedInput
   routesTo?: Prisma.RouteUncheckedUpdateManyWithoutDestinationNestedInput
-  faresFrom?: Prisma.FareObservationUncheckedUpdateManyWithoutOriginNestedInput
-  faresTo?: Prisma.FareObservationUncheckedUpdateManyWithoutDestinationNestedInput
 }
 
 export type AirportUpsertWithoutRoutesToInput = {
@@ -952,8 +898,6 @@ export type AirportUpdateWithoutRoutesToInput = {
   departures?: Prisma.FlightPatternUpdateManyWithoutOriginNestedInput
   arrivals?: Prisma.FlightPatternUpdateManyWithoutDestinationNestedInput
   routesFrom?: Prisma.RouteUpdateManyWithoutOriginNestedInput
-  faresFrom?: Prisma.FareObservationUpdateManyWithoutOriginNestedInput
-  faresTo?: Prisma.FareObservationUpdateManyWithoutDestinationNestedInput
 }
 
 export type AirportUncheckedUpdateWithoutRoutesToInput = {
@@ -976,232 +920,6 @@ export type AirportUncheckedUpdateWithoutRoutesToInput = {
   departures?: Prisma.FlightPatternUncheckedUpdateManyWithoutOriginNestedInput
   arrivals?: Prisma.FlightPatternUncheckedUpdateManyWithoutDestinationNestedInput
   routesFrom?: Prisma.RouteUncheckedUpdateManyWithoutOriginNestedInput
-  faresFrom?: Prisma.FareObservationUncheckedUpdateManyWithoutOriginNestedInput
-  faresTo?: Prisma.FareObservationUncheckedUpdateManyWithoutDestinationNestedInput
-}
-
-export type AirportCreateWithoutFaresFromInput = {
-  id?: string
-  code: string
-  slug: string
-  name: string
-  city: string
-  province?: string | null
-  countryCode?: string
-  timezone: string
-  latitude?: number | null
-  longitude?: number | null
-  status?: $Enums.AirportStatus
-  statusNote?: string | null
-  statusSince?: Date | string | null
-  statusSourceUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  departures?: Prisma.FlightPatternCreateNestedManyWithoutOriginInput
-  arrivals?: Prisma.FlightPatternCreateNestedManyWithoutDestinationInput
-  routesFrom?: Prisma.RouteCreateNestedManyWithoutOriginInput
-  routesTo?: Prisma.RouteCreateNestedManyWithoutDestinationInput
-  faresTo?: Prisma.FareObservationCreateNestedManyWithoutDestinationInput
-}
-
-export type AirportUncheckedCreateWithoutFaresFromInput = {
-  id?: string
-  code: string
-  slug: string
-  name: string
-  city: string
-  province?: string | null
-  countryCode?: string
-  timezone: string
-  latitude?: number | null
-  longitude?: number | null
-  status?: $Enums.AirportStatus
-  statusNote?: string | null
-  statusSince?: Date | string | null
-  statusSourceUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  departures?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutOriginInput
-  arrivals?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutDestinationInput
-  routesFrom?: Prisma.RouteUncheckedCreateNestedManyWithoutOriginInput
-  routesTo?: Prisma.RouteUncheckedCreateNestedManyWithoutDestinationInput
-  faresTo?: Prisma.FareObservationUncheckedCreateNestedManyWithoutDestinationInput
-}
-
-export type AirportCreateOrConnectWithoutFaresFromInput = {
-  where: Prisma.AirportWhereUniqueInput
-  create: Prisma.XOR<Prisma.AirportCreateWithoutFaresFromInput, Prisma.AirportUncheckedCreateWithoutFaresFromInput>
-}
-
-export type AirportCreateWithoutFaresToInput = {
-  id?: string
-  code: string
-  slug: string
-  name: string
-  city: string
-  province?: string | null
-  countryCode?: string
-  timezone: string
-  latitude?: number | null
-  longitude?: number | null
-  status?: $Enums.AirportStatus
-  statusNote?: string | null
-  statusSince?: Date | string | null
-  statusSourceUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  departures?: Prisma.FlightPatternCreateNestedManyWithoutOriginInput
-  arrivals?: Prisma.FlightPatternCreateNestedManyWithoutDestinationInput
-  routesFrom?: Prisma.RouteCreateNestedManyWithoutOriginInput
-  routesTo?: Prisma.RouteCreateNestedManyWithoutDestinationInput
-  faresFrom?: Prisma.FareObservationCreateNestedManyWithoutOriginInput
-}
-
-export type AirportUncheckedCreateWithoutFaresToInput = {
-  id?: string
-  code: string
-  slug: string
-  name: string
-  city: string
-  province?: string | null
-  countryCode?: string
-  timezone: string
-  latitude?: number | null
-  longitude?: number | null
-  status?: $Enums.AirportStatus
-  statusNote?: string | null
-  statusSince?: Date | string | null
-  statusSourceUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  departures?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutOriginInput
-  arrivals?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutDestinationInput
-  routesFrom?: Prisma.RouteUncheckedCreateNestedManyWithoutOriginInput
-  routesTo?: Prisma.RouteUncheckedCreateNestedManyWithoutDestinationInput
-  faresFrom?: Prisma.FareObservationUncheckedCreateNestedManyWithoutOriginInput
-}
-
-export type AirportCreateOrConnectWithoutFaresToInput = {
-  where: Prisma.AirportWhereUniqueInput
-  create: Prisma.XOR<Prisma.AirportCreateWithoutFaresToInput, Prisma.AirportUncheckedCreateWithoutFaresToInput>
-}
-
-export type AirportUpsertWithoutFaresFromInput = {
-  update: Prisma.XOR<Prisma.AirportUpdateWithoutFaresFromInput, Prisma.AirportUncheckedUpdateWithoutFaresFromInput>
-  create: Prisma.XOR<Prisma.AirportCreateWithoutFaresFromInput, Prisma.AirportUncheckedCreateWithoutFaresFromInput>
-  where?: Prisma.AirportWhereInput
-}
-
-export type AirportUpdateToOneWithWhereWithoutFaresFromInput = {
-  where?: Prisma.AirportWhereInput
-  data: Prisma.XOR<Prisma.AirportUpdateWithoutFaresFromInput, Prisma.AirportUncheckedUpdateWithoutFaresFromInput>
-}
-
-export type AirportUpdateWithoutFaresFromInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  city?: Prisma.StringFieldUpdateOperationsInput | string
-  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
-  timezone?: Prisma.StringFieldUpdateOperationsInput | string
-  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  status?: Prisma.EnumAirportStatusFieldUpdateOperationsInput | $Enums.AirportStatus
-  statusNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  statusSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  statusSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  departures?: Prisma.FlightPatternUpdateManyWithoutOriginNestedInput
-  arrivals?: Prisma.FlightPatternUpdateManyWithoutDestinationNestedInput
-  routesFrom?: Prisma.RouteUpdateManyWithoutOriginNestedInput
-  routesTo?: Prisma.RouteUpdateManyWithoutDestinationNestedInput
-  faresTo?: Prisma.FareObservationUpdateManyWithoutDestinationNestedInput
-}
-
-export type AirportUncheckedUpdateWithoutFaresFromInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  city?: Prisma.StringFieldUpdateOperationsInput | string
-  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
-  timezone?: Prisma.StringFieldUpdateOperationsInput | string
-  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  status?: Prisma.EnumAirportStatusFieldUpdateOperationsInput | $Enums.AirportStatus
-  statusNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  statusSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  statusSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  departures?: Prisma.FlightPatternUncheckedUpdateManyWithoutOriginNestedInput
-  arrivals?: Prisma.FlightPatternUncheckedUpdateManyWithoutDestinationNestedInput
-  routesFrom?: Prisma.RouteUncheckedUpdateManyWithoutOriginNestedInput
-  routesTo?: Prisma.RouteUncheckedUpdateManyWithoutDestinationNestedInput
-  faresTo?: Prisma.FareObservationUncheckedUpdateManyWithoutDestinationNestedInput
-}
-
-export type AirportUpsertWithoutFaresToInput = {
-  update: Prisma.XOR<Prisma.AirportUpdateWithoutFaresToInput, Prisma.AirportUncheckedUpdateWithoutFaresToInput>
-  create: Prisma.XOR<Prisma.AirportCreateWithoutFaresToInput, Prisma.AirportUncheckedCreateWithoutFaresToInput>
-  where?: Prisma.AirportWhereInput
-}
-
-export type AirportUpdateToOneWithWhereWithoutFaresToInput = {
-  where?: Prisma.AirportWhereInput
-  data: Prisma.XOR<Prisma.AirportUpdateWithoutFaresToInput, Prisma.AirportUncheckedUpdateWithoutFaresToInput>
-}
-
-export type AirportUpdateWithoutFaresToInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  city?: Prisma.StringFieldUpdateOperationsInput | string
-  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
-  timezone?: Prisma.StringFieldUpdateOperationsInput | string
-  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  status?: Prisma.EnumAirportStatusFieldUpdateOperationsInput | $Enums.AirportStatus
-  statusNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  statusSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  statusSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  departures?: Prisma.FlightPatternUpdateManyWithoutOriginNestedInput
-  arrivals?: Prisma.FlightPatternUpdateManyWithoutDestinationNestedInput
-  routesFrom?: Prisma.RouteUpdateManyWithoutOriginNestedInput
-  routesTo?: Prisma.RouteUpdateManyWithoutDestinationNestedInput
-  faresFrom?: Prisma.FareObservationUpdateManyWithoutOriginNestedInput
-}
-
-export type AirportUncheckedUpdateWithoutFaresToInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  city?: Prisma.StringFieldUpdateOperationsInput | string
-  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
-  timezone?: Prisma.StringFieldUpdateOperationsInput | string
-  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  status?: Prisma.EnumAirportStatusFieldUpdateOperationsInput | $Enums.AirportStatus
-  statusNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  statusSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  statusSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  departures?: Prisma.FlightPatternUncheckedUpdateManyWithoutOriginNestedInput
-  arrivals?: Prisma.FlightPatternUncheckedUpdateManyWithoutDestinationNestedInput
-  routesFrom?: Prisma.RouteUncheckedUpdateManyWithoutOriginNestedInput
-  routesTo?: Prisma.RouteUncheckedUpdateManyWithoutDestinationNestedInput
-  faresFrom?: Prisma.FareObservationUncheckedUpdateManyWithoutOriginNestedInput
 }
 
 export type AirportCreateWithoutDeparturesInput = {
@@ -1224,8 +942,6 @@ export type AirportCreateWithoutDeparturesInput = {
   arrivals?: Prisma.FlightPatternCreateNestedManyWithoutDestinationInput
   routesFrom?: Prisma.RouteCreateNestedManyWithoutOriginInput
   routesTo?: Prisma.RouteCreateNestedManyWithoutDestinationInput
-  faresFrom?: Prisma.FareObservationCreateNestedManyWithoutOriginInput
-  faresTo?: Prisma.FareObservationCreateNestedManyWithoutDestinationInput
 }
 
 export type AirportUncheckedCreateWithoutDeparturesInput = {
@@ -1248,8 +964,6 @@ export type AirportUncheckedCreateWithoutDeparturesInput = {
   arrivals?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutDestinationInput
   routesFrom?: Prisma.RouteUncheckedCreateNestedManyWithoutOriginInput
   routesTo?: Prisma.RouteUncheckedCreateNestedManyWithoutDestinationInput
-  faresFrom?: Prisma.FareObservationUncheckedCreateNestedManyWithoutOriginInput
-  faresTo?: Prisma.FareObservationUncheckedCreateNestedManyWithoutDestinationInput
 }
 
 export type AirportCreateOrConnectWithoutDeparturesInput = {
@@ -1277,8 +991,6 @@ export type AirportCreateWithoutArrivalsInput = {
   departures?: Prisma.FlightPatternCreateNestedManyWithoutOriginInput
   routesFrom?: Prisma.RouteCreateNestedManyWithoutOriginInput
   routesTo?: Prisma.RouteCreateNestedManyWithoutDestinationInput
-  faresFrom?: Prisma.FareObservationCreateNestedManyWithoutOriginInput
-  faresTo?: Prisma.FareObservationCreateNestedManyWithoutDestinationInput
 }
 
 export type AirportUncheckedCreateWithoutArrivalsInput = {
@@ -1301,8 +1013,6 @@ export type AirportUncheckedCreateWithoutArrivalsInput = {
   departures?: Prisma.FlightPatternUncheckedCreateNestedManyWithoutOriginInput
   routesFrom?: Prisma.RouteUncheckedCreateNestedManyWithoutOriginInput
   routesTo?: Prisma.RouteUncheckedCreateNestedManyWithoutDestinationInput
-  faresFrom?: Prisma.FareObservationUncheckedCreateNestedManyWithoutOriginInput
-  faresTo?: Prisma.FareObservationUncheckedCreateNestedManyWithoutDestinationInput
 }
 
 export type AirportCreateOrConnectWithoutArrivalsInput = {
@@ -1341,8 +1051,6 @@ export type AirportUpdateWithoutDeparturesInput = {
   arrivals?: Prisma.FlightPatternUpdateManyWithoutDestinationNestedInput
   routesFrom?: Prisma.RouteUpdateManyWithoutOriginNestedInput
   routesTo?: Prisma.RouteUpdateManyWithoutDestinationNestedInput
-  faresFrom?: Prisma.FareObservationUpdateManyWithoutOriginNestedInput
-  faresTo?: Prisma.FareObservationUpdateManyWithoutDestinationNestedInput
 }
 
 export type AirportUncheckedUpdateWithoutDeparturesInput = {
@@ -1365,8 +1073,6 @@ export type AirportUncheckedUpdateWithoutDeparturesInput = {
   arrivals?: Prisma.FlightPatternUncheckedUpdateManyWithoutDestinationNestedInput
   routesFrom?: Prisma.RouteUncheckedUpdateManyWithoutOriginNestedInput
   routesTo?: Prisma.RouteUncheckedUpdateManyWithoutDestinationNestedInput
-  faresFrom?: Prisma.FareObservationUncheckedUpdateManyWithoutOriginNestedInput
-  faresTo?: Prisma.FareObservationUncheckedUpdateManyWithoutDestinationNestedInput
 }
 
 export type AirportUpsertWithoutArrivalsInput = {
@@ -1400,8 +1106,6 @@ export type AirportUpdateWithoutArrivalsInput = {
   departures?: Prisma.FlightPatternUpdateManyWithoutOriginNestedInput
   routesFrom?: Prisma.RouteUpdateManyWithoutOriginNestedInput
   routesTo?: Prisma.RouteUpdateManyWithoutDestinationNestedInput
-  faresFrom?: Prisma.FareObservationUpdateManyWithoutOriginNestedInput
-  faresTo?: Prisma.FareObservationUpdateManyWithoutDestinationNestedInput
 }
 
 export type AirportUncheckedUpdateWithoutArrivalsInput = {
@@ -1424,8 +1128,6 @@ export type AirportUncheckedUpdateWithoutArrivalsInput = {
   departures?: Prisma.FlightPatternUncheckedUpdateManyWithoutOriginNestedInput
   routesFrom?: Prisma.RouteUncheckedUpdateManyWithoutOriginNestedInput
   routesTo?: Prisma.RouteUncheckedUpdateManyWithoutDestinationNestedInput
-  faresFrom?: Prisma.FareObservationUncheckedUpdateManyWithoutOriginNestedInput
-  faresTo?: Prisma.FareObservationUncheckedUpdateManyWithoutDestinationNestedInput
 }
 
 
@@ -1438,8 +1140,6 @@ export type AirportCountOutputType = {
   arrivals: number
   routesFrom: number
   routesTo: number
-  faresFrom: number
-  faresTo: number
 }
 
 export type AirportCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1447,8 +1147,6 @@ export type AirportCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   arrivals?: boolean | AirportCountOutputTypeCountArrivalsArgs
   routesFrom?: boolean | AirportCountOutputTypeCountRoutesFromArgs
   routesTo?: boolean | AirportCountOutputTypeCountRoutesToArgs
-  faresFrom?: boolean | AirportCountOutputTypeCountFaresFromArgs
-  faresTo?: boolean | AirportCountOutputTypeCountFaresToArgs
 }
 
 /**
@@ -1489,20 +1187,6 @@ export type AirportCountOutputTypeCountRoutesToArgs<ExtArgs extends runtime.Type
   where?: Prisma.RouteWhereInput
 }
 
-/**
- * AirportCountOutputType without action
- */
-export type AirportCountOutputTypeCountFaresFromArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.FareObservationWhereInput
-}
-
-/**
- * AirportCountOutputType without action
- */
-export type AirportCountOutputTypeCountFaresToArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.FareObservationWhereInput
-}
-
 
 export type AirportSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1525,8 +1209,6 @@ export type AirportSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   arrivals?: boolean | Prisma.Airport$arrivalsArgs<ExtArgs>
   routesFrom?: boolean | Prisma.Airport$routesFromArgs<ExtArgs>
   routesTo?: boolean | Prisma.Airport$routesToArgs<ExtArgs>
-  faresFrom?: boolean | Prisma.Airport$faresFromArgs<ExtArgs>
-  faresTo?: boolean | Prisma.Airport$faresToArgs<ExtArgs>
   _count?: boolean | Prisma.AirportCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["airport"]>
 
@@ -1593,8 +1275,6 @@ export type AirportInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   arrivals?: boolean | Prisma.Airport$arrivalsArgs<ExtArgs>
   routesFrom?: boolean | Prisma.Airport$routesFromArgs<ExtArgs>
   routesTo?: boolean | Prisma.Airport$routesToArgs<ExtArgs>
-  faresFrom?: boolean | Prisma.Airport$faresFromArgs<ExtArgs>
-  faresTo?: boolean | Prisma.Airport$faresToArgs<ExtArgs>
   _count?: boolean | Prisma.AirportCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AirportIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1607,8 +1287,6 @@ export type $AirportPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     arrivals: Prisma.$FlightPatternPayload<ExtArgs>[]
     routesFrom: Prisma.$RoutePayload<ExtArgs>[]
     routesTo: Prisma.$RoutePayload<ExtArgs>[]
-    faresFrom: Prisma.$FareObservationPayload<ExtArgs>[]
-    faresTo: Prisma.$FareObservationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2025,8 +1703,6 @@ export interface Prisma__AirportClient<T, Null = never, ExtArgs extends runtime.
   arrivals<T extends Prisma.Airport$arrivalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Airport$arrivalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FlightPatternPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   routesFrom<T extends Prisma.Airport$routesFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Airport$routesFromArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoutePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   routesTo<T extends Prisma.Airport$routesToArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Airport$routesToArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoutePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  faresFrom<T extends Prisma.Airport$faresFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Airport$faresFromArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FareObservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  faresTo<T extends Prisma.Airport$faresToArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Airport$faresToArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FareObservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2553,54 +2229,6 @@ export type Airport$routesToArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.RouteScalarFieldEnum | Prisma.RouteScalarFieldEnum[]
-}
-
-/**
- * Airport.faresFrom
- */
-export type Airport$faresFromArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the FareObservation
-   */
-  select?: Prisma.FareObservationSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the FareObservation
-   */
-  omit?: Prisma.FareObservationOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.FareObservationInclude<ExtArgs> | null
-  where?: Prisma.FareObservationWhereInput
-  orderBy?: Prisma.FareObservationOrderByWithRelationInput | Prisma.FareObservationOrderByWithRelationInput[]
-  cursor?: Prisma.FareObservationWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.FareObservationScalarFieldEnum | Prisma.FareObservationScalarFieldEnum[]
-}
-
-/**
- * Airport.faresTo
- */
-export type Airport$faresToArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the FareObservation
-   */
-  select?: Prisma.FareObservationSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the FareObservation
-   */
-  omit?: Prisma.FareObservationOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.FareObservationInclude<ExtArgs> | null
-  where?: Prisma.FareObservationWhereInput
-  orderBy?: Prisma.FareObservationOrderByWithRelationInput | Prisma.FareObservationOrderByWithRelationInput[]
-  cursor?: Prisma.FareObservationWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.FareObservationScalarFieldEnum | Prisma.FareObservationScalarFieldEnum[]
 }
 
 /**

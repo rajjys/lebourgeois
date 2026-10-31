@@ -58,14 +58,16 @@ After a reboot, run `npm run db:start` before `npm run dev`.
 | `npm run build` | Production build. Checks the design tokens first (contrast, generated CSS up to date). On Vercel production builds it then runs `prisma migrate deploy`; preview and local builds skip that step. |
 | `npm run tokens` | Regenerates `app/tokens.css` from `design/tokens.json` and checks colour contrast. Run after editing tokens. |
 | `npm run db:start` | Starts the local Postgres cluster |
-| `npm run db:seed` | Loads reference data (airports, airlines, statuses). Idempotent. Refuses non-local databases unless `ALLOW_REMOTE_DB=1`. |
+| `npm run test` | Unit tests, plus the database rules (unique flights, checks) on the local database with throwaway rows. The database part is skipped on any non-local database. |
+| `npm run db:seed` | Loads reference data (airports, airlines, statuses, priority routes). Only adds what is missing, so it never undoes a back-office edit. Refuses non-local databases unless `ALLOW_REMOTE_DB=1`. |
 | `node scripts/hash-password.mjs '<password>'` | Produces the `ADMIN_PASSWORD_HASH` value |
-| `npx tsx scripts/load-dev-timetables.ts` | Local preview data: deletes expired schedules, then loads CAA's 20 Oct 2026 timetable and Air Congo's schedule PDF, typed in by hand. Refuses any non-local database. |
+| `npx tsx scripts/load-dev-timetables.ts` | Local preview data: deletes expired schedules, then loads CAA's 20 Oct 2026 timetable and Air Congo's schedule PDF, typed in by hand, as schedules (today's search) and as flights on dates (route back office). Refuses any non-local database. |
 
 ## Troubleshooting
 
 - **Styles look old in development** (old colours, missing classes) although the files are right: Turbopack's development cache is stale. Stop `npm run dev`, move or delete `.next/dev/cache/turbopack`, and start again. Seen with Next.js 16.4.3 on 2026-10-30.
 - **The design system page** is at `/dashboard/design` (log in first).
+- **"Cannot read properties of undefined" on a model after a schema change**: the dev server keeps the Prisma client it started with. Run `npx prisma generate`, then restart `npm run dev`.
 
 ## Data safety rules
 

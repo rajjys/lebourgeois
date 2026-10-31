@@ -3,7 +3,8 @@ import { AirportSchema, airportData } from "@/lib/validations/airport";
 import { slugify } from "@/lib/utils/slug";
 import { ok, created, badRequest, conflict, internalError, generateRequestId } from "@/app/api/utils/http";
 import { dbErrorKind, refreshPublicPages } from "@/app/api/utils/db";
-import { requireAdmin } from "@/lib/auth/session";
+import { currentActor, requireAdmin } from "@/lib/auth/session";
+import { logChange, snapshot } from "@/lib/changeLog";
 
 /**
  * GET /api/airports
@@ -36,7 +37,12 @@ export async function POST(req: Request) {
     }
 
     const data = airportData(parsed.data);
-    const airport = await prisma.airport.create({ data: { ...data, slug: data.slug || slugify(data.city) } });
+    const actor = await currentActor();
+    const airport = await prisma.$transaction(async (tx) => {
+      const row = await tx.airport.create({ data: { ...data, slug: data.slug || slugify(data.city) } });
+      await logChange(tx, { actor, entity: "Airport", entityId: row.id, action: "CREATE", summary: `Aéroport ${row.code} créé`, changes: snapshot(row) });
+      return row;
+    });
     refreshPublicPages();
     return created(airport, requestId);
   } catch (err) {

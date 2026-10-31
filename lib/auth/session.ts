@@ -64,6 +64,11 @@ export async function getSession(): Promise<Session | null> {
   return decryptSession(cookieStore.get(SESSION_COOKIE)?.value);
 }
 
+/** Who to record in the change log: the admin's login. Call after requireAdmin(). */
+export async function currentActor(): Promise<string> {
+  return (await getSession())?.sub ?? "inconnu";
+}
+
 /**
  * For route handlers: returns a 401 Response when the caller is not an admin,
  * or null when the request may proceed.

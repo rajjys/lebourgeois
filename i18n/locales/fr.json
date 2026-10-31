@@ -228,7 +228,7 @@
       "messageHint": "Pour une erreur, indiquez la page et ce qui est faux.",
       "submit": "Envoyer le message",
       "sending": "Envoi…",
-      "failed": "L'envoi a échoué. Réessayez, ou écrivez-nous à {{email}}."
+      "failed": "L'envoi a échoué. Réessayez, ou écrivez-nous à {{email}} ou sur WhatsApp au {{whatsapp}}."
     },
     "sent": {
       "title": "Message envoyé",
@@ -237,6 +237,7 @@
     },
     "aside": {
       "emailTitle": "Écrire directement",
+      "whatsapp": "WhatsApp : {{number}}",
       "flightTitle": "Pour un vol précis",
       "flightBody": "Donnez-nous le trajet et la date : nous cherchons avec vous.",
       "flightCta": "Demander de l'aide pour un vol",

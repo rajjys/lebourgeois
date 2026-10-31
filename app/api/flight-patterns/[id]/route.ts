@@ -2,9 +2,11 @@ import prisma from "@/lib/prisma";
 import { FlightPatternSchema } from "@/lib/validations/flightPattern";
 import { ok, badRequest, notFound, internalError, generateRequestId } from "@/app/api/utils/http";
 import { withNextDepartureDate } from "@/lib/flightPatterns/nextDeparture";
-import { getSession, requireAdmin } from "@/lib/auth/session";
+import { currentActor, getSession, requireAdmin } from "@/lib/auth/session";
 import { PUBLIC_PATTERN_FILTER } from "@/lib/flightPatterns/visibility";
-import { refreshPublicPages } from "@/app/api/utils/db";
+import { dbErrorKind, refreshPublicPages } from "@/app/api/utils/db";
+import { ensureRouteAirline } from "@/lib/routes";
+import { changedFields, logChange, snapshot } from "@/lib/changeLog";
 
 /**
  * Handlers for /api/flight-patterns/:id
@@ -46,35 +48,51 @@ export async function PUT(
       return badRequest("Invalid flight pattern payload", parsed.error.format(), requestId);
     }
     const data = parsed.data;
+    if (data.originId === data.destinationId) return badRequest("Départ et arrivée identiques", null, requestId);
+    const actor = await currentActor();
 
-    const updated = await prisma.flightPattern.update({
-      where: { id },
-      data: {
-        airlineId: data.airlineId,
-        originId: data.originId,
-        destinationId: data.destinationId,
-        flightNumber: data.flightNumber,
-        departureTime: data.departureTime,
-        arrivalTime: data.arrivalTime,
-        daysOfWeek: data.daysOfWeek ?? [],
-        startDate: data.startDate,
-        endDate: data.endDate,
-        price: Number(data.price),
-        currency: data.currency,
-        aircraft: data.aircraft,
-        capacity: Number(data.capacity),
-        durationInMin: Number(data.durationInMin),
-        distanceInKm: Number(data.distanceInKm),
-        active: data.active ?? true,
-      },
-      include: { airline: true, origin: true, destination: true },
+    const updated = await prisma.$transaction(async (tx) => {
+      const before = await tx.flightPattern.findUniqueOrThrow({ where: { id } });
+      // Keeps the route model in step until schedules are managed per route (RW-3).
+      const routeAirline = await ensureRouteAirline(tx, data);
+      const after = await tx.flightPattern.update({
+        where: { id },
+        data: {
+          airlineId: data.airlineId,
+          originId: data.originId,
+          destinationId: data.destinationId,
+          flightNumber: data.flightNumber,
+          departureTime: data.departureTime,
+          arrivalTime: data.arrivalTime,
+          daysOfWeek: data.daysOfWeek ?? [],
+          startDate: data.startDate,
+          endDate: data.endDate,
+          price: Number(data.price),
+          currency: data.currency,
+          aircraft: data.aircraft,
+          capacity: Number(data.capacity),
+          durationInMin: Number(data.durationInMin),
+          distanceInKm: Number(data.distanceInKm),
+          active: data.active ?? true,
+        },
+      });
+      const changes = changedFields(before, after);
+      if (Object.keys(changes).length > 0) {
+        await logChange(tx, {
+          actor, entity: "FlightPattern", entityId: id, action: "UPDATE", routeId: routeAirline.routeId,
+          summary: `Programme ${after.flightNumber} modifié`, changes,
+        });
+      }
+      return tx.flightPattern.findUniqueOrThrow({
+        where: { id },
+        include: { airline: true, origin: true, destination: true },
+      });
     });
     refreshPublicPages();
     return ok(withNextDepartureDate(updated), requestId);
   } catch (err) {
-    // Prisma throws when not found; surface as 404 where appropriate
     const msg = (err as Error)?.message ?? null;
-    if (msg?.includes("Record to update not found")) {
+    if (dbErrorKind(err) === "notFound") {
       return notFound(`Flight pattern not found for id`, null, requestId);
     }
     return internalError("Failed to update flight pattern", msg, requestId);
@@ -90,12 +108,23 @@ export async function DELETE(
   const requestId = generateRequestId();
   try {
     const { id } = await context.params;
-    await prisma.flightPattern.delete({ where: { id } });
+    const actor = await currentActor();
+    await prisma.$transaction(async (tx) => {
+      const pattern = await tx.flightPattern.delete({ where: { id } });
+      const route = await tx.route.findUnique({
+        where: { originId_destinationId: { originId: pattern.originId, destinationId: pattern.destinationId } },
+        select: { id: true },
+      });
+      await logChange(tx, {
+        actor, entity: "FlightPattern", entityId: id, action: "DELETE", routeId: route?.id,
+        summary: `Programme ${pattern.flightNumber} supprimé`, changes: snapshot(pattern),
+      });
+    });
     refreshPublicPages();
     return ok({ deleted: true }, requestId);
   } catch (err) {
     const msg = (err as Error)?.message ?? null;
-    if (msg?.includes("Record to delete does not exist")) {
+    if (dbErrorKind(err) === "notFound") {
       return notFound(`Flight pattern not found for id`, null, requestId);
     }
     return internalError("Failed to delete flight pattern", msg, requestId);
