@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useTranslation } from 'react-i18next';
 import { cn } from "@/lib/utils/cn-utils";
 import { formatDuration, formatTime, getWeekdayFromDate } from "@/lib/utils/datetime-utils";
-import { formatMoney } from "@/lib/utils/money-utils";
+import { PriceTag } from "@/components/ds/PriceTag";
 import { formatDate } from "@/lib/utils/format-date-utils";
 import Image from "next/image";
 import { FlightPatternResponse } from "@/lib/validations/flightPattern";
@@ -101,13 +101,16 @@ const link = `/explore/${encodeURIComponent(pattern.id)}${selectedDate ? `?date=
               </div>
               {/* Price & CTA */}
               <div className="flex items-end justify-end sm:flex-col sm:gap-2 grow">
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-amber-700/60">
-                    {formatMoney(pattern.price, pattern.currency)}
-                  </div>
-                </div>
+                {/* A price always carries the date it was seen; the last edit stands in until RW-1 dates each fare. */}
+                {pattern.price != null && (pattern.verifiedAt ?? pattern.updatedAt) && (
+                  <PriceTag
+                    amount={pattern.price}
+                    observedAt={new Date((pattern.verifiedAt ?? pattern.updatedAt)!)}
+                    className="text-right"
+                  />
+                )}
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <span className="text-sm font-medium hidden sm:inline">View Details</span>
+                  <span className="text-sm font-medium hidden sm:inline">{t('explore.results.details')}</span>
                   <ArrowRight className="h-4 w-4 hidden sm:inline" />
                 </div>
               </div>

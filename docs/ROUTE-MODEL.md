@@ -1,6 +1,6 @@
 # Route-centric model and back office
 
-> **Status:** proposal for owner review, 2026-10-30. Nothing in this document is built yet.
+> **Status:** proposal 2026-10-30; the owner answered the open questions on 2026-10-31 ([§11](#11-open-questions-for-the-owner)). Nothing in this document is built yet; RW-1 is next.
 > **Replaces:** the "flight pattern" way of managing schedules.
 > **Plan:** phases **RW-1 → RW-7** below. They form milestone **M3** in [PLAN.md](PLAN.md#7-milestones).
 > **Depends on:** [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md) (done) and [SEO-AEO-GEO.md](SEO-AEO-GEO.md) (rules for public pages).
@@ -38,10 +38,10 @@ The owner's direction: **a route is the one permanent thing. Airlines, days, tim
 
    "Route is unique" means the route is the **container and entry point**, not a single record with everything inside it.
 2. **"Regardless of stops" is right for the route, wrong for the flight.** The route is the trip the traveller wants (Kinshasa to Kalemie). Each flight must still say whether it stops ("via Kindu"). Hiding stops would make us wrong on the routes people ask about most. The owner's own example, "prix kinshasa kalemie caa", is a route **CAA serves with a stop**.
-3. **`/vols/kisangani-kinshasa/caa` is not an automatic win.**
-   - It wins only when the page holds something the route page doesn't, which is the case on routes with two or more airlines.
-   - When CAA is the only airline, that page would duplicate `/vols/kisangani-kinshasa`, compete with it, and fall under Google's doorway-page policy.
-   - The rule in [§7](#7-what-the-public-site-shows) handles this. The route page still captures "caa" searches through its title.
+3. **`/vols/kisangani-kinshasa/caa` must hold something the route page doesn't.**
+   - *Proposal (2026-10-30):* create it only when 2 or more airlines fly the route, to avoid a near-copy of the route page.
+   - *Decision (owner, 2026-10-31):* **every airline on a route gets its page, even when it is the only one.** The route page compares 0 to N airlines; the airline page is one airline's full breakdown. A page that appears and disappears with the number of airlines would confuse crawlers and visitors.
+   - I agree: URL stability beats the duplication risk, as long as the two pages carry different content. That rule is in [§7](#7-what-the-public-site-shows).
 4. **"Customised the way the airline presents itself" must stay structured.** Each airline gets free-text notes (baggage, fare names, how to book), but days, times, stops and prices go in fixed fields. Free-form content per route would break:
    - comparisons between airlines
    - the facts AI engines quote
@@ -195,7 +195,7 @@ With option C, the owner's example takes two actions and no duplicated typing:
 
 The flight number, times and aircraft are typed once; the second action starts from the first. A price change touches no flight at all.
 
-### 5.2 Directions: one route per direction (recommended, ❓ owner to confirm)
+### 5.2 Directions: one route per direction (confirmed by the owner, 2026-10-31)
 Kinshasa → Lubumbashi and Lubumbashi → Kinshasa have different flight numbers, times, sometimes prices, and different searches. They are two routes and two pages, each showing a short summary of the return trip with a link to it.
 
 The back office shows both directions side by side, because they are usually managed together.
@@ -315,21 +315,38 @@ The URLs follow the French-first decision in [SEO-AEO-GEO.md](SEO-AEO-GEO.md#3-u
 | Page | URL | Exists when |
 |---|---|---|
 | Routes hub | `/vols` | Always: lists published routes by departure city |
-| Route | `/vols/kinshasa-lubumbashi` | The route is `PUBLISHED` **and** it has at least one future flight **or** an approved price under 30 days old **or** an airport-status notice (e.g. Goma closed) |
-| Route + airline | `/vols/kinshasa-lubumbashi/caa` | The route page exists, **and** the route has **2 or more** published airlines, **and** this airline has future flights or a recent price. Otherwise the URL permanently redirects to the route page. |
+| Route | `/vols/kinshasa-lubumbashi` | **First published** when the route is `PUBLISHED` **and** it has at least one future flight **or** an approved price under 30 days old **or** an airport-status notice (e.g. Goma closed). Once published, it stays (see "Service changes never remove a page"). |
+| Route + airline | `/vols/kinshasa-lubumbashi/caa` | The airline has been published on this route at least once, **even if it is the only airline** (owner, 2026-10-31). |
 | Airline | `/compagnies/caa` | The airline is published |
-| Airport | `/aeroports/kinshasa` | The airport has at least one published route, or a status notice |
+| Airport | `/aeroports/kinshasa` | The airport has at least one published route, or a status notice. The airport page is **where an airport's status lives** (owner, 2026-10-31); see E-1 in [PLAN.md](PLAN.md#stage-4-publish). |
 | Network status | `/etat-du-reseau` | Always: closed airports, suspended airlines, with sources |
 
-**Why the route + airline rule.**
-- When CAA is the only airline on Kinshasa → Kalemie, a CAA page would repeat the route page.
-- Instead, the route page title names the airline: "Vols Kinshasa – Kalemie (CAA) : horaires et prix". That captures "prix kinshasa kalemie caa" without a duplicate page.
-- The airline page appears automatically the day a second airline starts the route.
+**Route page vs route + airline page: different jobs, different content.**
+
+| | Route page `/vols/kinshasa-kalemie` | Route + airline page `/vols/kinshasa-kalemie/caa` |
+|---|---|---|
+| Question it answers | "Who flies Kinshasa → Kalemie, when, and for how much?" | "What exactly does CAA offer on Kinshasa → Kalemie?" |
+| Title | `Vols Kinshasa – Kalemie : horaires et prix (CAA)` | `CAA Kinshasa – Kalemie : jours, horaires et prix` |
+| Per airline | One summary row: days, usual times, lowest recent price, link to the airline page | Everything: flight numbers, weekly pattern, stops, aircraft, every fare name with its history, change log, how to book, the airline's notes |
+| Across airlines | Next departures from all airlines, cheapest price, return trip | Link back to the route page ("Comparer avec les autres compagnies") |
+| Canonical | Itself | Itself |
+
+With one airline the pages overlap on a few facts. That's normal (a category with one product), not a doorway, as long as the route page stays a summary and the airline page carries the detail.
+
+**Service changes never remove a page** (owner, 2026-10-31). Crawlers and visitors should find the same URL tomorrow, telling the truth about what changed.
+- **Airline suspends a route:** both pages stay online and indexable. The airline page shows "CAA a suspendu cette ligne depuis le …" with the source, the last known schedule (marked as past) and the other airlines on the route. The route page lists CAA under "Suspendu". When service resumes, the banner goes; the URL never changed.
+- **Airline stops for good:** the page stays as a dated record ("ne dessert plus cette ligne depuis …"). People still search for it.
+- **No airline at all** (e.g. Goma closed): the route page stays, with the airport banner and alternatives.
+- **Redirects (301) only when a URL itself changes** (a slug correction, a city renamed). Never because of service.
+- **404 only for URLs that never existed.**
+
+Why: Google removes a URL from its index when it returns an error, and treats a 301 as a strong signal to move to the target ([SEO-AEO-GEO.md §7](SEO-AEO-GEO.md#7-crawling-and-indexing)). A page that flips between states may take months to be crawled again.
 
 **What happens to a stale route.**
-- A published route with no future flight and no recent price is not deleted.
-- It shows "Horaires non confirmés depuis le …" and is set to `noindex` until it is refreshed.
-- This replaces today's behaviour, where expired data simply vanished.
+- A published route with no future flight and no recent price is not deleted, and **stays indexable** (changed 2026-10-31; it was `noindex`).
+- It hides "Prochains départs", shows the last known schedule under "Horaires non confirmés depuis le …", and keeps every date visible.
+- Why not `noindex`: a `noindex` makes Google drop the page entirely, and putting it back can take months. Flipping it every time data ages past 7 days would cause the same instability as deleting pages. An honest date is better than disappearing.
+- The back office board (RW-2) sorts routes by staleness, so the operator sees them first.
 
 **Route page: blocks, top to bottom, each fed by the model**
 | Block | Content | From |
@@ -342,7 +359,7 @@ The URLs follow the French-first decision in [SEO-AEO-GEO.md](SEO-AEO-GEO.md#3-u
 | Return trip | Short summary of the return route, with a link | Reverse Route |
 | About this route | Editorial note; airport names; time difference | Route.note, Airport |
 | Sources and freshness | "Vérifié le …", source links | verifiedAt, sourceUrl |
-| Request | "Demander un devis" form, linked to the route | Request |
+| Help | "Besoin d'aide pour ce trajet ?" link to the request form, prefilled with the route | Request |
 
 ## 8. Which routes first
 
@@ -354,7 +371,9 @@ The owner said it: **we don't need every route, only the ones people search for.
 |---|---|---|
 | **P1** (first) | Kinshasa – Lubumbashi · Kinshasa – Mbuji-Mayi · Kinshasa – Kisangani · Kinshasa – Kolwezi · Kinshasa – Kananga · Kinshasa – Mbandaka · Kolwezi – Lubumbashi · Kinshasa – Kalemie · Kinshasa – Kindu | Highest frequencies; both airlines on most; Kalemie is a tracked search |
 | **P2** | Lubumbashi – Mbuji-Mayi · Lubumbashi – Kalemie · Kindu – Kalemie · Kinshasa – Muanda · Kinshasa – Gemena · Kisangani – Kindu | Regular but thinner service |
-| **Status pages** | Kinshasa – Goma · Bunia – Beni | Airports closed (Goma since Jan 2025; Bunia since 6 Jun 2026). People still search ("Prix avion Bunia Beni"); an accurate status page is the useful answer. |
+| **Status** | Kinshasa – Goma · Bunia – Beni | Airports closed (Goma since Jan 2025; Bunia since 6 Jun 2026). The status lives on the airport pages `/aeroports/goma` and `/aeroports/bunia` (owner, 2026-10-31). ❓ Recommended: also keep these two route pages, because people type the route ("Prix avion Bunia Beni"); they show the airport banner and link to the airport page. No other routes to closed airports. |
+
+The P1 list stands as proposed (owner, 2026-10-31). Priority can be set by hand later (the route `tier`).
 
 That is 9 P1 pairs, or 18 directional routes. M3's exit test asks for at least 10 of them live; reaching all 18 comes later in M4.
 
@@ -364,6 +383,8 @@ That is 9 P1 pairs, or 18 directional routes. M3's exit test asks for at least 1
 - airline frequency
 
 They are reviewed monthly.
+
+**Later: the visitor's own city.** The owner's point: someone in Kolwezi cares first about routes from or to Kolwezi. Search engines already get this through airport pages (E-1). For visitors, a "Ma ville" choice could reorder the home and hub lists (P-11 in [PLAN.md](PLAN.md#stage-4-publish)). Not before M4.
 
 ## 9. Moving from today's data
 
@@ -394,11 +415,15 @@ The order is deliberate. The owner works in the back office (RW-1 → RW-4) befo
 
 ## 11. Open questions for the owner
 
-1. **One page per direction** (§5.2): recommended. Confirm?
-2. **P1 route list** (§8): add or remove any routes?
-3. **Route + airline pages only when a route has 2+ airlines** (§7): confirm?
-4. **Status pages for closed airports** (Kinshasa – Goma, Bunia – Beni): publish them?
-5. **Default verification window:** should *Tout est vérifié* stamp the next 14 days of flights, or the next 7?
+Answered on 2026-10-31:
+
+| # | Question | Answer |
+|---|---|---|
+| 1 | One page per direction (§5.2) | ✅ Yes. |
+| 2 | P1 route list (§8) | ✅ Keep the proposal. Priority can be set by hand later; location-based priority is a separate idea (P-11). |
+| 3 | Route + airline pages only when 2+ airlines (§7) | ❌ Changed: **always**, one page per airline on a route, even when it's the only one. Suspensions never remove or redirect a page (§7). |
+| 4 | Status pages for closed airports | ✅ The status lives on the airport page (E-1), with a warning whenever that airport is chosen in a search. ❓ Still open: keep the two route pages Kinshasa – Goma and Bunia – Beni (recommended, §8)? |
+| 5 | Verification window | ✅ **7 days** to start. *Tout est vérifié* stamps the next 7 days of flights; data unchecked for more than 7 days shows "À revérifier". Revisit after a month of use. |
 
 ## 12. Risks
 
@@ -406,6 +431,6 @@ The order is deliberate. The owner works in the back office (RW-1 → RW-4) befo
 |---|---|
 | The calendar is more work to build than a form | Phased: RW-3 ships the minimum tools (apply, copy, cancel, verify); helpers come in RW-6. |
 | Flights with stops are typed several times by hand | Accepted for v1 (few such routes); "also serves" helper in RW-6. |
-| The data goes stale while the owner is away | Freshness on the board; stale pages become `noindex` instead of showing wrong data; the daily routine is under 15 minutes. |
+| The data goes stale while the owner is away | Freshness on the board; stale pages hide "next departures" and show their dates honestly (no `noindex` flapping, §7); the daily routine is under 15 minutes. |
 | Flight numbers differ between sources (4H vs ET) | Stored as written, and the source is kept with each flight. |
 | Public pages launch before data is fresh | RW-5 comes after the back office; publishing needs data that passes §7. |

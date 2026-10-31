@@ -1,8 +1,12 @@
 'use client'
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { AirportCombobox } from "@/components/AirportCombobox";
+import { AirportCombobox, airportCode } from "@/components/AirportCombobox";
+import { AirportStatusNotice } from "@/components/search/AirportStatusNotice";
+import { requestHref } from "@/lib/links";
 import FlightPatternResultCard from "@/components/FlightPatternResultCard";
 import { useTranslation } from 'react-i18next';
 import { Plane, ArrowLeftRight, X, CalendarIcon, Loader2 } from "lucide-react";
@@ -15,27 +19,25 @@ import { FlightPatternResponse } from "@/lib/validations/flightPattern";
 
 const ExploreFlights = () => {
   const { t, i18n } = useTranslation();
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  // ?from=FIH&to=FBM comes from the home search and from route links (lib/links.ts).
+  const [from, setFrom] = useState(() => searchParams.get("from") ?? "");
+  const [to, setTo] = useState(() => searchParams.get("to") ?? "");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [searchResults, setSearchResults] = useState<FlightPatternResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  // Extract IATA code from AirportCombobox value
-  const extractIata = (value: string): string | null => {
-    if (!value) return null;
-    const match = value.match(/\(([A-Z]{3})\)/);
-    return match ? match[1] : null;
-  };
-
-  const fromIata = useMemo(() => extractIata(from), [from]);
-  const toIata = useMemo(() => extractIata(to), [to]);
+  const fromIata = useMemo(() => airportCode(from), [from]);
+  const toIata = useMemo(() => airportCode(to), [to]);
   const canSearch = fromIata && toIata && fromIata !== toIata;
 
   // Auto-search when both airports are selected and different
   useEffect(() => {
     if (canSearch && fromIata && toIata) {
+      // Keep the URL shareable; the page stays one entry in the history.
+      router.replace(`/explore?from=${fromIata}&to=${toIata}`, { scroll: false });
       performSearch(fromIata, toIata, selectedDate);
     } else {
       setSearchResults([]);
@@ -82,6 +84,7 @@ const ExploreFlights = () => {
 
   // Reset search
   const handleReset = () => {
+    router.replace("/explore", { scroll: false });
     setFrom("");
     setTo("");
     setSelectedDate(undefined);
@@ -232,6 +235,7 @@ const ExploreFlights = () => {
                 </div>
               </CardContent>
             </Card>
+            <AirportStatusNotice codes={[fromIata, toIata]} className="mt-4 space-y-2" />
           </div>
         </div>
       </section>
@@ -273,6 +277,10 @@ const ExploreFlights = () => {
                   <p className="text-sm text-muted-foreground">
                     {t('explore.results.tryDifferent')}
                   </p>
+                  {/* The request form lives here, after the search has failed, not in the navbar. */}
+                  <Button variant="outline" className="mt-6" asChild>
+                    <Link href={requestHref(fromIata, toIata)}>{t('explore.results.askForHelp')}</Link>
+                  </Button>
                 </CardContent>
               </Card>
             )}
@@ -284,4 +292,11 @@ const ExploreFlights = () => {
   );
 };
 
-export default ExploreFlights;
+// useSearchParams needs a Suspense boundary so the page shell can still be prerendered.
+export default function ExplorePage() {
+  return (
+    <Suspense>
+      <ExploreFlights />
+    </Suspense>
+  );
+}

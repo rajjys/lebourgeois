@@ -6,7 +6,7 @@
 > - **AEO** (answer engines): being the source behind direct answers.
 > - **GEO** (generative engines): being cited by AI assistants (Google AI Overviews and AI Mode, ChatGPT search, Perplexity, Copilot, Claude, Gemini).
 >
-> **How to read it:** **MUST** rules are checked in review; **SHOULD** rules need a reason to skip. Every fact is sourced in [§13](#13-sources), verified on 2026-10-30. Re-check sources marked *changed recently* before relying on them.
+> **How to read it:** **MUST** rules are checked in review; **SHOULD** rules need a reason to skip. Every fact is sourced in [§13](#13-sources), verified on 2026-10-30 (sources 26–30 on 2026-10-31). Re-check sources marked *changed recently* before relying on them.
 
 **Contents**
 1. [What we are optimising for](#1-what-we-are-optimising-for)
@@ -71,7 +71,7 @@ Decided by the owner on 2026-10-30: **all public URLs in French**. Google says "
 | Home | `/` |
 | Routes hub | `/vols` |
 | Route | `/vols/kinshasa-lubumbashi` |
-| Route + airline | `/vols/kinshasa-lubumbashi/caa`. Only when the route has 2 or more airlines; otherwise it redirects permanently to the route page ([ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)). |
+| Route + airline | `/vols/kinshasa-lubumbashi/caa`. One per airline published on the route, even when it is the only one (owner, 2026-10-31). Different content from the route page: [ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows). |
 | Airline | `/compagnies/caa` |
 | Airport | `/aeroports/kinshasa` |
 | Network status | `/etat-du-reseau` |
@@ -85,11 +85,27 @@ Decided by the owner on 2026-10-30: **all public URLs in French**. Google says "
 - Routes are **directional**: `kinshasa-lubumbashi` ≠ `lubumbashi-kinshasa`.
 - **A published URL never changes without a permanent (301) redirect.** Old URLs (`/explore`, `/about`, `/request`) get 301s when their French replacements launch (RW-7).
 - There is no trailing slash, and every page has a single canonical URL.
-- Every page sits at most 3 clicks from the home page. Pages link to each other:
-  - route ↔ return route
-  - route → airline
-  - route → airports
-  - hub → routes
+- Every page sits at most 3 clicks from the home page. Pages link to each other (map below).
+- **A page is never removed or redirected because service changed** (suspension, end of a route, closed airport). It stays online and says what changed. Redirects are only for URLs that change ([ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)).
+- **Until RW-5:** `/explore` is the search page and `/explore/[id]` (database ids, no airline, no readable slug) is `noindex`. Both are replaced by `/vols/...` with 301 redirects in RW-7. Route links in the code all go through `lib/links.ts`, so switching them is one change.
+
+### 3.1 Internal links (owner priority, 2026-10-31)
+
+Links only help search engines when they point at **indexable pages with content**. Links to search results (`/explore?from=…`) help visitors, not rankings. So the map fills in as the pages ship:
+
+| From | Links to | When |
+|---|---|---|
+| Home | Search (hero), tracked routes, next departures, airport statuses | ✅ now (to search results until RW-5) |
+| Home | Route pages, airline pages, airport pages, network status | RW-5, E-1, E-2, E-3 |
+| Navbar | Vols, Compagnies, Aéroports, État du réseau | As each page ships; today only Vols and À propos |
+| Footer | Busiest routes, airlines, airports, À propos, Méthodologie, Contact, help | As each page ships |
+| Route | Return route; each route + airline page; both airports; the airlines; routes from the same departure city | RW-5 |
+| Route + airline | Route page ("comparer"); the airline page; the airline's other routes from the same airport | RW-5 |
+| Airport | Every route from and to it; airlines serving it; nearby airports; network status | E-1 |
+| Airline | Every route it flies (route + airline pages); its status; its booking channels | E-2 |
+| Network status | Every closed or restricted airport and suspended airline | E-3 |
+
+**MUST:** link text names the place ("Vols Kinshasa → Lubumbashi"), never "cliquez ici".
 
 ## 4. What every page must have
 
@@ -164,7 +180,10 @@ Google's rules:
 - Register the site in **Google Search Console** and **Bing Webmaster Tools** (F-5).
   - Leave Search Console's new "Search generative AI control" on **Include**. Excluding removes us from AI Overviews and AI Mode.
 - **IndexNow** (F-5): notify Bing (also Yandex, Seznam, Naver, Yep, Internet Archive, Amazonbot) whenever a route's data changes. Google does not use IndexNow; it relies on the sitemap.
-- Stale pages are `noindex`, not wrong. A route whose data has gone stale shows a notice and is set to `noindex` until refreshed ([ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)).
+- **Stale pages stay indexed and say so** (changed 2026-10-31; this rule used to say `noindex`). A route whose data has gone stale hides its "next departures", shows the last known schedule with its dates, and keeps its URL ([ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)). Why:
+  - "URLs that are already indexed and return a `4xx` status code are removed from the index." A 301 is "a **strong** signal that the redirect target should be processed" (Google, HTTP status codes, updated 2026-02-04).
+  - When Google sees `noindex` on an indexed page, it "will drop that page entirely from Google Search results", and "it may take months for Googlebot to revisit a page" (Google, block indexing, updated 2025-12-10).
+  - So switching `noindex`, errors or redirects on and off as data ages or service pauses makes pages vanish and come back slowly. An honest date doesn't.
 
 ## 8. AI engines specifically
 
@@ -203,10 +222,17 @@ Bing announced on 2026-10-30 a new `ai-training` preference and page-level `ai-g
 | Google policy | What it targets | Our rule |
 |---|---|---|
 | **Scaled content abuse** | "Many pages generated for the primary purpose of manipulating search rankings", "regardless of how it's created", including generative AI "without adding value" | Pages are generated **only** when they carry real data (the publication rules). No page per city pair "just in case". |
-| **Doorway abuse** | Pages "created to rank for specific, similar search queries", including "substantially similar pages" | The route + airline page exists only when it holds data the route page doesn't (2+ airlines). |
+| **Doorway abuse** | Pages "created to rank for specific, similar search queries", including "substantially similar pages" | The route page is a comparison summary; the route + airline page is the full breakdown for one airline. They must keep different content ([ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)). |
+| **Scraping** | "Republishing content from other sites without adding any original content or value", "copying content from other sites, modify it only slightly" (updated 2026-08-28) | Airport and airline pages take **facts** from Wikidata, never paragraphs from Wikipedia. Their value is our own data: schedules, prices, statuses, routes. |
 | **AI-generated content** | Allowed, but Google asks you to "manually factcheck and review all AI-generated content", including titles, descriptions, structured data and alt text | Any generated text is reviewed by a person before publishing. Templates fill in **data**, not padding. |
 
 *Changed recently:* since May 2026 Google applies its spam policies to generative AI answers too, and since April 2026 spam reports can trigger manual actions.
+
+**Airport and airline pages (E-1, E-2): where content may come from**
+- **Facts from Wikidata** (codes, coordinates, elevation, opening date, website): Wikidata data is CC0, free to reuse. Read it through the API, not by scraping pages.
+- **No Wikipedia text.** It is CC BY-SA 4.0: reuse needs attribution and puts our copy under the same licence, and copied paragraphs are the "scraping" pattern above. AI engines already have Wikipedia; they quote us for what it doesn't have.
+- **Photos:** our own, or Wikimedia Commons files under their stated licence, credited next to the image.
+- **Testimonials and reviews:** only real, moderated submissions with a date. Never written by us, never invented. Later (E-5).
 
 **MUST**
 - No invented numbers, ever. A missing price shows "Prix non relevé", not an estimate.
@@ -274,6 +300,11 @@ All accessed 2026-10-30. "Changed recently" marks 2025–2026 changes.
 23. Sitemaps (updated 2026-07-08): https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap
 24. Publication dates (updated 2025-12-10): https://developers.google.com/search/docs/appearance/publication-dates
 25. StatCounter, DRC (search engines, platforms, browsers, Sept 2026): https://gs.statcounter.com/search-engine-market-share/all/democratic-republic-of-the-congo
+26. HTTP status codes and Google Search (updated 2026-02-04): https://developers.google.com/search/docs/crawling-indexing/http-network-errors
+27. Block indexing with noindex (updated 2025-12-10): https://developers.google.com/search/docs/crawling-indexing/block-indexing
+28. Spam policies, scraping (updated 2026-08-28): https://developers.google.com/search/docs/essentials/spam-policies
+29. Wikidata licensing (CC0): https://www.wikidata.org/wiki/Wikidata:Licensing
+30. Wikimedia terms of use, CC BY-SA 4.0 FAQ: https://meta.wikimedia.org/wiki/Terms_of_use/Creative_Commons_4.0/FAQ
 
 ## 14. Page checklist
 
@@ -287,9 +318,9 @@ Copy this into the PR description for any new or changed public page.
 - [ ] Sources linked
 - [ ] Canonical set; hreflang reciprocal (once English exists)
 - [ ] BreadcrumbList matches visible breadcrumbs; no structured data for invisible content
-- [ ] Page passes the publication rules (ROUTE-MODEL §7); stale → noindex
+- [ ] Page passes the publication rules (ROUTE-MODEL §7); stale → dated notice, stays indexed; never removed or redirected for a service change
 - [ ] In the sitemap with lastmod = data change date
-- [ ] Internal links: return route, airline, airports, hub
+- [ ] Internal links follow the map in §3.1 (return route, airline pages, airports, hub); route links built with lib/links.ts
 - [ ] No invented numbers; any generated text reviewed by a person
 - [ ] Mobile check on Android Chrome and Opera; LCP ≤ 2.5 s on throttled 3G
 ```
