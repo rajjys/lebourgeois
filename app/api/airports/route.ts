@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
-import { AirportSchema } from "@/lib/validations/airport";
+import { AirportSchema, airportData } from "@/lib/validations/airport";
 import { slugify } from "@/lib/utils/slug";
-import { ok, created, badRequest, internalError, generateRequestId } from "@/app/api/utils/http";
+import { ok, created, badRequest, conflict, internalError, generateRequestId } from "@/app/api/utils/http";
+import { dbErrorKind, refreshPublicPages } from "@/app/api/utils/db";
 import { requireAdmin } from "@/lib/auth/session";
 
 /**
@@ -31,13 +32,15 @@ export async function POST(req: Request) {
     const parsed = AirportSchema.safeParse(body);
 
     if (!parsed.success) {
-      return badRequest("Invalid airport payload", parsed.error.format(), requestId);
+      return badRequest("Champs invalides", parsed.error.format(), requestId);
     }
 
-    const data = { ...parsed.data, slug: parsed.data.slug ?? slugify(parsed.data.city) };
-    const airport = await prisma.airport.create({ data });
+    const data = airportData(parsed.data);
+    const airport = await prisma.airport.create({ data: { ...data, slug: data.slug || slugify(data.city) } });
+    refreshPublicPages();
     return created(airport, requestId);
   } catch (err) {
+    if (dbErrorKind(err) === "duplicate") return conflict("Un aéroport avec ce code ou ce slug existe déjà", null, requestId);
     return internalError("Failed to create airport", (err as Error)?.message ?? null, requestId);
   }
 }

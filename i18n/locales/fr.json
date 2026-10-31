@@ -4,7 +4,9 @@
     "flights": "Vols",
     "about": "À propos",
     "openMenu": "Ouvrir le menu",
-    "menu": "Menu"
+    "menu": "Menu",
+    "contact": "Contact",
+    "search": "Rechercher un vol"
   },
   "home": {
     "hero": {
@@ -187,7 +189,8 @@
     "explore": "Explorer",
     "search": "Rechercher un vol",
     "help": "Besoin d'aide pour un vol ?",
-    "rights": "Tous droits réservés."
+    "rights": "Tous droits réservés.",
+    "contact": "Nous contacter"
   },
   "airportPicker": {
     "placeholder": "Choisir un aéroport",
@@ -204,6 +207,48 @@
       "RESTRICTED": "{{city}} ({{code}}) : activité réduite",
       "since": "depuis le {{date}}",
       "source": "Voir la source"
+    }
+  },
+  "contact": {
+    "title": "Nous contacter",
+    "intro": "Une question, une information fausse ou dépassée, ou vous représentez une compagnie aérienne ? Écrivez-nous.",
+    "noTickets": "Nous ne vendons pas de billets : pour réserver, modifier ou annuler, adressez-vous à la compagnie.",
+    "form": {
+      "name": "Votre nom",
+      "reply": "Email ou numéro WhatsApp",
+      "replyHint": "Seulement pour vous répondre.",
+      "topic": "Sujet",
+      "topics": {
+        "QUESTION": "Une question",
+        "CORRECTION": "Signaler une erreur",
+        "AIRLINE": "Je représente une compagnie",
+        "OTHER": "Autre chose"
+      },
+      "message": "Message",
+      "messageHint": "Pour une erreur, indiquez la page et ce qui est faux.",
+      "submit": "Envoyer le message",
+      "sending": "Envoi…",
+      "failed": "L'envoi a échoué. Réessayez, ou écrivez-nous à {{email}}."
+    },
+    "sent": {
+      "title": "Message envoyé",
+      "body": "Merci {{name}}. Nous vous répondrons à {{reply}}.",
+      "again": "Envoyer un autre message"
+    },
+    "aside": {
+      "emailTitle": "Écrire directement",
+      "flightTitle": "Pour un vol précis",
+      "flightBody": "Donnez-nous le trajet et la date : nous cherchons avec vous.",
+      "flightCta": "Demander de l'aide pour un vol",
+      "correctionTitle": "Une erreur sur le site ?",
+      "correctionBody": "Les horaires changent souvent. Si une information est fausse, dites-le-nous : c'est le moyen le plus rapide de la corriger."
+    },
+    "errors": {
+      "name": "Indiquez votre nom.",
+      "reply": "Indiquez un email ou un numéro de téléphone valide.",
+      "topic": "Choisissez un sujet.",
+      "messageShort": "Le message est trop court (10 caractères minimum).",
+      "messageLong": "Le message est trop long (3 000 caractères maximum)."
     }
   }
 }

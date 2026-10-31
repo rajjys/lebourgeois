@@ -14,3 +14,6 @@ export const requestHref = (origin?: string | null, destination?: string | null)
   const query = params.toString();
   return query ? `/request?${query}` : "/request";
 };
+
+/** Id of the search form on pages that have one (home hero, /explore); the navbar button scrolls to it. */
+export const SEARCH_ANCHOR = "recherche";

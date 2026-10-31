@@ -82,3 +82,22 @@ export const RequestStatus = {
 } as const
 
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]
+
+
+export const ContactTopic = {
+  QUESTION: 'QUESTION',
+  CORRECTION: 'CORRECTION',
+  AIRLINE: 'AIRLINE',
+  OTHER: 'OTHER'
+} as const
+
+export type ContactTopic = (typeof ContactTopic)[keyof typeof ContactTopic]
+
+
+export const MessageStatus = {
+  NEW: 'NEW',
+  ANSWERED: 'ANSWERED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type MessageStatus = (typeof MessageStatus)[keyof typeof MessageStatus]

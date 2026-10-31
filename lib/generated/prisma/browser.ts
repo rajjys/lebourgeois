@@ -47,3 +47,8 @@ export type FlightPattern = Prisma.FlightPatternModel
  * 
  */
 export type Request = Prisma.RequestModel
+/**
+ * Model ContactMessage
+ * 
+ */
+export type ContactMessage = Prisma.ContactMessageModel

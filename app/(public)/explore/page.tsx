@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AirportCombobox, airportCode } from "@/components/AirportCombobox";
 import { AirportStatusNotice } from "@/components/search/AirportStatusNotice";
-import { requestHref } from "@/lib/links";
+import { requestHref, SEARCH_ANCHOR } from "@/lib/links";
 import FlightPatternResultCard from "@/components/FlightPatternResultCard";
 import { useTranslation } from 'react-i18next';
 import { Plane, ArrowLeftRight, X, CalendarIcon, Loader2 } from "lucide-react";
@@ -128,52 +128,47 @@ const ExploreFlights = () => {
             </div>
 
             {/* Search Box */}
-            <Card className="shadow-card border-border">
+            <Card id={SEARCH_ANCHOR} className="shadow-card border-border">
               <CardContent className="p-4 md:p-6">
-                <div className="space-y-4">
-                  {/* This grid handles responsive layout + swap button placement */}
-                  <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-stretch">
+                {/* One grid for every row, so the date lines up with the origin field (full width on phones). */}
+                <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-stretch gap-2">
                   {/* FROM */}
-                  <div className="min-w-0">
-                    <AirportCombobox
-                      label={t("explore.search.from")}
-                      value={from}
-                      onChange={setFrom}
-                      placeholder={t("explore.search.fromPlaceholder")}
-                      id="search-from"
-                      required
-                    />
-                  </div>
+                  <AirportCombobox
+                    label={t("explore.search.from")}
+                    value={from}
+                    onChange={setFrom}
+                    placeholder={t("explore.search.fromPlaceholder")}
+                    id="search-from"
+                    required
+                  />
 
                   {/* Swap Button */}
-                  <div className="flex justify-center items-center">
+                  <div className="flex items-center justify-center pt-7">
                     <Button
                       type="button"
                       variant="outline"
-                      className="px-3 rounded-full border-border"
+                      className="rounded-full border-border px-3"
                       onClick={handleSwap}
                       disabled={!from || !to}
+                      aria-label={t("home.search.swap")}
                     >
                       <ArrowLeftRight className="h-5 w-5" />
                     </Button>
                   </div>
 
                   {/* TO */}
-                  <div className="min-w-0">
-                    <AirportCombobox
-                      label={t("explore.search.to")}
-                      value={to}
-                      onChange={setTo}
-                      placeholder={t("explore.search.toPlaceholder")}
-                      id="search-to"
-                      required
-                    />
-                  </div>
-                </div>
+                  <AirportCombobox
+                    label={t("explore.search.to")}
+                    value={to}
+                    onChange={setTo}
+                    placeholder={t("explore.search.toPlaceholder")}
+                    id="search-to"
+                    required
+                  />
 
-                  {/* Calendar - appears when both airports are set and there are results */}
+                  {/* Date: appears once both airports are set */}
                   {canSearch && (
-                    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] pt-2 border-t border-border">
+                    <div className="col-span-3 mt-2 md:col-span-1">
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -185,14 +180,13 @@ const ExploreFlights = () => {
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {selectedDate ? (
-                              format(selectedDate, "PPP")
+                              format(selectedDate, "PPP", { locale: i18n.language === "fr" ? fr : enUS })
                             ) : (
                               <span>{t('explore.results.selectDate')}</span>
                             )}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          
                           <div className="flex flex-col">
                             <Calendar
                               mode="single"
@@ -208,7 +202,7 @@ const ExploreFlights = () => {
                               variant="ghost"
                               className="mt-2 self-end text-xs"
                               onClick={() => setSelectedDate(undefined)}
-                              disabled={!selectedDate ? true: false}
+                              disabled={!selectedDate}
                             >
                               {t('explore.search.calendar.reset')}
                             </Button>
@@ -220,15 +214,16 @@ const ExploreFlights = () => {
 
                   {/* Reset Button */}
                   {hasSearched && (
-                    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr]">
+                    <div className="col-span-3 md:col-span-1 md:col-start-1">
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
                         onClick={handleReset}
-                        className="flex justify-start">
-                          <X className="mr-2 h-4 w-4" />
-                          {t('explore.results.reset')}
+                        className="justify-start"
+                      >
+                        <X className="mr-2 h-4 w-4" />
+                        {t('explore.results.reset')}
                       </Button>
                     </div>
                   )}

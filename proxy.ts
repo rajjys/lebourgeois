@@ -7,7 +7,12 @@ import { decryptSession, SESSION_COOKIE } from "@/lib/auth/session";
  */
 
 // Write endpoints the public is allowed to call.
-const PUBLIC_WRITES = new Set(["POST /api/requests", "POST /api/auth/login", "POST /api/auth/logout"]);
+const PUBLIC_WRITES = new Set([
+  "POST /api/requests",
+  "POST /api/contact",
+  "POST /api/auth/login",
+  "POST /api/auth/logout",
+]);
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -21,7 +26,7 @@ export async function proxy(req: NextRequest) {
   }
 
   const isRead = req.method === "GET" || req.method === "HEAD" || req.method === "OPTIONS";
-  const isPrivateRead = pathname.startsWith("/api/requests");
+  const isPrivateRead = pathname.startsWith("/api/requests") || pathname.startsWith("/api/contact");
   const isPublicWrite = PUBLIC_WRITES.has(`${req.method} ${pathname}`);
 
   if ((isRead && isPrivateRead) || (!isRead && !isPublicWrite)) {

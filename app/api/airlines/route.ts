@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
-import { AirlineSchema } from "@/lib/validations/airline";
+import { AirlineSchema, airlineData } from "@/lib/validations/airline";
 import { slugify } from "@/lib/utils/slug";
-import { ok, created, badRequest, internalError, generateRequestId } from "@/app/api/utils/http";
+import { ok, created, badRequest, conflict, internalError, generateRequestId } from "@/app/api/utils/http";
+import { dbErrorKind, refreshPublicPages } from "@/app/api/utils/db";
 import { requireAdmin } from "@/lib/auth/session";
 
 /**
@@ -25,11 +26,13 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const parsed = AirlineSchema.safeParse(body);
-    if (!parsed.success) return badRequest("Invalid airline payload", parsed.error.format(), requestId);
-    const data = { ...parsed.data, slug: parsed.data.slug ?? slugify(parsed.data.name) };
-    const airline = await prisma.airline.create({ data });
+    if (!parsed.success) return badRequest("Champs invalides", parsed.error.format(), requestId);
+    const data = airlineData(parsed.data);
+    const airline = await prisma.airline.create({ data: { ...data, slug: data.slug || slugify(data.name) } });
+    refreshPublicPages();
     return created(airline, requestId);
   } catch (err) {
+    if (dbErrorKind(err) === "duplicate") return conflict("Une compagnie avec ce code ou ce slug existe déjà", null, requestId);
     return internalError("Failed to create airline", (err as Error)?.message ?? null, requestId);
   }
 }

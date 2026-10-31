@@ -4,6 +4,7 @@ import { ok, badRequest, notFound, internalError, generateRequestId } from "@/ap
 import { withNextDepartureDate } from "@/lib/flightPatterns/nextDeparture";
 import { getSession, requireAdmin } from "@/lib/auth/session";
 import { PUBLIC_PATTERN_FILTER } from "@/lib/flightPatterns/visibility";
+import { refreshPublicPages } from "@/app/api/utils/db";
 
 /**
  * Handlers for /api/flight-patterns/:id
@@ -68,6 +69,7 @@ export async function PUT(
       },
       include: { airline: true, origin: true, destination: true },
     });
+    refreshPublicPages();
     return ok(withNextDepartureDate(updated), requestId);
   } catch (err) {
     // Prisma throws when not found; surface as 404 where appropriate
@@ -89,6 +91,7 @@ export async function DELETE(
   try {
     const { id } = await context.params;
     await prisma.flightPattern.delete({ where: { id } });
+    refreshPublicPages();
     return ok({ deleted: true }, requestId);
   } catch (err) {
     const msg = (err as Error)?.message ?? null;

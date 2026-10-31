@@ -12,6 +12,7 @@ import {
   LogOut,
   MapPin,
   Menu,
+  MessageSquare,
   Palette,
   PanelLeftClose,
   PanelLeftOpen,
@@ -39,7 +40,13 @@ const navGroups: NavGroup[] = [
       { name: 'Aéroports', href: '/dashboard/airports', icon: MapPin },
     ],
   },
-  { label: 'Clients', items: [{ name: 'Demandes', href: '/dashboard/requests', icon: Inbox }] },
+  {
+    label: 'Clients',
+    items: [
+      { name: 'Demandes', href: '/dashboard/requests', icon: Inbox },
+      { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
+    ],
+  },
   { label: 'Administration', items: [{ name: 'Système de design', href: '/dashboard/design', icon: Palette }] },
 ];
 

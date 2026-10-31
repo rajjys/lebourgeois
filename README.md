@@ -41,6 +41,7 @@ Requirements: Node.js 24, PostgreSQL 18 binaries (`initdb`, `pg_ctl`, `psql`).
    npx prisma migrate deploy
    npm run db:seed
    ```
+   Optional, to see the site with real routes: `npx tsx scripts/load-dev-timetables.ts` (CAA and Air Congo timetables, local databases only).
 5. Start the app:
    ```bash
    npm run dev
@@ -59,6 +60,7 @@ After a reboot, run `npm run db:start` before `npm run dev`.
 | `npm run db:start` | Starts the local Postgres cluster |
 | `npm run db:seed` | Loads reference data (airports, airlines, statuses). Idempotent. Refuses non-local databases unless `ALLOW_REMOTE_DB=1`. |
 | `node scripts/hash-password.mjs '<password>'` | Produces the `ADMIN_PASSWORD_HASH` value |
+| `npx tsx scripts/load-dev-timetables.ts` | Local preview data: deletes expired schedules, then loads CAA's 20 Oct 2026 timetable and Air Congo's schedule PDF, typed in by hand. Refuses any non-local database. |
 
 ## Troubleshooting
 

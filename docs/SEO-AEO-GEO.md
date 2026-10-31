@@ -77,6 +77,7 @@ Decided by the owner on 2026-10-30: **all public URLs in French**. Google says "
 | Network status | `/etat-du-reseau` |
 | Methodology | `/methodologie`: how we collect, date and verify data |
 | About | `/a-propos` |
+| Contact | `/contact` (live since P-12; the same word in French and English) |
 | Request form | `/demande` |
 | English (later, F-1) | `/en/flights/kinshasa-lubumbashi`, `/en/airlines/caa`… with English slugs |
 
@@ -97,13 +98,14 @@ Links only help search engines when they point at **indexable pages with content
 |---|---|---|
 | Home | Search (hero), tracked routes, next departures, airport statuses | ✅ now (to search results until RW-5) |
 | Home | Route pages, airline pages, airport pages, network status | RW-5, E-1, E-2, E-3 |
-| Navbar | Vols, Compagnies, Aéroports, État du réseau | As each page ships; today only Vols and À propos |
+| Navbar | "Rechercher un vol" button; À propos, Contact; then Vols (route index), Compagnies, Aéroports, État du réseau | As each page ships; today À propos and Contact |
 | Footer | Busiest routes, airlines, airports, À propos, Méthodologie, Contact, help | As each page ships |
 | Route | Return route; each route + airline page; both airports; the airlines; routes from the same departure city | RW-5 |
 | Route + airline | Route page ("comparer"); the airline page; the airline's other routes from the same airport | RW-5 |
 | Airport | Every route from and to it; airlines serving it; nearby airports; network status | E-1 |
 | Airline | Every route it flies (route + airline pages); its status; its booking channels | E-2 |
 | Network status | Every closed or restricted airport and suspended airline | E-3 |
+| Every data page | "Signaler une erreur" → `/contact?sujet=erreur&page=<path>` (the form opens on that subject and keeps the page) | RW-5, E-1, E-2 |
 
 **MUST:** link text names the place ("Vols Kinshasa → Lubumbashi"), never "cliquez ici".
 
@@ -223,14 +225,15 @@ Bing announced on 2026-10-30 a new `ai-training` preference and page-level `ai-g
 |---|---|---|
 | **Scaled content abuse** | "Many pages generated for the primary purpose of manipulating search rankings", "regardless of how it's created", including generative AI "without adding value" | Pages are generated **only** when they carry real data (the publication rules). No page per city pair "just in case". |
 | **Doorway abuse** | Pages "created to rank for specific, similar search queries", including "substantially similar pages" | The route page is a comparison summary; the route + airline page is the full breakdown for one airline. They must keep different content ([ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)). |
-| **Scraping** | "Republishing content from other sites without adding any original content or value", "copying content from other sites, modify it only slightly" (updated 2026-08-28) | Airport and airline pages take **facts** from Wikidata, never paragraphs from Wikipedia. Their value is our own data: schedules, prices, statuses, routes. |
+| **Scraping** | "Republishing content from other sites without adding any original content or value", "copying content from other sites, modify it only slightly" (updated 2026-08-28) | Airport and airline pages use **our own content**, entered in the back office. Nothing is copied from Wikipedia or other sites. Their value is our own data: schedules, prices, statuses, routes. |
 | **AI-generated content** | Allowed, but Google asks you to "manually factcheck and review all AI-generated content", including titles, descriptions, structured data and alt text | Any generated text is reviewed by a person before publishing. Templates fill in **data**, not padding. |
 
 *Changed recently:* since May 2026 Google applies its spam policies to generative AI answers too, and since April 2026 spam reports can trigger manual actions.
 
 **Airport and airline pages (E-1, E-2): where content may come from**
-- **Facts from Wikidata** (codes, coordinates, elevation, opening date, website): Wikidata data is CC0, free to reuse. Read it through the API, not by scraping pages.
-- **No Wikipedia text.** It is CC BY-SA 4.0: reuse needs attribution and puts our copy under the same licence, and copied paragraphs are the "scraping" pattern above. AI engines already have Wikipedia; they quote us for what it doesn't have.
+- **Our own structure, written by us** (owner, 2026-10-31): facts, notes and practical information are entered and customised in the back office (B-2, B-3 in [PLAN.md](PLAN.md#stage-4-publish)). No import from Wikipedia or Wikidata: duplicated content adds nothing.
+- **No Wikipedia text**, ever. It is CC BY-SA 4.0: reuse needs attribution and puts our copy under the same licence, and copied paragraphs are the "scraping" pattern above. AI engines already have Wikipedia; they quote us for what it doesn't have.
+- Checking a fact (an IATA code, coordinates) against a public reference is fine; republishing its text is not.
 - **Photos:** our own, or Wikimedia Commons files under their stated licence, credited next to the image.
 - **Testimonials and reviews:** only real, moderated submissions with a date. Never written by us, never invented. Later (E-5).
 

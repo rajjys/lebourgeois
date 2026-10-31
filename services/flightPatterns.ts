@@ -4,8 +4,11 @@ export async function fetchFlightPatterns() {
   return fetch("/api/flight-patterns").then((r) => r.json());
 }
 
+// Throws on 404 so SWR reports an error instead of handing the error body over as a flight.
 export async function fetchFlightPattern(id: string) {
-  return fetch(`/api/flight-patterns/${id}`).then((r) => r.json());
+  const res = await fetch(`/api/flight-patterns/${id}`);
+  if (!res.ok) throw new Error(`Flight pattern ${id}: HTTP ${res.status}`);
+  return res.json();
 }
 
 export async function createFlightPattern(data: FlightPatternInput) {
