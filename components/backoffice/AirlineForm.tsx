@@ -145,12 +145,12 @@ export function AirlineForm({ airline }: { airline?: Airline }) {
             </Field>
             <Field
               id="logo"
-              label="Logo (lien)"
+              label="Logo"
               optional
               error={err("logo")}
-              hint="Gardé pour plus tard : le site n'affiche pas de logo sans l'accord de la compagnie."
+              hint="Affiché sur les résultats et la page du vol. Un fichier du site (/logos/airlines/caa.svg) ou un lien https. Vide : le code de la compagnie."
             >
-              <Input {...describedBy("logo", err("logo"))} {...register("logo")} type="url" placeholder="https://" />
+              <Input {...describedBy("logo", err("logo"))} {...register("logo")} placeholder="/logos/airlines/…" />
             </Field>
           </FormSection>
         </div>

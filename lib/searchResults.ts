@@ -19,6 +19,8 @@ export type Price = {
   sourceUrl: string | null;
 };
 
+export type Airline = { code: string; name: string; logo: string | null };
+
 export type SearchFlight = {
   id: string;
   routeAirlineId: string;
@@ -33,7 +35,7 @@ export type SearchFlight = {
 export type Service = {
   key: string;
   routeAirlineId: string;
-  airline: { code: string; name: string };
+  airline: Airline;
   flightNumber: string | null;
   departureTime: string;
   arrivalTime: string;
@@ -60,7 +62,7 @@ export function groupServices(
   flights: SearchFlight[],
   extra: {
     date: string | null;
-    airline: (routeAirlineId: string) => { code: string; name: string };
+    airline: (routeAirlineId: string) => Airline;
     price: (routeAirlineId: string) => Price | null;
     city: (code: string) => string;
     duration: (f: SearchFlight) => number;

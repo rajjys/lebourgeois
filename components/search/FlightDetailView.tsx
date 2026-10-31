@@ -2,17 +2,15 @@
 
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ExternalLink, Info, LifeBuoy, Plane } from "lucide-react";
+import { ArrowLeft, Info, Plane } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { DayStrip } from "@/components/ds/DayStrip";
-import { PriceTag } from "@/components/ds/PriceTag";
 import { RouteTitle } from "@/components/ds/RouteTitle";
 import { AirportStatusAlert } from "@/components/search/AirportStatusNotice";
 import { AirlineTile } from "@/components/search/ResultCard";
+import { BookingRequest } from "@/components/search/BookingRequest";
 import { formatDuration, weekdayOf } from "@/lib/flights";
 import { formatDateLong, formatDateShort, formatDayMonthYear, formatFlightNumber, formatWeekdays, WEEKDAYS } from "@/lib/format";
-import { requestHref } from "@/lib/links";
 import type { FlightPage } from "@/lib/search";
 import { cn } from "@/lib/utils/cn-utils";
 
@@ -41,7 +39,8 @@ export function FlightDetailView({ flight: f }: { flight: FlightPage }) {
   const searchHref = `/explore?from=${f.origin.code}&to=${f.destination.code}`;
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+    // Bottom padding on phones: the booking bar is fixed there.
+    <div className="container mx-auto max-w-5xl px-4 pb-28 pt-8 sm:px-6 sm:pt-12 lg:px-8 lg:pb-12">
       <Link href={searchHref} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="size-4" aria-hidden="true" />
         {t("explore.detail.back")}
@@ -49,7 +48,7 @@ export function FlightDetailView({ flight: f }: { flight: FlightPage }) {
 
       <header className="mt-4 space-y-2">
         <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <AirlineTile code={f.airline.code} className="size-8 rounded-lg text-xs" />
+          <AirlineTile code={f.airline.code} logo={f.airline.logo} className="h-10 w-20 rounded-lg text-xs sm:w-24" />
           {f.airline.name}
           <span className="font-normal text-muted-foreground">
             · {f.flightNumber ? t("explore.detail.flight", { number: formatFlightNumber(f.flightNumber) }) : t("explore.detail.noNumber")}
@@ -158,57 +157,7 @@ export function FlightDetailView({ flight: f }: { flight: FlightPage }) {
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-20">
-          <div className="rounded-2xl border bg-card p-5 shadow-card">
-            <h2 className="text-sm font-medium text-muted-foreground">{t("explore.detail.price")}</h2>
-            <div className="mt-2">
-              {f.price ? (
-                <>
-                  <PriceTag
-                    amount={f.price.amount}
-                    observedAt={new Date(f.price.observedAt)}
-                    kind={f.price.kind === "FROM_PRICE" ? "from" : "quote"}
-                    size="lg"
-                    labels={{ from: t("explore.results.from"), observed: t("explore.results.seenOn") }}
-                  />
-                  {(f.price.fareName || f.price.tripType === "ROUND_TRIP") && (
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {[f.price.fareName, f.price.tripType === "ROUND_TRIP" ? t("explore.detail.roundTrip") : null].filter(Boolean).join(" · ")}
-                    </p>
-                  )}
-                  {f.price.sourceUrl && (
-                    <a href={f.price.sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-1 block text-xs text-link underline">
-                      {t("explore.detail.priceSource")} : {hostOf(f.price.sourceUrl)}
-                    </a>
-                  )}
-                </>
-              ) : (
-                <p className="text-sm text-muted-foreground">{t("explore.detail.noPrice")}</p>
-              )}
-            </div>
-            {f.bookingUrl && (
-              <>
-                <Button asChild className="mt-5 w-full">
-                  <a href={f.bookingUrl} target="_blank" rel="noopener noreferrer">
-                    {t("explore.detail.book", { site: hostOf(f.bookingUrl) })}
-                    <ExternalLink className="size-4" aria-hidden="true" />
-                  </a>
-                </Button>
-                <p className="mt-2 text-xs text-muted-foreground">{t("explore.detail.bookHint")}</p>
-              </>
-            )}
-          </div>
-
-          <div className="rounded-2xl border p-5">
-            <h2 className="flex items-center gap-2 text-base font-semibold">
-              <LifeBuoy className="size-4 text-brand" aria-hidden="true" />
-              {t("explore.detail.helpTitle")}
-            </h2>
-            <p className="mt-2 text-sm text-neutral-700">{t("explore.detail.helpBody")}</p>
-            <Button asChild variant="outline" size="sm" className="mt-3">
-              <Link href={requestHref(f.origin.code, f.destination.code)}>{t("explore.detail.helpCta")}</Link>
-            </Button>
-          </div>
-
+          <BookingRequest flight={f} />
           <p className="text-xs text-muted-foreground">{t("explore.detail.disclaimer")}</p>
         </aside>
       </div>

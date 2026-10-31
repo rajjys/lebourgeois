@@ -85,7 +85,7 @@ function DepartureCard({ d }: { d: UpcomingDeparture }) {
       <p className="mt-1 text-sm text-foreground">
         <time>{d.departureTime}</time> – <time>{d.arrivalTime}</time>
       </p>
-      <AirlineMark code={d.airline.code} name={d.airline.name} className="mt-3 items-start [&>span:last-child]:leading-6" />
+      <AirlineMark code={d.airline.code} name={d.airline.name} logo={d.airline.logo} className="mt-3 items-start [&>span:last-child]:leading-6" />
       <div className="mt-auto pt-4">
         <div className="flex flex-wrap items-end justify-between gap-2 border-t pt-3">
           {d.price != null ? (

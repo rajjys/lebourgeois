@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { ArrowRight, Plane } from "lucide-react";
@@ -10,14 +11,21 @@ import { formatDateShort, formatWeekdays, WEEKDAYS } from "@/lib/format";
 import type { Service } from "@/lib/searchResults";
 import { cn } from "@/lib/utils/cn-utils";
 
-/** The airline's code in a tile, where other sites put a logo (no logos without the airline's consent). */
-export function AirlineTile({ code, className }: { code: string; className?: string }) {
+/**
+ * The airline's logo in a tile, or its code when we have no logo. Same size either way, so the
+ * times line up from one card to the next. Decorative: the airline's name is written next to it.
+ */
+export function AirlineTile({ code, logo, className }: { code: string; logo?: string | null; className?: string }) {
   return (
     <span
       aria-hidden="true"
-      className={cn("inline-flex size-11 shrink-0 items-center justify-center rounded-xl border bg-muted text-sm font-bold tracking-wide text-foreground", className)}
+      className={cn(
+        "relative inline-flex h-11 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border text-sm font-bold tracking-wide text-foreground sm:w-20",
+        logo ? "bg-white" : "bg-muted",
+        className,
+      )}
     >
-      {code}
+      {logo ? <Image src={logo} alt="" fill unoptimized sizes="80px" className="object-contain p-1.5" /> : code}
     </span>
   );
 }
@@ -59,7 +67,7 @@ export function ResultCard({
         <div className="min-w-0 p-4 sm:p-5">
           <p className="mb-3 truncate text-sm font-semibold text-foreground">{s.airline.name}</p>
           <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 sm:gap-5">
-            <AirlineTile code={s.airline.code} />
+            <AirlineTile code={s.airline.code} logo={s.airline.logo} />
             <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-4">
               <div className="text-left">
                 <p className="text-xl font-bold tabular-nums leading-none sm:text-2xl">{s.departureTime}</p>

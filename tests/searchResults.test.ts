@@ -8,7 +8,7 @@ const flight = (id: string, date: string, f: Partial<SearchFlight> = {}): Search
 const price = (amount: number): Price => ({ amount, currency: "USD", observedAt: "2026-10-30T00:00:00Z", kind: "FROM_PRICE", tripType: "ONE_WAY", fareName: null, sourceUrl: null });
 const extra = (prices: Record<string, number> = {}) => ({
   date: null as string | null,
-  airline: (id: string) => ({ code: id === "caa" ? "BU" : "4H", name: id }),
+  airline: (id: string) => ({ code: id === "caa" ? "BU" : "4H", name: id, logo: null }),
   price: (id: string) => (prices[id] ? price(prices[id]) : null),
   city: (code: string) => ({ MJM: "Mbuji-Mayi" })[code] ?? code,
   duration: (f: SearchFlight) => (f.via.length ? 255 : 150),

@@ -295,10 +295,11 @@ Verified on 2026-10-30.
   - follow-up (RW-3 pull request): creating a route that already exists now says so as soon as both airports are picked, with an "Ouvrir" link to each existing direction (owner)
 - 🟡 **P-13:** Search results v2 (owner, 2026-10-31, after comparing with Skyscanner; in review):
   - results come from dated flights (schema v3), grouped as **services**: one airline's flight with the same number, times and stops. One card per service, not per date.
-  - card: airline name on top, the code in a tile on the left (no logos yet, see Waiting on), departure and arrival times with airport codes, duration, direct or stops in the middle, price and "Voir le vol" on the right; price and button at the bottom on phones. Flight number and aircraft move to the flight page.
+  - card: airline name on top, its logo on the left (its code when we have no logo), departure and arrival times with airport codes, duration, direct or stops in the middle, price and "Voir le vol" on the right; price and button at the bottom on phones. Flight number and aircraft move to the flight page.
   - the week view is redesigned (flying days tinted, the searched day or next departure solid) and stays on every card; "Prochain vol : …" shows only when no date was chosen.
   - tabs **Recommandé · Moins cher · Plus rapide · Plus proche**, each showing its first result's value. Recommandé = direct flights first, then the best balance of departure, price and duration.
-  - `/explore/[id]` is now one departure (server-rendered): times and airports, duration, stops, number, aircraft, flying days, other departures, price with its date and source, "Réserver sur {site de la compagnie}", help link. Still `noindex` until RW-5.
+  - `/explore/[id]` is now one departure (server-rendered): times and airports, duration, stops, number, aircraft, flying days, other departures, price with its date and source, and **"Réserver ce vol"**: the booking request to Clerikaa as before (travellers, class, name, phone with WhatsApp or email; a fixed bar and a dialog on phones). Requests carry the flight's date, its number (or airline and time when it has none) and the route. Still `noindex` until RW-5.
+  - logos (owner, 2026-10-31): CAA's from the file the owner supplied, Air Congo's from the image already linked in the database, both served by the site from `public/logos/airlines/` and set by a data migration. Air Congo is shown as Air Congo, never as Ethiopian.
   - the home sections (next departures, tracked routes) read dated flights too.
   - public rule: a flight shows once it is validated and scheduled, its airline is published, and the airline is published on that route.
   - "Programmes de vol" retired from the back office (screens, API and helpers removed); the `FlightPattern` table is dropped in RW-7.
@@ -486,6 +487,8 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | 2026-10-31 | **Contact page with its own form** (questions, error reports, airlines), separate from flight-help requests; messages handled in the back office. Replaces "contact is a text page, no second form". No floating chat bubble for now. | Owner: some people only have a question. A bubble covers content on phones and loads on every page; revisit if messages show demand. |
 | 2026-10-31 | Keep the Kinshasa – Goma and Bunia – Beni route pages, with the airport banner. | Owner: those airports can reopen any time. |
 | 2026-10-31 | Public contact address: the owner's email until a `clerikaa.com` mailbox exists. WhatsApp: the owner's number, +243 975 092 470. | Owner. |
+| 2026-10-31 | **Booking stays with Clerikaa.** "Réserver ce vol" sends a booking request to our team; the site never sends visitors to an airline's booking page. A "Réserver sur caacongo.com" button tried in P-13 was removed before merging. | Owner: "we are not here to promote the airline". The request is the product's lead. |
+| 2026-10-31 | **Airline logos are shown** (cards, flight page, home), from files the site serves. Air Congo appears as Air Congo, not as Ethiopian (whose numbers it sells under). Replaces "no logos until permission" (2026-10-30). | Owner. Logos make the list faster to scan. |
 | 2026-10-31 | **Search results v2** (P-13): one card per service; number and aircraft on the flight page only; the date is not repeated when the visitor chose one; four sort tabs (Recommandé, Moins cher, Plus rapide, Plus proche). "Programmes de vol" retired from the back office. | Owner, comparing with Skyscanner: clearer to read. The route workspace replaced the schedules screen, so keeping both invited typing the same data twice. |
 | 2026-10-31 | **Undo is a stack per airline on a route** (RW-3): every workspace action is one batch; "Défaire" reverts the latest one not yet undone, and can be repeated. No redo. | Undoing an older action while newer ones touched the same flights could not be explained or trusted. "Défaire" because "Annuler" already means cancelling flights. |
 | 2026-10-31 | **Delete the old production data** (owner): expired schedules, the prices copied from them, and the route records left empty. Priority routes, current fares, requests and messages stay. Replaces "keep expired patterns as hints" (ROUTE-MODEL §9). | Owner: the database is full of old data. A backup file and the change log keep what was deleted. |
@@ -498,7 +501,6 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | What | Who | Blocks |
 |---|---|---|
 | Review and merge P-13 (search results v2, flight page, "Programmes de vol" retired) | Owner | RW-4 starts after |
-| Airline logos: use them on cards and flight pages? Logo files for CAA and Ethiopian are in `docs/`. For Air Congo, show Air Congo's logo, or "Ethiopian Airlines · opéré par Air Congo" as other sites do? | Owner | P-13 follow-up |
 | Training crawlers: allow or block ([SEO-AEO-GEO.md §8](SEO-AEO-GEO.md#8-ai-engines-specifically)) | Owner | F-6 |
 | Buy `clerikaa.com` (available on 2026-10-30) | Owner | Rebrand track, L-4 |
 | Resend account verification | Owner / Resend | L-4 |
