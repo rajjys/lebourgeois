@@ -389,6 +389,7 @@ export const ModelName = {
   Route: 'Route',
   RouteAirline: 'RouteAirline',
   Flight: 'Flight',
+  ChangeBatch: 'ChangeBatch',
   ChangeLog: 'ChangeLog',
   FareObservation: 'FareObservation',
   FlightPattern: 'FlightPattern',
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "airport" | "airline" | "route" | "routeAirline" | "flight" | "changeLog" | "fareObservation" | "flightPattern" | "request" | "contactMessage"
+    modelProps: "airport" | "airline" | "route" | "routeAirline" | "flight" | "changeBatch" | "changeLog" | "fareObservation" | "flightPattern" | "request" | "contactMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -780,6 +781,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.FlightCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.FlightCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChangeBatch: {
+      payload: Prisma.$ChangeBatchPayload<ExtArgs>
+      fields: Prisma.ChangeBatchFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChangeBatchFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChangeBatchFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload>
+        }
+        findFirst: {
+          args: Prisma.ChangeBatchFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChangeBatchFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload>
+        }
+        findMany: {
+          args: Prisma.ChangeBatchFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload>[]
+        }
+        create: {
+          args: Prisma.ChangeBatchCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload>
+        }
+        createMany: {
+          args: Prisma.ChangeBatchCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChangeBatchCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload>[]
+        }
+        delete: {
+          args: Prisma.ChangeBatchDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload>
+        }
+        update: {
+          args: Prisma.ChangeBatchUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChangeBatchDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChangeBatchUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChangeBatchUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChangeBatchUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeBatchPayload>
+        }
+        aggregate: {
+          args: Prisma.ChangeBatchAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChangeBatch>
+        }
+        groupBy: {
+          args: Prisma.ChangeBatchGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChangeBatchGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChangeBatchCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChangeBatchCountAggregateOutputType> | number
         }
       }
     }
@@ -1292,6 +1367,22 @@ export const FlightScalarFieldEnum = {
 export type FlightScalarFieldEnum = (typeof FlightScalarFieldEnum)[keyof typeof FlightScalarFieldEnum]
 
 
+export const ChangeBatchScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  actor: 'actor',
+  routeId: 'routeId',
+  routeAirlineId: 'routeAirlineId',
+  action: 'action',
+  summary: 'summary',
+  params: 'params',
+  undoneAt: 'undoneAt',
+  undoneBy: 'undoneBy'
+} as const
+
+export type ChangeBatchScalarFieldEnum = (typeof ChangeBatchScalarFieldEnum)[keyof typeof ChangeBatchScalarFieldEnum]
+
+
 export const ChangeLogScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
@@ -1611,16 +1702,16 @@ export type ListEnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
- * Reference to a field of type 'ChangeAction'
+ * Reference to a field of type 'BatchAction'
  */
-export type EnumChangeActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeAction'>
+export type EnumBatchActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BatchAction'>
     
 
 
 /**
- * Reference to a field of type 'ChangeAction[]'
+ * Reference to a field of type 'BatchAction[]'
  */
-export type ListEnumChangeActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeAction[]'>
+export type ListEnumBatchActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BatchAction[]'>
     
 
 
@@ -1635,6 +1726,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'ChangeAction'
+ */
+export type EnumChangeActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeAction'>
+    
+
+
+/**
+ * Reference to a field of type 'ChangeAction[]'
+ */
+export type ListEnumChangeActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeAction[]'>
     
 
 
@@ -1819,6 +1924,7 @@ export type GlobalOmitConfig = {
   route?: Prisma.RouteOmit
   routeAirline?: Prisma.RouteAirlineOmit
   flight?: Prisma.FlightOmit
+  changeBatch?: Prisma.ChangeBatchOmit
   changeLog?: Prisma.ChangeLogOmit
   fareObservation?: Prisma.FareObservationOmit
   flightPattern?: Prisma.FlightPatternOmit

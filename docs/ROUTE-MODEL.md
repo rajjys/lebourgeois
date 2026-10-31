@@ -1,6 +1,6 @@
 # Route-centric model and back office
 
-> **Status:** proposal 2026-10-30; the owner answered the open questions on 2026-10-31 ([§11](#11-open-questions-for-the-owner)). **RW-1 (schema v3, [§4](#4-the-model)) is live** (PR #8); **RW-2 (network board, [§6.1](#61-network-board-dashboardroutes)) is in review**; the schedule tools (RW-3) are next.
+> **Status:** proposal 2026-10-30; the owner answered the open questions on 2026-10-31 ([§11](#11-open-questions-for-the-owner)). **RW-1 (schema v3, [§4](#4-the-model))** and **RW-2 (network board, [§6.1](#61-network-board-dashboardroutes))** are live (PR #8, #9). **RW-3 (schedule tools, [§6.2](#62-route-workspace-dashboardrouteskinshasa-lubumbashi)) is in review**; prices and notes (RW-4) are next.
 > **Replaces:** the "flight pattern" way of managing schedules.
 > **Plan:** phases **RW-1 → RW-7** below. They form milestone **M3** in [PLAN.md](PLAN.md#7-milestones).
 > **Depends on:** [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md) (done) and [SEO-AEO-GEO.md](SEO-AEO-GEO.md) (rules for public pages).
@@ -320,6 +320,20 @@ Kinshasa → Lubumbashi       1   BU · ET        mar. 3 nov.    22 nov.        
 | **Undo** | Every bulk action can be undone as a whole (`batchId`) | Nothing |
 | **Historique** | The ChangeLog for this route | Nothing |
 
+**Built in RW-3** (the route page holds the workspace; the settings stay on the right):
+- **Tabs:** one per airline on the route, plus *+ Ajouter une compagnie*, which starts it active and unpublished. The selected tab is in the address (`?compagnie=4H`), and *Même compagnie, sens retour* opens the same airline on the return route.
+- **Calendar:** 8 weeks from the current one, moved 4 weeks at a time (`?semaine=`). Each day is a button that opens the day editor. Each week shows its flight count and a *copier* link.
+- **Day editor:** the flights of one date as a list, with number, times, next-day arrival, stops, aircraft and "Prévu / Annulé". Saving replaces that date. A new flight is suggested from the same weekday a week earlier.
+- **Previews:** *Appliquer un horaire*, *Copier une semaine* and *Annuler des vols* show a live preview (what is added, changed, already up to date, or skipped and why) before anything is saved.
+- **Matching:** a flight is recognised by its number. Without a number, it is recognised by its departure time.
+- **What is never overwritten:**
+  - a cancelled flight stays cancelled
+  - a time already taken by another flight is skipped
+  - a copy never fills a day that already has flights
+- **Verification:** *Appliquer un horaire* and the day editor mark flights verified, since they are typed from a source. Copies are not verified until *Tout est vérifié*.
+- **Undo:** every action is one `ChangeBatch`, with a `ChangeLog` row per flight touched. *Défaire la dernière action* reverts the latest batch for that airline on the route, and can be repeated, like a stack. An undo is not itself undoable.
+  - "Défaire" is used rather than "Annuler", which already means cancelling flights.
+
 **Owner's example, step by step (exit test for RW-3):**
 1. Open Kinshasa → Lubumbashi and select the Air Congo tab.
 2. Choose *Appliquer un horaire*: ET 60, Mon / Wed / Sat, 08:00 → 11:30, 2–8 Nov. Preview, then save.
@@ -435,8 +449,8 @@ Each phase is one PR, off `main`, never stacked. Each has an exit test. The IDs 
 | ID | Phase | Contents | Exit test | Status |
 |---|---|---|---|---|
 | **RW-1** | Schema v3 | `RouteAirline`, `Flight`, `ChangeLog`; route status, tier and notes; fare and request links; migration of existing data (§9); unit tests for the constraints | The dev database migrates cleanly. Duplicate flights are rejected. Existing patterns and fares are attached to the right route and airline. | ✅ PR #8 |
-| **RW-2** | Network board | `/dashboard/routes`: list, filters, computed next flight, "known until" and freshness; create a route (pick two airports, slug generated) | All draft and published routes are listed with correct computed values. A new route can be created in under 30 seconds. | 🟡 in review |
-| **RW-3** | Route workspace: schedules | Calendar (8 weeks × 7 days), click to edit, *Appliquer un horaire* with preview, *Copier une semaine*, *Annuler*, *Tout est vérifié*, undo by batch, both directions | The owner's example (§6.2) is done in under 2 minutes with no repeated typing. Undo restores the previous state. | ⬜ |
+| **RW-2** | Network board | `/dashboard/routes`: list, filters, computed next flight, "known until" and freshness; create a route (pick two airports, slug generated) | All draft and published routes are listed with correct computed values. A new route can be created in under 30 seconds. | ✅ PR #9 |
+| **RW-3** | Route workspace: schedules | Calendar (8 weeks × 7 days), click to edit, *Appliquer un horaire* with preview, *Copier une semaine*, *Annuler*, *Tout est vérifié*, undo by batch, both directions | The owner's example (§6.2) is done in under 2 minutes with no repeated typing. Undo restores the previous state. | 🟡 in review |
 | **RW-4** | Route workspace: prices and notes | *+ Prix observé* (3 fields), price list per airline, editorial notes, history panel; operator entries auto-approved; pending imports shown separately | A price change is logged in under 20 seconds. The 35 pending fares can be reviewed from the workspace. | ⬜ |
 | **RW-5** | Public route pages | `/vols`, `/vols/[route]`, `/vols/[route]/[airline]` rendered on the server from the model, following [SEO-AEO-GEO.md](SEO-AEO-GEO.md); sitemap from the database; request form linked to routes | P1 routes with real data are live, pass the page checklist and appear in the sitemap. | ⬜ |
 | **RW-6** | Helpers | "Also serves" for flights with stops; copy to the return route; keyboard shortcuts; bulk verify | Entering a flight with a stop on all three routes it serves takes one action. | ⬜ |

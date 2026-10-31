@@ -65,6 +65,11 @@ export type RouteAirline = Prisma.RouteAirlineModel
  */
 export type Flight = Prisma.FlightModel
 /**
+ * Model ChangeBatch
+ * 
+ */
+export type ChangeBatch = Prisma.ChangeBatchModel
+/**
  * Model ChangeLog
  * 
  */

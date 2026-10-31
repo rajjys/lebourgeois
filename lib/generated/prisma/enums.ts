@@ -109,6 +109,18 @@ export const ChangeAction = {
 export type ChangeAction = (typeof ChangeAction)[keyof typeof ChangeAction]
 
 
+export const BatchAction = {
+  APPLY_SCHEDULE: 'APPLY_SCHEDULE',
+  COPY_WEEK: 'COPY_WEEK',
+  CANCEL_FLIGHTS: 'CANCEL_FLIGHTS',
+  EDIT_DAY: 'EDIT_DAY',
+  VERIFY: 'VERIFY',
+  UNDO: 'UNDO'
+} as const
+
+export type BatchAction = (typeof BatchAction)[keyof typeof BatchAction]
+
+
 export const RequestStatus = {
   NEW: 'NEW',
   CLAIMED: 'CLAIMED',

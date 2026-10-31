@@ -320,6 +320,12 @@ The back office still works on a phone (simple menu), but it is not designed for
 - A sticky action bar: Enregistrer (disabled until something changes), Annuler, and Supprimer on the far right behind a confirmation.
 - Server errors appear at the top in a danger alert, in French, saying what to do instead (for example "changez plutôt son statut").
 
+**Bulk actions** (RW-3; `components/backoffice/workspace/`):
+- **Preview before saving.** A bulk action shows a live preview as the form changes: what will be added, changed, already up to date, or skipped with the reason. The save button says how many records it writes ("Enregistrer (6 vols)") and stays disabled when there is nothing to write.
+- **Name the action after it ran.** The toast and the "Dernière action" line give one French sentence ("Horaire ET 60 08:00–11:30 (lundi, mercredi et samedi) du 2 nov. au 8 nov. : 3 vols ajoutés").
+- **"Défaire", not "Annuler".** "Annuler" cancels flights. Undoing asks for confirmation and shows what will be reverted.
+- **Calendar:** weeks start on Monday, today is outlined, past days are dimmed but still editable. Cancelled flights stay visible, struck through; imported flights waiting for review get a dashed border.
+
 ## 11. Writing
 
 - **French first.** Plain, factual, short sentences. Write as an informed friend, not an advert.

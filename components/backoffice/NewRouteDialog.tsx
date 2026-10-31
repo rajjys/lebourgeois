@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
+import { ArrowRight, Info, Plus } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -15,8 +17,11 @@ import { routeSlug } from "@/lib/routes";
 
 type Created = { created: string[]; existing: string[] };
 
+/** Routes that already exist, by "FIH-FBM", so the dialog can point to them instead of failing. */
+export type ExistingRoutes = Record<string, { slug: string; label: string }>;
+
 /** Pick two airports, a priority, and whether to create the return route too. The slug is generated. */
-export function NewRouteDialog() {
+export function NewRouteDialog({ existing }: { existing: ExistingRoutes }) {
   const router = useRouter();
   const { airports } = useAirports();
   const [open, setOpen] = useState(false);
@@ -25,6 +30,7 @@ export function NewRouteDialog() {
   const [tier, setTier] = useState("3");
   const [withReturn, setWithReturn] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [conflicts, setConflicts] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   const originCode = airportCode(origin);
@@ -34,17 +40,27 @@ export function NewRouteDialog() {
   const destinationSlug = slugOf(destinationCode);
   const preview = originSlug && destinationSlug && originSlug !== destinationSlug ? routeSlug(originSlug, destinationSlug) : null;
 
+  // Known as soon as both airports are picked: say which direction exists and link to it.
+  const pairChosen = !!originCode && !!destinationCode && originCode !== destinationCode;
+  const outbound = pairChosen ? existing[`${originCode}-${destinationCode}`] : undefined;
+  const inbound = pairChosen && withReturn ? existing[`${destinationCode}-${originCode}`] : undefined;
+  const found = [outbound, inbound].filter((r): r is ExistingRoutes[string] => !!r);
+  const nothingToCreate = !!outbound && (!withReturn || !!inbound);
+  const submitLabel = nothingToCreate ? "Rien à créer" : outbound ? "Créer le retour" : inbound ? "Créer l'aller" : "Créer";
+
   function reset() {
     setOrigin("");
     setDestination("");
     setTier("3");
     setWithReturn(true);
     setError(null);
+    setConflicts([]);
   }
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     setError(null);
+    setConflicts([]);
     if (!originCode || !destinationCode) return setError("Choisissez les deux aéroports.");
     if (originCode === destinationCode) return setError("Choisissez deux aéroports différents.");
     setSaving(true);
@@ -57,6 +73,8 @@ export function NewRouteDialog() {
       const body = await res.json();
       if (!res.ok) {
         setError(body.error ?? "La création a échoué.");
+        // Created by someone else meanwhile: still offer to open it.
+        setConflicts(body.details?.existing ?? []);
         return;
       }
       const { created, existing } = body as Created;
@@ -118,24 +136,59 @@ export function NewRouteDialog() {
             </label>
           </div>
 
-          {preview && (
+          {preview && !outbound && (
             <p className="text-xs text-muted-foreground">
               Identifiant : <span className="font-mono">{preview}</span>
-              {withReturn && " (et le retour)"}
+              {withReturn && !inbound && " (et le retour)"}
             </p>
           )}
+          {found.length > 0 && (
+            <Alert variant="info" role="status">
+              <Info className="size-4" aria-hidden="true" />
+              <AlertDescription className="space-y-2">
+                <p>
+                  {nothingToCreate
+                    ? found.length === 2
+                      ? "Ces deux routes existent déjà."
+                      : "Cette route existe déjà."
+                    : outbound
+                      ? "Cette route existe déjà ; seul le retour sera créé."
+                      : "Le retour existe déjà ; seul l'aller sera créé."}
+                </p>
+                <ul className="space-y-1">
+                  {found.map((r) => (
+                    <li key={r.slug}>
+                      <Link
+                        href={`/dashboard/routes/${r.slug}`}
+                        onClick={() => setOpen(false)}
+                        className="inline-flex items-center gap-1 font-medium text-link underline"
+                      >
+                        Ouvrir {r.label}
+                        <ArrowRight className="size-3.5" aria-hidden="true" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+          )}
           {error && (
-            <p role="alert" className="text-sm text-danger">
-              {error}
-            </p>
+            <div role="alert" className="space-y-1 text-sm text-danger">
+              <p>{error}</p>
+              {conflicts.map((slug) => (
+                <Link key={slug} href={`/dashboard/routes/${slug}`} onClick={() => setOpen(false)} className="block text-link underline">
+                  Ouvrir {slug}
+                </Link>
+              ))}
+            </div>
           )}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Annuler
             </Button>
-            <Button type="submit" disabled={saving}>
-              {saving ? "Création…" : "Créer"}
+            <Button type="submit" disabled={saving || nothingToCreate}>
+              {saving ? "Création…" : submitLabel}
             </Button>
           </DialogFooter>
         </form>

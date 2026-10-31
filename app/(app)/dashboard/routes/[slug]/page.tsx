@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,15 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { RouteTitle } from "@/components/ds/RouteTitle";
-import { AirlineMark } from "@/components/ds/AirlineMark";
 import { AirportStatusAlert } from "@/components/search/AirportStatusNotice";
 import { RouteSettingsForm } from "@/components/backoffice/RouteSettingsForm";
-import { ROUTE_AIRLINE_STATUS, RouteFreshnessBadge, RouteStatusBadge, TierBadge } from "@/components/backoffice/RouteParts";
+import { RouteWorkspace } from "@/components/backoffice/workspace/RouteWorkspace";
+import { RouteFreshnessBadge, RouteStatusBadge, TierBadge } from "@/components/backoffice/RouteParts";
 import { loadRouteDetail } from "@/lib/routeBoard";
-import { formatDateShort, formatDayMonth, formatDayMonthYear, formatFlightNumber, formatPrice } from "@/lib/format";
-import { cn } from "@/lib/utils/cn-utils";
+import { formatDayMonth, formatDayMonthYear, formatPrice } from "@/lib/format";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ semaine?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `Route ${(await params).slug}` };
@@ -27,12 +27,6 @@ const REVIEW = {
   REJECTED: { label: "Rejeté", variant: "neutral" },
 } as const;
 
-/** "BU 1611"; the airline is named only when the number doesn't start with its code ("4H · ET 60") or there is none. */
-const flightLabel = (airline: string, flightNumber: string | null) => {
-  if (!flightNumber) return `${airline} · sans numéro`;
-  return flightNumber.startsWith(airline) ? formatFlightNumber(flightNumber) : `${airline} · ${formatFlightNumber(flightNumber)}`;
-};
-
 const hostOf = (url: string | null) => {
   if (!url) return null;
   try {
@@ -43,13 +37,11 @@ const hostOf = (url: string | null) => {
 };
 
 /** One route and everything under it: airlines, next departures, prices (docs/ROUTE-MODEL.md §6.2). */
-export default async function RoutePage({ params }: Props) {
-  const detail = await loadRouteDetail((await params).slug);
+export default async function RoutePage({ params, searchParams }: Props) {
+  const detail = await loadRouteDetail((await params).slug, (await searchParams).semaine);
   if (!detail) notFound();
-  const { route, reverseSlug, freshness, airlines, departures, stops } = detail;
-  const airlineCode = new Map(airlines.map((ra) => [ra.id, ra.airline.code]));
-  const fares = airlines.flatMap((ra) => ra.fares.map((f) => ({ ...f, airline: ra.airline.code })));
-  const canDelete = route.status === "DRAFT" && airlines.length === 0 && route._count.requests === 0;
+  const { route, reverseSlug, freshness, fares, workspace } = detail;
+  const canDelete = route.status === "DRAFT" && route.airlines.length === 0 && route._count.requests === 0;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -82,131 +74,16 @@ export default async function RoutePage({ params }: Props) {
         <AirportStatusAlert key={a.code} airport={a} />
       ))}
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start">
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Compagnies sur cette route</CardTitle>
-              <CardDescription>Une ligne par compagnie : son statut sur la route, sa dernière vérification et ses vols connus.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {airlines.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  Aucune compagnie pour l&apos;instant. Elles s&apos;ajoutent avec la saisie des vols, à la prochaine étape.
-                </p>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Compagnie</TableHead>
-                      <TableHead>Vérification</TableHead>
-                      <TableHead>Prochain vol</TableHead>
-                      <TableHead>Vols connus</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {airlines.map((ra) => (
-                      <TableRow key={ra.id}>
-                        <TableCell>
-                          <span title={ra.airline.name}>
-                            <AirlineMark code={ra.airline.code} />
-                          </span>
-                          <span className="mt-1 block text-xs text-muted-foreground">
-                            {ROUTE_AIRLINE_STATUS[ra.status]} · {ra.isPublished ? "publiée" : "non publiée"}
-                          </span>
-                          {ra.airline.status !== "OPERATING" && (
-                            <Badge variant="danger" className="mt-1">
-                              Compagnie {ra.airline.status === "SUSPENDED" ? "suspendue" : "arrêtée"}
-                            </Badge>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <RouteFreshnessBadge freshness={ra.freshness} />
-                          {ra.verifiedSourceUrl && (
-                            <a href={ra.verifiedSourceUrl} target="_blank" rel="noopener noreferrer" className="block text-xs text-link underline">
-                              {hostOf(ra.verifiedSourceUrl)}
-                            </a>
-                          )}
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap text-sm">
-                          {ra.next ? (
-                            <>
-                              {formatDateShort(ra.next.date)} · {ra.next.departureTime}
-                              <span className="block text-xs text-muted-foreground">{flightLabel(ra.airline.code, ra.next.flightNumber)}</span>
-                            </>
-                          ) : (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap text-sm">
-                          {ra.flightsNext4Weeks > 0 ? `${ra.flightsNext4Weeks} sur 4 sem.` : <span className="text-muted-foreground">aucun à venir</span>}
-                          {ra.knownUntil && (
-                            <span className="block text-xs text-muted-foreground">
-                              jusqu&apos;au {formatDayMonth(new Date(`${ra.knownUntil}T00:00:00Z`))}
-                            </span>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Prochains départs (14 jours)</CardTitle>
-              <CardDescription>Heures locales. La saisie des vols (calendrier, horaire appliqué sur plusieurs semaines) arrive à la prochaine étape.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {departures.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Aucun vol connu sur les 14 prochains jours.</p>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Vol</TableHead>
-                      <TableHead>Horaire</TableHead>
-                      <TableHead>Escales</TableHead>
-                      <TableHead className="hidden xl:table-cell">Appareil</TableHead>
-                      <TableHead>
-                        <span className="sr-only">État</span>
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {departures.map((f) => (
-                      <TableRow key={f.id} className={cn(f.status === "CANCELLED" && "text-muted-foreground line-through")}>
-                        <TableCell className="whitespace-nowrap text-sm">{formatDateShort(f.date)}</TableCell>
-                        <TableCell className="whitespace-nowrap text-sm font-medium">
-                          {flightLabel(airlineCode.get(f.routeAirlineId) ?? "", f.flightNumber)}
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap text-sm">
-                          {f.departureTime} → {f.arrivalTime}
-                          {f.arrivalDayOffset > 0 && <sup className="ml-0.5 text-xs">+1</sup>}
-                        </TableCell>
-                        <TableCell className="text-sm">
-                          {f.via.length === 0 ? "Direct" : `via ${f.via.map((c) => stops[c] ?? c).join(", ")}`}
-                        </TableCell>
-                        <TableCell className="hidden whitespace-nowrap text-sm xl:table-cell">{f.aircraft ?? "—"}</TableCell>
-                        <TableCell>
-                          {f.status === "CANCELLED" && <Badge variant="neutral">Annulé</Badge>}
-                          {f.reviewStatus === "PENDING" && <Badge variant="warning">À valider</Badge>}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
+          <Suspense>
+            <RouteWorkspace routeId={route.id} workspace={workspace} reverseSlug={reverseSlug} />
+          </Suspense>
 
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Prix observés</CardTitle>
-              <CardDescription>Chaque prix vu, avec sa date et sa source. La saisie et la validation arrivent avec l&apos;étape des prix.</CardDescription>
+              <CardDescription>Chaque prix vu, avec sa date et sa source. La saisie et la validation arrivent à l&apos;étape suivante.</CardDescription>
             </CardHeader>
             <CardContent>
               {fares.length === 0 ? (
@@ -257,7 +134,7 @@ export default async function RoutePage({ params }: Props) {
           </Card>
         </div>
 
-        <aside className="space-y-6 lg:sticky lg:top-4">
+        <aside className="space-y-6 xl:sticky xl:top-4">
           <RouteSettingsForm
             key={route.updatedAt.getTime()}
             route={{ id: route.id, status: route.status, tier: route.tier, note: route.note }}
