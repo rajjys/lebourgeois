@@ -32,6 +32,7 @@ export function RouteBoard({ routes }: { routes: BoardRoute[] }) {
       if (filter.tier !== "all" && String(r.tier) !== filter.tier) return false;
       if (filter.attention === "todo" && attentionRank(r) > 1) return false;
       if (filter.attention === "empty" && r.airlines.length > 0) return false;
+      if (filter.attention === "prices" && r.prices.pending === 0) return false;
       if (!text) return true;
       const haystack = normalize(`${r.origin.city} ${r.destination.city} ${r.origin.code} ${r.destination.code} ${r.slug}`);
       return text.split(/\s+/).every((word) => haystack.includes(word));
@@ -51,6 +52,7 @@ export function RouteBoard({ routes }: { routes: BoardRoute[] }) {
   const toCheck = routes.filter((r) => attentionRank(r) <= 1).length;
   const withoutAirline = routes.filter((r) => r.status !== "ARCHIVED" && r.airlines.length === 0).length;
   const published = routes.filter((r) => r.status === "PUBLISHED").length;
+  const pendingPrices = routes.reduce((n, r) => n + r.prices.pending, 0);
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -59,6 +61,7 @@ export function RouteBoard({ routes }: { routes: BoardRoute[] }) {
           <h1 className="text-2xl font-bold tracking-tight">Routes</h1>
           <p className="text-sm text-muted-foreground">
             {routes.length} routes · {published} publiées · {toCheck} à vérifier · {withoutAirline} sans compagnie
+            {pendingPrices > 0 && ` · ${pendingPrices} prix à valider`}
           </p>
         </div>
         <NewRouteDialog existing={existing} />
@@ -106,6 +109,7 @@ export function RouteBoard({ routes }: { routes: BoardRoute[] }) {
             <SelectItem value="all">Tout</SelectItem>
             <SelectItem value="todo">À vérifier</SelectItem>
             <SelectItem value="empty">Sans compagnie</SelectItem>
+            <SelectItem value="prices">Prix à valider</SelectItem>
           </SelectContent>
         </Select>
         <span className="text-sm text-muted-foreground" aria-live="polite">

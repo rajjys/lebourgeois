@@ -320,6 +320,8 @@ The back office still works on a phone (simple menu), but it is not designed for
 - A sticky action bar: Enregistrer (disabled until something changes), Annuler, and Supprimer on the far right behind a confirmation.
 - Server errors appear at the top in a danger alert, in French, saying what to do instead (for example "changez plutôt son statut").
 
+**Review queues** (RW-4): what waits for a decision sits in an amber box above the settled list, with the count and "importés ou repris, pas encore publics". Each row has *Valider* and *Rejeter*; the box has *Tout valider* / *Tout rejeter*, which turn into "… la sélection (n)" once rows are ticked. Rejected rows stay, faded, behind a "Afficher les rejetés" toggle.
+
 **Bulk actions** (RW-3; `components/backoffice/workspace/`):
 - **Preview before saving.** A bulk action shows a live preview as the form changes: what will be added, changed, already up to date, or skipped with the reason. The save button says how many records it writes ("Enregistrer (6 vols)") and stays disabled when there is nothing to write.
 - **Name the action after it ran.** The toast and the "Dernière action" line give one French sentence ("Horaire ET 60 08:00–11:30 (lundi, mercredi et samedi) du 2 nov. au 8 nov. : 3 vols ajoutés").

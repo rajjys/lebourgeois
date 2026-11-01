@@ -110,6 +110,35 @@ export async function loadRouteBoard(now: Date = new Date()): Promise<BoardRoute
 }
 
 export const CALENDAR_WEEKS = 8;
+const HISTORY_SIZE = 40;
+
+/** A price as the workspace shows it. */
+export type WorkspaceFare = {
+  id: string;
+  amount: number;
+  fareName: string | null;
+  kind: "FROM_PRICE" | "QUOTE";
+  tripType: "ONE_WAY" | "ROUND_TRIP";
+  travelDate: string | null;
+  observedAt: string;
+  flightNumber: string | null;
+  source: "MANUAL" | "AIRLINE_TIMETABLE" | "AIRLINE_WEBSITE";
+  sourceUrl: string | null;
+  note: string | null;
+  reviewStatus: "PENDING" | "APPROVED" | "REJECTED";
+};
+
+/** One line of the route's history: a workspace action (with its detail lines) or a single edit. */
+export type HistoryItem = {
+  id: string;
+  at: string;
+  actor: string;
+  airline: string | null;
+  summary: string;
+  undone: boolean;
+  isUndo: boolean;
+  lines: string[];
+};
 
 /** A flight as the route workspace shows it (dates as "YYYY-MM-DD"). */
 export type WorkspaceFlight = {
@@ -153,7 +182,7 @@ export async function loadRouteDetail(slug: string, weekStart?: string, now: Dat
   const start = weekStart && /^\d{4}-\d{2}-\d{2}$/.test(weekStart) ? mondayOf(weekStart) : mondayOf(local.day);
   const end = addDays(start, CALENDAR_WEEKS * 7 - 1);
   const ids = route.airlines.map((ra) => ra.id);
-  const [calendar, upcoming, lastDays, undoable, schedules, others, reverse] = await Promise.all([
+  const [calendar, upcoming, lastDays, undoable, schedules, others, reverse, batches, loose] = await Promise.all([
     prisma.flight.findMany({
       where: { routeAirlineId: { in: ids }, date: { gte: day(start), lte: day(end) } },
       orderBy: [{ date: "asc" }, { departureTime: "asc" }],
@@ -190,7 +219,33 @@ export async function loadRouteDetail(slug: string, weekStart?: string, now: Dat
       where: { originId_destinationId: { originId: route.destinationId, destinationId: route.originId } },
       select: { slug: true },
     }),
+    // History (RW-4): workspace actions, and single edits made outside them (settings, airline added…).
+    prisma.changeBatch.findMany({ where: { routeId: route.id }, orderBy: { createdAt: "desc" }, take: HISTORY_SIZE }),
+    prisma.changeLog.findMany({ where: { routeId: route.id, batchId: null }, orderBy: { createdAt: "desc" }, take: HISTORY_SIZE }),
   ]);
+  const batchLines = await prisma.changeLog.findMany({
+    where: { batchId: { in: batches.map((b) => b.id) } },
+    orderBy: { createdAt: "asc" },
+    select: { batchId: true, summary: true },
+  });
+  const linesBy = new Map<string, string[]>();
+  for (const l of batchLines) linesBy.set(l.batchId!, [...(linesBy.get(l.batchId!) ?? []), l.summary]);
+  const codeBy = new Map(route.airlines.map((ra) => [ra.id, ra.airline.code]));
+  const history: HistoryItem[] = [
+    ...batches.map((b) => ({
+      id: b.id,
+      at: b.createdAt.toISOString(),
+      actor: b.actor,
+      airline: codeBy.get(b.routeAirlineId) ?? null,
+      summary: b.summary,
+      undone: !!b.undoneAt,
+      isUndo: b.action === "UNDO",
+      lines: linesBy.get(b.id) ?? [],
+    })),
+    ...loose.map((l) => ({ id: l.id, at: l.createdAt.toISOString(), actor: l.actor, airline: null, summary: l.summary, undone: false, isUndo: false, lines: [] })),
+  ]
+    .sort((a, b) => b.at.localeCompare(a.at))
+    .slice(0, HISTORY_SIZE);
   const lastDayBy = new Map(lastDays.map((l) => [l.routeAirlineId, l._max.date]));
   const undoBy = new Map(undoable.map((b) => [b.routeAirlineId, { summary: b.summary, at: b.createdAt.toISOString() }]));
   const scheduleBy = new Map(schedules.map((b) => [b.routeAirlineId, b.params]));
@@ -199,7 +254,7 @@ export async function loadRouteDetail(slug: string, weekStart?: string, now: Dat
     route,
     reverseSlug: reverse?.slug ?? null,
     freshness: routeFreshness(route.airlines, now),
-    fares: route.airlines.flatMap((ra) => ra.fares.map((f) => ({ ...f, airline: ra.airline.code }))),
+    history,
     workspace: {
       today: local.day,
       start,
@@ -235,6 +290,23 @@ export async function loadRouteDetail(slug: string, weekStart?: string, now: Dat
               reviewStatus: f.reviewStatus,
               verified: !!f.verifiedAt,
             })),
+          note: ra.note,
+          fares: ra.fares.map(
+            (f): WorkspaceFare => ({
+              id: f.id,
+              amount: Number(f.amount),
+              fareName: f.fareName ?? f.cabin,
+              kind: f.kind,
+              tripType: f.tripType,
+              travelDate: f.travelDate ? dayOf(f.travelDate) : null,
+              observedAt: f.observedAt.toISOString(),
+              flightNumber: f.flightNumber,
+              source: f.source,
+              sourceUrl: f.sourceUrl,
+              note: f.note,
+              reviewStatus: f.reviewStatus,
+            }),
+          ),
           lastAction: undoBy.get(ra.id) ?? null,
           lastSchedule: (scheduleBy.get(ra.id) ?? null) as Record<string, unknown> | null,
         };
