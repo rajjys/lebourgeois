@@ -375,6 +375,20 @@ The URLs follow the French-first decision in [SEO-AEO-GEO.md](SEO-AEO-GEO.md#3-u
 | Airport | `/aeroports/kinshasa` | The airport has at least one published route, or a status notice. The airport page is **where an airport's status lives** (owner, 2026-10-31); see E-1 in [PLAN.md](PLAN.md#stage-4-publish). |
 | Network status | `/etat-du-reseau` | Always: closed airports, suspended airlines, with sources |
 
+**Search and pages are one structure** (owner proposal, 2026-11-01; agreed, with the refinements marked ❓ for the owner to confirm). `/explore` is retired in RW-5: a search result and a route page show the same data, so there is one page, the one search engines can index.
+
+| Visitor does | Lands on | Notes |
+|---|---|---|
+| Uses the home search (A → B) | `/vols/a-b` | The route page *is* the search result. |
+| Clicks "Rechercher un vol" in the navbar | `/vols` | The hub: the search box on top, then every published route grouped by departure city. On a page that already has a search box, the button still scrolls to it. |
+| Changes the search on a route page | `/vols/c-d` | A real page load, rendered on the server, not a URL rewritten by the browser. |
+| Picks a date | `/vols/a-b?date=2026-11-03` | Same page filtered to that day. Its canonical is `/vols/a-b`, so the date variants never compete with it. |
+| Opens a departure from a route page | `/vols/a-b/caa?date=2026-11-03` | ❓ The airline page with that departure highlighted and the booking request prefilled. This replaces `/explore/<id>`, so there is no URL per departure. |
+| Searches a pair with no published route (Kinshasa → Isiro) | `/vols/kinshasa-isiro` | ❓ Renders "aucun vol connu" with the request form and nearby alternatives, but `noindex`, absent from the sitemap and from internal links until the route is published. Search engines never see a thin page; the visitor never gets a 404 for a valid search. |
+| Comes from an old link | 301: `/explore?from=A&to=B` → `/vols/a-b`; `/explore` → `/vols`; `/explore/<id>` → `/vols/a-b/<airline>?date=…` | RW-5 (was RW-7). |
+
+The home page keeps a short list: P1 routes only, at most nine, linking to their pages; "Toutes les routes" goes to `/vols`.
+
 **Route page vs route + airline page: different jobs, different content.**
 
 | | Route page `/vols/kinshasa-kalemie` | Route + airline page `/vols/kinshasa-kalemie/caa` |
@@ -462,7 +476,7 @@ Each phase is one PR, off `main`, never stacked. Each has an exit test. The IDs 
 | **RW-2** | Network board | `/dashboard/routes`: list, filters, computed next flight, "known until" and freshness; create a route (pick two airports, slug generated) | All draft and published routes are listed with correct computed values. A new route can be created in under 30 seconds. | ✅ PR #9 |
 | **RW-3** | Route workspace: schedules | Calendar (8 weeks × 7 days), click to edit, *Appliquer un horaire* with preview, *Copier une semaine*, *Annuler*, *Tout est vérifié*, undo by batch, both directions | The owner's example (§6.2) is done in under 2 minutes with no repeated typing. Undo restores the previous state. | ✅ PR #10 |
 | **RW-4** | Route workspace: prices and notes | *+ Prix observé* (3 fields), price list per airline, editorial notes, history panel; operator entries auto-approved; pending imports shown separately | A price change is logged in under 20 seconds. The 35 pending fares can be reviewed from the workspace. | ✅ PR #12 (the old copied fares were deleted on 2026-10-31; 5 Air Congo fares wait for the owner's review) |
-| **RW-5** | Public route pages | `/vols`, `/vols/[route]`, `/vols/[route]/[airline]` rendered on the server from the model, following [SEO-AEO-GEO.md](SEO-AEO-GEO.md); sitemap from the database; request form linked to routes | P1 routes with real data are live, pass the page checklist and appear in the sitemap. | ⬜ |
+| **RW-5** | Public route pages | `/vols` (hub with search), `/vols/[route]` (route page and search result, `?date=` filter), `/vols/[route]/[airline]` (airline page, departure via `?date=`, booking request) rendered on the server from the model, following [SEO-AEO-GEO.md](SEO-AEO-GEO.md); search everywhere leads to these pages; `/explore` retired with 301s; sitemap from the database; request form linked to routes | P1 routes with real data are live, pass the page checklist and appear in the sitemap. | ⬜ |
 | **RW-6** | Helpers | "Also serves" for flights with stops; copy to the return route; keyboard shortcuts; bulk verify | Entering a flight with a stop on all three routes it serves takes one action. | ⬜ |
 | **RW-7** | Clean-up | Remove `FlightPattern` screens and API, the old `/explore` pages (with 301s) and the `price` column (S-3) | No code reads `FlightPattern`. Old URLs redirect. | 🟡 screens, API and public reads removed in P-13 (only the legacy clean-up script still names the table); the table drop and the 301s remain |
 
