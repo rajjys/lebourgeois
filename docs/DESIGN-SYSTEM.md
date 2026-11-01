@@ -326,6 +326,12 @@ The back office still works on a phone (simple menu), but it is not designed for
 - **Sort tabs:** four cells (two by two on phones), each with the value of its first result, so the trade-off shows before clicking. The selected tab is filled with the brand colour.
 - **Flight page:** the times block first, then facts (duration, number, aircraft) and flying days, other departures as chips. Beside it, "Réserver ce vol": the price, then the booking request (travellers, class, name, phone or email). On phones that card becomes a fixed bar at the bottom that opens the same form. Never a link to the airline's booking page. A closed airport shows its warning above everything.
 
+**Back-office home** (B-1; `components/backoffice/DashboardHome.tsx`):
+- A row of four figures first. Each is a label, a value in the body sans with proportional figures, and one line of context; the whole tile links to where the work is. No change arrows without a real earlier figure to compare with.
+- One meter: the brand colour fills a lighter step of the same colour, with a tick at the target and the target written under it.
+- Then what needs work, most important first, each panel with its count and "Tout voir" to the filtered list. An empty panel says what is fine ("Toutes les routes ont été vérifiées…"), it does not disappear.
+- Recent activity last. On phones each line stacks: time and route, then what happened.
+
 **Review queues** (RW-4): what waits for a decision sits in an amber box above the settled list, with the count and "importés ou repris, pas encore publics". Each row has *Valider* and *Rejeter*; the box has *Tout valider* / *Tout rejeter*, which turn into "… la sélection (n)" once rows are ticked. Rejected rows stay, faded, behind a "Afficher les rejetés" toggle.
 
 **Bulk actions** (RW-3; `components/backoffice/workspace/`):
