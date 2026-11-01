@@ -70,10 +70,11 @@ const airlines: AirlineSeed[] = [
   {
     previousCode: "CAA", code: "BU", slug: "caa", icao: "DBP", countryCode: "CD",
     name: "Compagnie Africaine d'Aviation (CAA)", website: "https://www.caacongo.com",
+    logo: "/logos/airlines/caa.svg",
   },
   {
     previousCode: "Air Congo", code: "4H", slug: "air-congo", countryCode: "CD",
-    name: "Air Congo", website: "https://www.air-congo.com",
+    name: "Air Congo", website: "https://www.air-congo.com", logo: "/logos/airlines/air-congo.jpg",
     bookingUrl: "https://www.air-congo.com/en/book/book-a-trip/book-a-flight",
   },
   {
@@ -126,9 +127,6 @@ async function main() {
       }
     }
   }
-
-  // Placeholder flights ("XX 291") from the hidden airline must not be shown.
-  await prisma.flightPattern.updateMany({ where: { airline: { code: "MG" } }, data: { active: false } });
 
   const airCongo = await prisma.airline.findUniqueOrThrow({ where: { code: "4H" } });
   const observedAt = new Date("2026-10-30T00:00:00Z");

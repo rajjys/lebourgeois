@@ -2,6 +2,7 @@
  * Flights on dates (docs/ROUTE-MODEL.md §5.1). Pure helpers, shared by the back office,
  * scripts and tests. The same rules are enforced by CHECK constraints in the schema v3 migration.
  */
+import { DateTime } from "luxon";
 import type { Weekday } from "./generated/prisma/client";
 
 /** Local time, 24 h: "07:45". */
@@ -47,3 +48,22 @@ export function datesOnWeekdays(from: string, to: string, days: readonly Weekday
  * around midnight; an unusual flight is corrected by hand.
  */
 export const arrivalDayOffset = (departure: string, arrival: string) => (arrival < departure ? 1 : 0);
+
+/**
+ * Block time in minutes from local clock times at each end (Kinshasa is UTC+1, Lubumbashi UTC+2):
+ * FIH 13:45 → FBM 17:15 is 2 h 30, not 3 h 30.
+ */
+export function durationMinutes(
+  f: { departureTime: string; arrivalTime: string; arrivalDayOffset: number },
+  originZone: string,
+  destinationZone: string,
+) {
+  const day = "2026-01-05"; // any date: neither zone has daylight saving time
+  const departure = DateTime.fromISO(`${day}T${f.departureTime}`, { zone: originZone });
+  const arrival = DateTime.fromISO(`${day}T${f.arrivalTime}`, { zone: destinationZone }).plus({ days: f.arrivalDayOffset });
+  return Math.round(arrival.diff(departure, "minutes").minutes);
+}
+
+/** 150 → "2 h 30", 45 → "45 min" */
+export const formatDuration = (minutes: number) =>
+  minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)} h${minutes % 60 ? ` ${String(minutes % 60).padStart(2, "0")}` : ""}`;

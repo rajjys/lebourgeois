@@ -187,7 +187,7 @@ On phones, page titles step down one size (`text-2xl md:text-3xl`).
   - Sizes: 16 px in controls, 20 px in navigation, 24 px for standalone icons.
   - Stroke width: 2.
   - Decorative icons get `aria-hidden`. An icon-only button needs an `aria-label`.
-- **No airline logos** until we have permission to use them. `AirlineMark` shows the IATA code and the airline's name instead.
+- **Airline logos** (owner, 2026-10-31): shown when the airline has one (`Airline.logo`, a file in `public/logos/airlines/` or an https link), in a white tile of fixed size so times line up; otherwise the IATA code in a grey tile. Logo files are framed tight to the drawing. Air Congo is shown with Air Congo's logo, never Ethiopian's.
 - **Motion:** at most 150–200 ms, used for state changes only (hover, open, close). `prefers-reduced-motion` turns all of it off (`app/globals.css`).
   - **Nothing moves on its own.** No auto-advancing carousels: the old home carousel moved every 3.5 s and was removed on 2026-10-31. On phones, a row of cards can be swiped; on larger screens it is a grid.
 - **Surfaces.** The home hero (`.hero-surface` in `app/globals.css`) is the one decorated surface: brand glows in two corners, a faint grain, rounded bottom corners. Inspired by yesim.app's gradient hero (owner's reference). Text on it uses `foreground` or `neutral-700`, which pass AA on every stop from brand-50 to brand-200 (`muted-foreground` fails on brand-200 at 3.85:1, so it isn't used there). Other sections stay white, with `muted` panels and bordered cards.
@@ -253,7 +253,7 @@ The same word and colour mean the same thing everywhere.
 | `FreshnessBadge` | How recently data was verified, coloured by age. |
 | `RouteTitle` | Origin, arrow icon, destination (the screen reader hears "à"), as a heading or inline. |
 | `AirlineMark` | IATA code chip and airline name. |
-| `DayStrip` | Operating days L M M J V S D. |
+| `DayStrip` | Operating days L M M J V S D: flying days tinted, other days faded, one day solid (`highlight`: the date searched or the next departure). Letters and the spoken sentence can be passed in for English. |
 | `Logo`, `LogoMark` | Brand (in `components/brand/`). |
 
 **Search and home** (2026-10-31)
@@ -320,6 +320,12 @@ The back office still works on a phone (simple menu), but it is not designed for
 - A sticky action bar: Enregistrer (disabled until something changes), Annuler, and Supprimer on the far right behind a confirmation.
 - Server errors appear at the top in a danger alert, in French, saying what to do instead (for example "changez plutôt son statut").
 
+**Search results** (P-13; `components/search/`):
+- **Card:** airline name on top; its logo in a tile on the left (the code when there is none); times large with airport codes under them; duration, a line and "Direct" or "1 escale" in the middle; price ("dès 244 $", "relevé le 30 oct.") and "Voir le vol" on the right. On phones, price and button move to a bar at the bottom. The whole card is one link target (the button's area is stretched over the card).
+- **What stays off the card:** flight number, aircraft, stop names (in a tooltip) and sources. They are on the flight page. The date is not repeated when the visitor chose one; otherwise "Prochain vol : dim. 1 nov.".
+- **Sort tabs:** four cells (two by two on phones), each with the value of its first result, so the trade-off shows before clicking. The selected tab is filled with the brand colour.
+- **Flight page:** the times block first, then facts (duration, number, aircraft) and flying days, other departures as chips. Beside it, "Réserver ce vol": the price, then the booking request (travellers, class, name, phone or email). On phones that card becomes a fixed bar at the bottom that opens the same form. Never a link to the airline's booking page. A closed airport shows its warning above everything.
+
 **Bulk actions** (RW-3; `components/backoffice/workspace/`):
 - **Preview before saving.** A bulk action shows a live preview as the form changes: what will be added, changed, already up to date, or skipped with the reason. The save button says how many records it writes ("Enregistrer (6 vols)") and stays disabled when there is nothing to write.
 - **Name the action after it ran.** The toast and the "Dernière action" line give one French sentence ("Horaire ET 60 08:00–11:30 (lundi, mercredi et samedi) du 2 nov. au 8 nov. : 3 vols ajoutés").
@@ -383,7 +389,7 @@ A native app is item **P-8** in the plan, and only if usage justifies it. The sy
 | 2026-10-30 | Tailwind default palette removed | Stops off-system colours. |
 | 2026-10-30 | Light theme only in v1 | Halves design and QA work. Phones are used outdoors in bright light. Roles make dark mode a later, contained change. |
 | 2026-10-30 | Back office: desktop-first, French | Agencies work on computers all day (owner). French is the working language of DRC agencies. |
-| 2026-10-30 | No airline logos | No permission yet; codes and names are neutral. |
+| 2026-10-30 | No airline logos | No permission yet; codes and names are neutral. Replaced 2026-10-31: logos shown (owner). |
 | 2026-10-31 | Navbar lists sections, not actions; search lives in the home hero | Owner: the search link and the search button led to the same page, and the request form isn't our main job. |
 | 2026-10-31 | Search asks for no date, one way only | Owner: show the next days with flights instead of "no flight on that date". |
 | 2026-10-31 | Nothing moves on its own | Owner: the carousel moved too fast and showed no dates. |

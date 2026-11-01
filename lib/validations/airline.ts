@@ -17,7 +17,15 @@ export const AirlineSchema = z.object({
     .refine((v) => v === "" || /^[a-z0-9]+(-[a-z0-9]+)*$/.test(v), "Minuscules, chiffres et tirets")
     .optional(),
   countryCode: z.string().trim().toUpperCase().regex(/^[A-Z]{2}$/, "Code pays à 2 lettres (CD)"),
-  logo: optionalUrl,
+  // A file served by the site (/logos/airlines/caa.svg) or a full https link.
+  logo: z
+    .string()
+    .trim()
+    .refine(
+      (v) => v === "" || /^\/logos\/[a-z0-9/_.-]+\.(svg|png|jpe?g|webp)$/i.test(v) || /^https?:\/\/[^\s/]+\.[^\s]+$/.test(v),
+      "Chemin comme /logos/airlines/caa.svg, ou lien complet commençant par https://",
+    )
+    .optional(),
   website: optionalUrl,
   bookingUrl: optionalUrl,
   status: z.enum(["OPERATING", "SUSPENDED", "CEASED"]).optional(),

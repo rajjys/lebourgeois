@@ -88,7 +88,7 @@ Decided by the owner on 2026-10-30: **all public URLs in French**. Google says "
 - There is no trailing slash, and every page has a single canonical URL.
 - Every page sits at most 3 clicks from the home page. Pages link to each other (map below).
 - **A page is never removed or redirected because service changed** (suspension, end of a route, closed airport). It stays online and says what changed. Redirects are only for URLs that change ([ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)).
-- **Until RW-5:** `/explore` is the search page and `/explore/[id]` (database ids, no airline, no readable slug) is `noindex`. Both are replaced by `/vols/...` with 301 redirects in RW-7. Route links in the code all go through `lib/links.ts`, so switching them is one change.
+- **Until RW-5:** `/explore` is the search page and `/explore/[id]` (one departure, keyed by its database id, server-rendered since P-13) is `noindex`. Both are replaced by `/vols/...` with 301 redirects in RW-7. Route links in the code all go through `lib/links.ts`, so switching them is one change.
 
 ### 3.1 Internal links (owner priority, 2026-10-31)
 
