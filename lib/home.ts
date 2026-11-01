@@ -29,6 +29,7 @@ export type UpcomingDeparture = {
 };
 
 export type TrackedRoute = {
+  tier: number;
   origin: Place;
   destination: Place;
   airlineCount: number;
@@ -98,6 +99,7 @@ export async function getHomeData(now = new Date()) {
     const { route } = f.routeAirline;
     const key = route.slug;
     const entry = routes.get(key) ?? {
+      tier: route.tier,
       origin: place(route.origin),
       destination: place(route.destination),
       airlineCount: 0,
@@ -118,10 +120,13 @@ export async function getHomeData(now = new Date()) {
 
   return {
     departures: departures.slice(0, 8),
-    // Busiest first: the default priority until routes get a manual tier (ROUTE-MODEL.md §10).
+    // Only priority-1 routes earn the home page (owner, 2026-11-01), busiest first, at most a 3 × 3 grid.
+    // The full list belongs to the routes hub /vols (RW-5).
     routes: [...routes.values()]
+      .filter((r) => r.tier === 1)
       .map(({ airlines, ...r }) => ({ ...r, airlineCount: airlines.size }))
-      .sort((a, b) => b.flightsNext7Days - a.flightsNext7Days || a.origin.city.localeCompare(b.origin.city)),
+      .sort((a, b) => b.flightsNext7Days - a.flightsNext7Days || a.origin.city.localeCompare(b.origin.city))
+      .slice(0, 9),
     airportAlerts: alerts.map(
       (a): AirportAlert => ({
         code: a.code,

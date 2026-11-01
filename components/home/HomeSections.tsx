@@ -85,7 +85,8 @@ function DepartureCard({ d }: { d: UpcomingDeparture }) {
       <p className="mt-1 text-sm text-foreground">
         <time>{d.departureTime}</time> – <time>{d.arrivalTime}</time>
       </p>
-      <AirlineMark code={d.airline.code} name={d.airline.name} logo={d.airline.logo} className="mt-3 items-start [&>span:last-child]:leading-6" />
+      {/* One line for the airline, so cards in a row keep the same shape; the logo says who it is. */}
+      <AirlineMark code={d.airline.code} name={d.airline.name} logo={d.airline.logo} className="mt-3 flex min-w-0 max-w-full [&>span:last-child]:truncate" />
       <div className="mt-auto pt-4">
         <div className="flex flex-wrap items-end justify-between gap-2 border-t pt-3">
           {d.price != null ? (
@@ -106,9 +107,11 @@ export function UpcomingDepartures({ departures }: { departures: UpcomingDepartu
   return (
     <section className="container mx-auto px-4 pt-12 sm:px-6 sm:pt-16 lg:px-8" aria-labelledby="home-departures">
       <SectionHeading id="home-departures" title={t("home.departures.title")} subtitle={t("home.departures.subtitle")} />
-      {/* Phones swipe a row (never moves on its own); larger screens get a grid.
+      {/* Phones swipe a row (never moves on its own); scroll-px keeps the first card off the screen edge
+          when it snaps. Larger screens get a grid of 2, 3 then 4 columns, with 6 cards until there is room
+          for two full rows of 4, so no row is left half empty.
           "relative" keeps the cards' sr-only text inside the scroller instead of widening the page. */}
-      <ul className="relative -mx-4 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
+      <ul className="relative -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3 xl:grid-cols-4 sm:[&>li:nth-child(n+7)]:hidden xl:[&>li:nth-child(n+7)]:block">
         {departures.map((d) => (
           <li key={d.id} className="w-[85%] shrink-0 snap-start sm:w-auto">
             <DepartureCard d={d} />
