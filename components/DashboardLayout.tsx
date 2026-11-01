@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
 import {
-  CalendarDays,
   ExternalLink,
   Inbox,
   LayoutDashboard,
@@ -37,7 +36,6 @@ const navGroups: NavGroup[] = [
     label: 'Données de vol',
     items: [
       { name: 'Routes', href: '/dashboard/routes', icon: Route },
-      { name: 'Programmes de vol', href: '/dashboard/flight-patterns', icon: CalendarDays },
       { name: 'Compagnies', href: '/dashboard/airlines', icon: Plane },
       { name: 'Aéroports', href: '/dashboard/airports', icon: MapPin },
     ],

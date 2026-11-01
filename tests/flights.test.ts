@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { arrivalDayOffset, datesOnWeekdays, normalizeFlightNumber, weekdayOf } from "../lib/flights";
+import { arrivalDayOffset, datesOnWeekdays, durationMinutes, formatDuration, normalizeFlightNumber, weekdayOf } from "../lib/flights";
 import { formatFlightNumber } from "../lib/format";
 import { changedFields } from "../lib/changeLog";
 import { codeInText, routeSlug } from "../lib/routes";
@@ -71,4 +71,16 @@ test("route slugs and airport codes in free text", () => {
   assert.equal(routeSlug("kinshasa", "mbuji-mayi"), "kinshasa-mbuji-mayi");
   assert.equal(codeInText("Beni (BNC) · Aéroport de Beni"), "BNC");
   assert.equal(codeInText("Beni"), undefined);
+});
+
+test("duration counts the time difference between Kinshasa and Lubumbashi", () => {
+  const KIN = "Africa/Kinshasa";
+  const LUB = "Africa/Lubumbashi";
+  // CAA's timetable: BU1611 FIH 13:45 → FBM 17:15, BU1612 FBM 10:00 → FIH 11:30. Both are 2 h 30.
+  assert.equal(durationMinutes({ departureTime: "13:45", arrivalTime: "17:15", arrivalDayOffset: 0 }, KIN, LUB), 150);
+  assert.equal(durationMinutes({ departureTime: "10:00", arrivalTime: "11:30", arrivalDayOffset: 0 }, LUB, KIN), 150);
+  assert.equal(durationMinutes({ departureTime: "23:30", arrivalTime: "00:40", arrivalDayOffset: 1 }, KIN, KIN), 70);
+  assert.equal(formatDuration(150), "2 h 30");
+  assert.equal(formatDuration(120), "2 h");
+  assert.equal(formatDuration(45), "45 min");
 });
