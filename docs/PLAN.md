@@ -99,7 +99,7 @@ Snapshot on **2026-10-31**:
 | Data model | ✅ Schema v3, route-centric, in production (**RW-1**, PR #8, 2026-10-31): routes with status and priority, airlines on routes, flights on dates, change history ([ROUTE-MODEL.md](ROUTE-MODEL.md)). |
 | Data | ⚠️ **Production:** reference data loaded by the owner on 2026-10-31 (checked on the live API: 17 airports with correct timezones, Goma and Bunia closed, Congo Airways suspended); the owner ran the seed again after RW-1, which adds the 34 priority routes. The old data (30 schedules expired on 2026-02-28, 30 prices copied from them, 22 empty airline records, 8 empty routes) was deleted on 2026-10-31 with the owner's OK, after a backup. The public site shows flights once they are entered and published in the route workspace. **Local only:** preview data typed in from CAA's 20 Oct 2026 timetable and Air Congo's schedule PDF: 832 flights on dates (20 Oct → 29 Nov), published on 46 airline-on-route records; the 5 Air Congo prices are approved locally to preview prices (still pending in production). |
 | Brand and design | ✅ **Clerikaa** in code (still served from `lebourgeois.cd`). Design system v1 merged (PR #5): tokens, font, logo, components, `/dashboard/design`. |
-| Public site | 🟡 Home rebuilt and rendered on the server (P-9, PR #6). Navbar search button, contact page and form fixes live (P-12, PR #7). Search results redesigned and read from dated flights, with a server-rendered flight page (P-13, in review). The search form and the request page are still rendered in the browser until RW-5. |
+| Public site | 🟡 Home rebuilt and rendered on the server (P-9, PR #6). Navbar search button, contact page and form fixes live (P-12, PR #7). Search results redesigned and read from dated flights, with a server-rendered flight page (P-13, PR #11). The search form and the request page are still rendered in the browser until RW-5. |
 | Leads | 🟡 Request form and contact form save to the database; both are visible in the back office (Demandes, Messages). Email alerts are built but on hold. |
 | Environments | ✅ Separate local dev database. Production migrations run automatically on deploy. |
 
@@ -157,7 +157,7 @@ Verified on 2026-10-30.
 | News and official notices (RVA, ACP, actualite.cd) | Airport and airline status | ✅ | As published | Manual status updates |
 
 #### Work items
-- 🟡 **C-1:** Fast fare entry, in the route workspace (**RW-4**, in review): amount, fare name and source in one row, Enter saves, observed today by default.
+- ✅ **C-1:** Fast fare entry, in the route workspace (**RW-4**, PR #12): amount, fare name and source in one row, Enter saves, observed today by default.
 - ⏸ **C-2:** CAA timetable importer (paused: manual first). If resumed, it proposes flights into the route workspace (ROUTE-MODEL §6.3). Steps:
   - a daily job fetches `horaires.html` and follows it to the current PDF
   - it skips the file if unchanged (hash check)
@@ -211,7 +211,7 @@ Verified on 2026-10-30.
 - ⬜ **S-2:** Source snapshot table (with C-4).
 - ⬜ **S-3:** Remove the old `FlightPattern.price` column (part of **RW-7**).
 - 🟡 **S-4:** Flight numbers stored as written (`BU1611`, `ET60`; Air Congo sells under ET numbers), shown `BU 1611`. Storage rules and database checks done in **RW-1**: one departure per route-airline, date and number, and per date and time (Air Congo's timetable has no numbers, so the number can be empty). Typed and shown in the back office since RW-3; public display with RW-5.
-- 🟡 **S-5:** Change history (`ChangeLog`, **RW-1**): every back-office write to airports, airlines and schedules is recorded with who, when and the before/after values, in the same transaction. Since RW-4 (in review), each route page has a history panel: every workspace action with its detail, undone ones marked, plus single edits. The back-office-wide log is B-5.
+- 🟡 **S-5:** Change history (`ChangeLog`, **RW-1**): every back-office write to airports, airlines and schedules is recorded with who, when and the before/after values, in the same transaction. Since RW-4 (PR #12), each route page has a history panel: every workspace action with its detail, undone ones marked, plus single edits. The back-office-wide log is B-5.
 - ⬜ **S-6:** Airport coordinates → distances and flight durations.
 - ⬜ **S-7:** Baggage allowance and fare rules per airline.
 - ⬜ **S-8:** Data scoping per agency (needed for licensing, Business step 3).
@@ -230,7 +230,7 @@ Verified on 2026-10-30.
 - **There is no review screen yet.** 35 fares are waiting: 30 old prices plus 5 Air Congo fares.
 
 **Work items**
-- 🟡 **R-1:** Review queue, inside the route workspace. Pending fares: **RW-4** (in review), per airline, validate or reject one, a selection or all; the routes board counts them and filters "Prix à valider". Imported flights as "ghost" proposals come with the importers (ROUTE-MODEL §6.3).
+- 🟡 **R-1:** Review queue, inside the route workspace. Pending fares: **RW-4** (PR #12), per airline, validate or reject one, a selection or all; the routes board counts them and filters "Prix à valider". Imported flights as "ghost" proposals come with the importers (ROUTE-MODEL §6.3).
 - ⬜ **R-2:** Automatic checks before review:
   - departure + block time + timezone difference must equal arrival (tested on CAA's timetable: 79 of 82 rows reconcile)
   - duplicates
@@ -293,7 +293,7 @@ Verified on 2026-10-30.
   - follow-up (RW-1 pull request): the owner's WhatsApp number on `/contact`, next to the email, and in the message shown when sending fails
   - follow-up (RW-2 pull request): "Accueil" in the navbar, before À propos and Contact (owner)
   - follow-up (RW-3 pull request): creating a route that already exists now says so as soon as both airports are picked, with an "Ouvrir" link to each existing direction (owner)
-- 🟡 **P-13:** Search results v2 (owner, 2026-10-31, after comparing with Skyscanner; in review):
+- ✅ **P-13:** Search results v2 (owner, 2026-10-31, after comparing with Skyscanner; PR #11, merged 2026-11-01):
   - results come from dated flights (schema v3), grouped as **services**: one airline's flight with the same number, times and stops. One card per service, not per date.
   - card: airline name on top, its logo on the left (its code when we have no logo), departure and arrival times with airport codes, duration, direct or stops in the middle, price and "Voir le vol" on the right; price and button at the bottom on phones. Flight number and aircraft move to the flight page.
   - the week view is redesigned (flying days tinted, the searched day or next departure solid) and stays on every card; "Prochain vol : …" shows only when no date was chosen.
@@ -430,7 +430,7 @@ The stages say *what* each part does. The milestones say *in which order* we bui
 | M0 | **Secure** | security fixes | Admin and customer data protected in production, verified by tests. | ✅ done 2026-10-30 (PR #1) |
 | M1 | **Data foundation** | S-1 | Production runs schema v2 with correct timezones, airline codes and statuses. | ✅ done 2026-10-31 (schema PR #3; reference data loaded by the owner, checked on the live API) |
 | M2 | **Design system and brand** | P-2, rebrand in code, P-9, P-12 | Tokens, components and `/dashboard/design` live; contrast checked in the build; Clerikaa name and logo everywhere. | ✅ done 2026-10-31 (PR #5, #6, #7) |
-| M3 | **Route workspace** | RW-1 → RW-4 ([ROUTE-MODEL.md](ROUTE-MODEL.md#10-phased-plan)), B-1 | The owner manages at least 10 P1 routes in the back office; the Air Congo example takes under 2 minutes; the daily refresh takes under 15 minutes. | 🟡 RW-1 ✅ (PR #8), RW-2 ✅ (PR #9), RW-3 ✅ (PR #10); RW-4 (prices, notes, history) in review |
+| M3 | **Route workspace** | RW-1 → RW-4 ([ROUTE-MODEL.md](ROUTE-MODEL.md#10-phased-plan)), B-1 | The owner manages at least 10 P1 routes in the back office; the Air Congo example takes under 2 minutes; the daily refresh takes under 15 minutes. | 🟡 RW-1 → RW-4 ✅ (PR #8, #9, #10, #12); B-1 (back-office home) in progress; then the owner's 10 P1 routes |
 | M4 | **Findable** | RW-5, P-5, P-10, E-1 → E-3, B-2, B-3, F-1 → F-7, O-4 | P1 routes live with their airline, airport and status pages, server-rendered, passing the page checklist, indexed in Search Console; good mobile Core Web Vitals. | ⬜ |
 | M5 | **Airline partnerships** | C-7, B-4 | At least one airline grants written permission or sends its timetable. | ⬜ |
 | M6 | **Trusted and fresh** | R-3, R-4, S-2/C-4, F-8, RW-6, RW-7, E-5, B-5, P-11, O-2, O-3 | Freshness targets met for 4 weeks in a row. | ⬜ |
@@ -488,6 +488,9 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | 2026-10-31 | Keep the Kinshasa – Goma and Bunia – Beni route pages, with the airport banner. | Owner: those airports can reopen any time. |
 | 2026-10-31 | Public contact address: the owner's email until a `clerikaa.com` mailbox exists. WhatsApp: the owner's number, +243 975 092 470. | Owner. |
 | 2026-11-01 | **Prices in the workspace** (RW-4): a price typed by the operator is validated at once; imported or copied prices wait in "À valider". A real price that went out of date is never deleted, it is history; delete is for typing mistakes. Price and note actions are batches, so "Défaire" reverts them too. | The operator is the reviewer; history feeds the price chart (P-7) and archive (F-8). |
+| 2026-10-31 | **Booking stays with Clerikaa.** "Réserver ce vol" sends a booking request to our team; the site never sends visitors to an airline's booking page. A "Réserver sur caacongo.com" button tried in P-13 was removed before merging. | Owner: "we are not here to promote the airline". The request is the product's lead. |
+| 2026-10-31 | **Airline logos are shown** (cards, flight page, home), from files the site serves. Air Congo appears as Air Congo, not as Ethiopian (whose numbers it sells under). Replaces "no logos until permission" (2026-10-30). | Owner. Logos make the list faster to scan. |
+| 2026-10-31 | **Search results v2** (P-13): one card per service; number and aircraft on the flight page only; the date is not repeated when the visitor chose one; four sort tabs (Recommandé, Moins cher, Plus rapide, Plus proche). "Programmes de vol" retired from the back office. | Owner, comparing with Skyscanner: clearer to read. The route workspace replaced the schedules screen, so keeping both invited typing the same data twice. |
 | 2026-10-31 | **Undo is a stack per airline on a route** (RW-3): every workspace action is one batch; "Défaire" reverts the latest one not yet undone, and can be repeated. No redo. | Undoing an older action while newer ones touched the same flights could not be explained or trusted. "Défaire" because "Annuler" already means cancelling flights. |
 | 2026-10-31 | **Delete the old production data** (owner): expired schedules, the prices copied from them, and the route records left empty. Priority routes, current fares, requests and messages stay. Replaces "keep expired patterns as hints" (ROUTE-MODEL §9). | Owner: the database is full of old data. A backup file and the change log keep what was deleted. |
 | 2026-10-31 | **Schema v3 details** (RW-1): a flight's number may be empty (Air Congo's timetable publishes none), so flights are unique per route-airline and date both by number and by departure time. Fares keep only their link to the airline-on-route; their own airline and city columns were dropped to avoid two sources of truth. The seed now only adds missing reference rows. | ROUTE-MODEL §4 said "unique by number", which cannot hold unnumbered flights. A seed that overwrote rows would undo edits made in the back office since P-12. |
@@ -498,7 +501,6 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 
 | What | Who | Blocks |
 |---|---|---|
-| Review and merge RW-4 (prices, notes, history). Independent of P-13 (PR #11); whichever merges second is rebased on the other. | Owner | B-1 and RW-5 |
 | Review the 5 Air Congo prices in production (Routes → filter "Prix à valider"). They are the "From USD" fares from air-congo.com; Kinshasa as origin is an assumption. | Owner | Prices shown publicly |
 | Training crawlers: allow or block ([SEO-AEO-GEO.md §8](SEO-AEO-GEO.md#8-ai-engines-specifically)) | Owner | F-6 |
 | Buy `clerikaa.com` (available on 2026-10-30) | Owner | Rebrand track, L-4 |
