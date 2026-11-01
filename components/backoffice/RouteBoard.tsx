@@ -18,11 +18,11 @@ import { cn } from "@/lib/utils/cn-utils";
 const day = (iso: string) => new Date(`${iso}T00:00:00Z`);
 const normalize = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
-type Filter = { text: string; status: string; tier: string; attention: string };
+export type Filter = { text: string; status: string; tier: string; attention: string };
 
 /** The network board: every route, what needs work first (docs/ROUTE-MODEL.md §6.1). */
-export function RouteBoard({ routes }: { routes: BoardRoute[] }) {
-  const [filter, setFilter] = useState<Filter>({ text: "", status: "active", tier: "all", attention: "all" });
+export function RouteBoard({ routes, initial }: { routes: BoardRoute[]; initial?: Partial<Filter> }) {
+  const [filter, setFilter] = useState<Filter>({ text: "", status: "active", tier: "all", attention: "all", ...initial });
   const set = (patch: Partial<Filter>) => setFilter((f) => ({ ...f, ...patch }));
 
   const shown = useMemo(() => {

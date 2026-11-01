@@ -4,6 +4,7 @@
  * Pure functions: the board, the route page and the tests share them.
  */
 import { DateTime } from "luxon";
+import { addDays } from "./schedule";
 
 /** Owner decision 2026-10-31 (ROUTE-MODEL §11, question 5): data unchecked for more than 7 days must be re-verified. */
 export const FRESH_DAYS = 7;
@@ -72,3 +73,30 @@ export function attentionRank(route: { status: string; freshness: Freshness }) {
 export function byAttention<T extends { status: string; freshness: Freshness; tier: number; slug: string }>(a: T, b: T) {
   return attentionRank(a) - attentionRank(b) || a.tier - b.tier || a.slug.localeCompare(b.slug);
 }
+
+type UpToDateFields = {
+  status: string;
+  airlines: { status: string; isPublished: boolean }[];
+  freshness: Freshness;
+  knownUntil: string | null;
+};
+
+/** Flights should be known at least this far ahead; past it, a route is listed under "Horaires à prolonger". */
+export const KNOWN_AHEAD_DAYS = 14;
+/** Milestone M3: the owner keeps at least this many priority-1 routes up to date in the back office. */
+export const P1_TARGET = 10;
+
+/**
+ * A P1 route is "à jour" when an active airline on it is published, every active airline was
+ * checked within 7 days, and flights are known for the coming week.
+ */
+export function isUpToDate(r: UpToDateFields, today: string) {
+  return (
+    r.status !== "ARCHIVED" &&
+    r.airlines.some((a) => a.status === "ACTIVE" && a.isPublished) &&
+    r.freshness.state === "fresh" &&
+    !!r.knownUntil &&
+    r.knownUntil >= addDays(today, FRESH_DAYS - 1)
+  );
+}
+

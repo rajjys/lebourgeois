@@ -56,3 +56,16 @@ test("the board lists what needs work first, then by priority", () => {
   ];
   assert.deepEqual(rows.sort(byAttention).map((r) => r.slug), ["old-p1", "never-p3", "stale-p2", "empty-p1", "fresh-p1", "archived"]);
 });
+
+test("a P1 route is up to date with a published airline, checked within 7 days, flights known for the week", async () => {
+  const { isUpToDate } = await import("../lib/routeStatus");
+  const today = "2026-11-01";
+  const fresh: Freshness = { state: "fresh", days: 1, verifiedAt: new Date("2026-10-31T12:00:00Z") };
+  const route = { status: "DRAFT", airlines: [{ status: "ACTIVE", isPublished: true }], freshness: fresh, knownUntil: "2026-11-29" };
+  assert.equal(isUpToDate(route, today), true);
+  assert.equal(isUpToDate({ ...route, airlines: [{ status: "ACTIVE", isPublished: false }] }, today), false); // not public
+  assert.equal(isUpToDate({ ...route, freshness: { state: "stale", days: 9, verifiedAt: new Date() } }, today), false);
+  assert.equal(isUpToDate({ ...route, knownUntil: "2026-11-06" }, today), false); // flights stop before the week ends
+  assert.equal(isUpToDate({ ...route, knownUntil: "2026-11-07" }, today), true);
+  assert.equal(isUpToDate({ ...route, status: "ARCHIVED" }, today), false);
+});
