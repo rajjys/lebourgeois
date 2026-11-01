@@ -26,6 +26,7 @@ import { RouteFreshnessBadge, ROUTE_AIRLINE_STATUS } from "@/components/backoffi
 import { ScheduleCalendar } from "./ScheduleCalendar";
 import { ApplyScheduleDialog, CancelFlightsDialog, CopyWeekDialog } from "./BulkDialogs";
 import { DayEditorDialog } from "./DayEditorDialog";
+import { FarePanel, NoteEditor } from "./FarePanel";
 import type { WorkspaceAirline, WorkspaceData } from "@/lib/routeBoard";
 import { addDays, mondayOf } from "@/lib/schedule";
 import { formatDateShort, formatDayMonth, formatFlightNumber } from "@/lib/format";
@@ -331,6 +332,11 @@ export function RouteWorkspace({ routeId, workspace, reverseSlug }: { routeId: s
               setOpen("copy");
             }}
           />
+
+          <div className="space-y-6 border-t pt-4">
+            <FarePanel key={selected.id} airline={selected} />
+            <NoteEditor key={`${selected.id}-${selected.note ?? ""}`} airline={selected} />
+          </div>
 
           <div className="border-t pt-4">
             <AirlineSettings airline={selected} />

@@ -115,7 +115,11 @@ export const BatchAction = {
   CANCEL_FLIGHTS: 'CANCEL_FLIGHTS',
   EDIT_DAY: 'EDIT_DAY',
   VERIFY: 'VERIFY',
-  UNDO: 'UNDO'
+  UNDO: 'UNDO',
+  FARE_ADD: 'FARE_ADD',
+  FARE_REVIEW: 'FARE_REVIEW',
+  FARE_DELETE: 'FARE_DELETE',
+  NOTE_EDIT: 'NOTE_EDIT'
 } as const
 
 export type BatchAction = (typeof BatchAction)[keyof typeof BatchAction]

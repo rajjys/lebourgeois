@@ -212,6 +212,10 @@ enum BatchAction {
   EDIT_DAY        // flights of one date edited by hand
   VERIFY          // "Tout est vérifié"
   UNDO            // reverts an earlier batch; not itself undoable
+  FARE_ADD        // "+ Prix observé"
+  FARE_REVIEW     // pending prices validated or rejected
+  FARE_DELETE     // a price entered by mistake
+  NOTE_EDIT       // the airline's public note on this route
 }
 
 // One action in the route workspace. Its ChangeLog rows share its id, so it can be undone as a whole

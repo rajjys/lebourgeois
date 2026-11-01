@@ -84,3 +84,32 @@ export const RouteAirlineSettingsSchema = z.object({
 export const AddAirlineSchema = z.object({ airlineId: z.string().min(1, "Choisissez une compagnie") });
 
 export type ScheduleForm = z.input<typeof ScheduleSchema>;
+
+const optionalLine = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max, `${max} caractères maximum`)
+    .nullish()
+    .transform((v) => v || null);
+
+/** "+ Prix observé": amount, fare name and source up front; the rest is optional. */
+export const FareSchema = z.object({
+  amount: z.coerce.number({ invalid_type_error: "Montant en dollars, par exemple 244" }).positive("Montant en dollars, par exemple 244").max(5000, "Montant trop élevé pour un vol intérieur"),
+  fareName: optionalLine(60),
+  sourceUrl,
+  observedAt: day.nullish().transform((v) => v ?? null),
+  travelDate: day.nullish().transform((v) => v ?? null),
+  flightNumber,
+  roundTrip: z.boolean().default(false),
+  note: optionalLine(300),
+});
+
+export const FareReviewSchema = z.object({
+  ids: z.array(z.string().min(1)).min(1, "Choisissez au moins un prix").max(100),
+  decision: z.enum(["APPROVED", "REJECTED"]),
+});
+
+export const FareDeleteSchema = z.object({ id: z.string().min(1) });
+
+export const NoteSchema = z.object({ note: optionalLine(1000) });

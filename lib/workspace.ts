@@ -5,7 +5,7 @@ import type { BatchAction, ChangeAction, Flight, Prisma, Weekday } from "@/lib/g
 import { changedFields, snapshot } from "@/lib/changeLog";
 import { FRESH_DAYS, dayOf, localNow } from "@/lib/routeStatus";
 import { addDays, mondayOf, pickFields, planCancel, planCopyWeek, planDay, planSchedule, type DayFlight, type FlightFields, type StoredFlight } from "@/lib/schedule";
-import { formatDayMonth, formatFlightNumber, formatWeekdays } from "@/lib/format";
+import { formatDayMonth, formatFlightNumber, formatPrice, formatWeekdays } from "@/lib/format";
 
 /**
  * Route workspace actions (docs/ROUTE-MODEL.md §6.2). Each one runs in a transaction, as one
@@ -238,7 +238,96 @@ export async function verifyAll(routeAirlineId: string, input: { sourceUrl: stri
   }, TX);
 }
 
-const DATE_FIELDS = new Set(["date", "verifiedAt", "createdAt", "updatedAt"]);
+// Prices (RW-4). Operator entries are validated at once; imports wait in "À valider".
+
+const fareLabel = (f: { amount: unknown; fareName?: string | null; cabin?: string | null }) =>
+  `${formatPrice(String(f.amount))}${f.fareName ?? f.cabin ? ` (${f.fareName ?? f.cabin})` : ""}`;
+
+/** "+ Prix observé": amount, fare name and source; observed today unless said otherwise. */
+export async function addFare(
+  routeAirlineId: string,
+  input: {
+    amount: number;
+    fareName: string | null;
+    sourceUrl: string | null;
+    observedAt: string | null;
+    travelDate: string | null;
+    flightNumber: string | null;
+    roundTrip: boolean;
+    note: string | null;
+  },
+  actor: string,
+) {
+  return prisma.$transaction(async (tx) => {
+    const ra = await loadRouteAirline(tx, routeAirlineId);
+    const observedAt = input.observedAt ? toDate(input.observedAt) : new Date();
+    const data: Prisma.FareObservationUncheckedCreateInput = {
+      id: randomUUID(),
+      routeAirlineId,
+      amount: input.amount,
+      currency: "USD",
+      kind: input.travelDate ? "QUOTE" : "FROM_PRICE",
+      tripType: input.roundTrip ? "ROUND_TRIP" : "ONE_WAY",
+      fareName: input.fareName,
+      flightNumber: input.flightNumber,
+      travelDate: input.travelDate ? toDate(input.travelDate) : null,
+      observedAt,
+      source: "MANUAL",
+      sourceUrl: input.sourceUrl,
+      note: input.note,
+      reviewStatus: "APPROVED",
+    };
+    const summary = `Prix ajouté : ${fareLabel(data)}${input.travelDate ? ` pour le vol du ${formatDayMonth(toDate(input.travelDate))}` : ""}, observé le ${formatDayMonth(observedAt)}`;
+    const batch = await openBatch(tx, { actor, ra, action: "FARE_ADD", summary });
+    const row = await tx.fareObservation.create({ data });
+    batch.log("FareObservation", row.id, "CREATE", summary, row);
+    return { batch: await batch.close() };
+  }, TX);
+}
+
+/** Validates or rejects prices waiting for review (imports, or the ones copied from the old schedules). */
+export async function reviewFares(routeAirlineId: string, input: { ids: string[]; decision: "APPROVED" | "REJECTED" }, actor: string) {
+  return prisma.$transaction(async (tx) => {
+    const ra = await loadRouteAirline(tx, routeAirlineId);
+    const rows = await tx.fareObservation.findMany({ where: { id: { in: input.ids }, routeAirlineId, reviewStatus: "PENDING" } });
+    if (rows.length === 0) throw new WorkspaceError("Aucun prix à valider parmi ceux-là.");
+    const verb = input.decision === "APPROVED" ? "validé" : "rejeté";
+    const summary = rows.length === 1 ? `Prix ${verb} : ${fareLabel(rows[0])}` : `${rows.length} prix ${verb}s`;
+    const batch = await openBatch(tx, { actor, ra, action: "FARE_REVIEW", summary });
+    await tx.fareObservation.updateMany({ where: { id: { in: rows.map((r) => r.id) } }, data: { reviewStatus: input.decision } });
+    for (const r of rows) batch.log("FareObservation", r.id, "UPDATE", `Prix ${verb} : ${fareLabel(r)}`, { reviewStatus: ["PENDING", input.decision] });
+    return { batch: await batch.close() };
+  }, TX);
+}
+
+/** A price entered by mistake. A real price that went out of date is kept: it is history. */
+export async function deleteFare(routeAirlineId: string, fareId: string, actor: string) {
+  return prisma.$transaction(async (tx) => {
+    const ra = await loadRouteAirline(tx, routeAirlineId);
+    const row = await tx.fareObservation.findFirst({ where: { id: fareId, routeAirlineId } });
+    if (!row) throw new WorkspaceError("Prix introuvable sur cette compagnie.");
+    const summary = `Prix supprimé : ${fareLabel(row)}, observé le ${formatDayMonth(row.observedAt)}`;
+    const batch = await openBatch(tx, { actor, ra, action: "FARE_DELETE", summary });
+    await tx.fareObservation.delete({ where: { id: row.id } });
+    batch.log("FareObservation", row.id, "DELETE", summary, row);
+    return { batch: await batch.close() };
+  }, TX);
+}
+
+/** The airline's public note on this route: baggage, fare names, how to book. */
+export async function editNote(routeAirlineId: string, input: { note: string | null }, actor: string) {
+  return prisma.$transaction(async (tx) => {
+    const ra = await loadRouteAirline(tx, routeAirlineId);
+    if ((ra.note ?? null) === input.note) return { batch: null };
+    const summary = input.note ? `Note de ${ra.airline.code} sur cette route modifiée` : `Note de ${ra.airline.code} sur cette route effacée`;
+    const batch = await openBatch(tx, { actor, ra, action: "NOTE_EDIT", summary });
+    await tx.routeAirline.update({ where: { id: ra.id }, data: { note: input.note } });
+    batch.log("RouteAirline", ra.id, "UPDATE", summary, { note: [ra.note, input.note] });
+    return { batch: await batch.close() };
+  }, TX);
+}
+
+const DATE_FIELDS = new Set(["date", "verifiedAt", "createdAt", "updatedAt", "observedAt", "travelDate"]);
 const revive = (key: string, value: unknown) => (DATE_FIELDS.has(key) && typeof value === "string" ? new Date(value) : value);
 
 /** Undoes the latest batch of this airline on this route that is not undone yet. */
@@ -251,7 +340,8 @@ export async function undoLatest(routeAirlineId: string, actor: string) {
     });
     if (!target) throw new WorkspaceError("Rien à annuler.");
     const entries = await tx.changeLog.findMany({ where: { batchId: target.id } });
-    const undo = await openBatch(tx, { actor, ra, action: "UNDO", summary: `Annulé : ${target.summary}` });
+    // "Défait", not "Annulé": "annuler" already means cancelling flights in this workspace.
+    const undo = await openBatch(tx, { actor, ra, action: "UNDO", summary: `Défait : ${target.summary}` });
 
     // Reverse order of kinds: remove what was added, restore what was changed, recreate what was deleted.
     const added = await tx.flight.findMany({
@@ -259,6 +349,12 @@ export async function undoLatest(routeAirlineId: string, actor: string) {
     });
     await tx.flight.deleteMany({ where: { id: { in: added.map((r) => r.id) } } });
     for (const row of added) undo.log("Flight", row.id, "DELETE", `${flightLabel(row)} retiré (annulation)`, row);
+    for (const e of entries.filter((e) => e.entity === "FareObservation" && e.action === "CREATE")) {
+      const row = await tx.fareObservation.findUnique({ where: { id: e.entityId } });
+      if (!row) continue;
+      await tx.fareObservation.delete({ where: { id: row.id } });
+      undo.log("FareObservation", row.id, "DELETE", `Prix retiré : ${fareLabel(row)} (annulation)`, row);
+    }
     for (const e of entries.filter((e) => e.action === "UPDATE")) {
       const changes = (e.changes ?? {}) as Record<string, [unknown, unknown]>;
       const data = Object.fromEntries(Object.entries(changes).map(([key, [before]]) => [key, revive(key, before)]));
@@ -269,13 +365,24 @@ export async function undoLatest(routeAirlineId: string, actor: string) {
       } else if (e.entity === "RouteAirline") {
         const before = await tx.routeAirline.findUniqueOrThrow({ where: { id: e.entityId } });
         const after = await tx.routeAirline.update({ where: { id: e.entityId }, data });
-        undo.log("RouteAirline", e.entityId, "UPDATE", `${ra.airline.code} : vérification rétablie`, changedFields(before, after));
+        const what = "note" in changes ? "note rétablie" : "vérification rétablie";
+        undo.log("RouteAirline", e.entityId, "UPDATE", `${ra.airline.code} : ${what}`, changedFields(before, after));
+      } else if (e.entity === "FareObservation") {
+        const before = await tx.fareObservation.findUnique({ where: { id: e.entityId } });
+        if (!before) continue;
+        const after = await tx.fareObservation.update({ where: { id: e.entityId }, data });
+        undo.log("FareObservation", e.entityId, "UPDATE", `Prix remis à valider : ${fareLabel(after)}`, changedFields(before, after));
       }
     }
-    for (const e of entries.filter((e) => e.entity === "Flight" && e.action === "DELETE")) {
+    for (const e of entries.filter((e) => e.action === "DELETE")) {
       const record = Object.fromEntries(Object.entries((e.changes ?? {}) as Record<string, unknown>).map(([k, v]) => [k, revive(k, v)]));
-      const row = await tx.flight.create({ data: record as Prisma.FlightUncheckedCreateInput });
-      undo.log("Flight", row.id, "CREATE", `${flightLabel(row)} rétabli (annulation)`, row);
+      if (e.entity === "Flight") {
+        const row = await tx.flight.create({ data: record as Prisma.FlightUncheckedCreateInput });
+        undo.log("Flight", row.id, "CREATE", `${flightLabel(row)} rétabli (annulation)`, row);
+      } else if (e.entity === "FareObservation") {
+        const row = await tx.fareObservation.create({ data: record as Prisma.FareObservationUncheckedCreateInput });
+        undo.log("FareObservation", row.id, "CREATE", `Prix rétabli : ${fareLabel(row)} (annulation)`, row);
+      }
     }
     await tx.changeBatch.update({ where: { id: target.id }, data: { undoneAt: new Date(), undoneBy: actor } });
     return { undone: target.summary, batch: await undo.close() };

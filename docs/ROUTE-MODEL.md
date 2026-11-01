@@ -334,6 +334,16 @@ Kinshasa → Lubumbashi       1   BU · ET        mar. 3 nov.    22 nov.        
 - **Undo:** every action is one `ChangeBatch`, with a `ChangeLog` row per flight touched. *Défaire la dernière action* reverts the latest batch for that airline on the route, and can be repeated, like a stack. An undo is not itself undoable.
   - "Défaire" is used rather than "Annuler", which already means cancelling flights.
 
+**Built in RW-4:**
+- **Prices:** each airline tab has *Prix observés*.
+  - **Entering:** *+ Prix observé* opens one row: amount, fare name, source link. Enter saves. The form stays open with the source kept for the next price.
+  - **Optional details:** the date seen (today by default), a flight date (which makes it a price for that flight rather than "à partir de"), the flight number, round trip, and an internal note.
+  - **Review:** prices typed here are validated at once. Imported or copied ones wait in an *À valider* box (validate or reject one, a selection, or all). The routes board counts them and filters on them.
+  - **Deleting:** for typing mistakes only. Rejected prices are hidden behind a toggle.
+- **Public note:** each airline on the route has a public note (*Note publique*) for baggage, fare names and conditions. It is shown on its flight pages, with no link to the airline.
+- **History:** below the workspace. Each action shows with its time, airline, operator and one line per record it touched; undone ones are struck through and marked "défait". Single edits made outside the workspace are listed too.
+- **Undo:** price and note actions are batches like flights (`FARE_ADD`, `FARE_REVIEW`, `FARE_DELETE`, `NOTE_EDIT`), so *Défaire* reverts them. Undone actions read "Défait : …".
+
 **Owner's example, step by step (exit test for RW-3):**
 1. Open Kinshasa → Lubumbashi and select the Air Congo tab.
 2. Choose *Appliquer un horaire*: ET 60, Mon / Wed / Sat, 08:00 → 11:30, 2–8 Nov. Preview, then save.
@@ -450,8 +460,8 @@ Each phase is one PR, off `main`, never stacked. Each has an exit test. The IDs 
 |---|---|---|---|---|
 | **RW-1** | Schema v3 | `RouteAirline`, `Flight`, `ChangeLog`; route status, tier and notes; fare and request links; migration of existing data (§9); unit tests for the constraints | The dev database migrates cleanly. Duplicate flights are rejected. Existing patterns and fares are attached to the right route and airline. | ✅ PR #8 |
 | **RW-2** | Network board | `/dashboard/routes`: list, filters, computed next flight, "known until" and freshness; create a route (pick two airports, slug generated) | All draft and published routes are listed with correct computed values. A new route can be created in under 30 seconds. | ✅ PR #9 |
-| **RW-3** | Route workspace: schedules | Calendar (8 weeks × 7 days), click to edit, *Appliquer un horaire* with preview, *Copier une semaine*, *Annuler*, *Tout est vérifié*, undo by batch, both directions | The owner's example (§6.2) is done in under 2 minutes with no repeated typing. Undo restores the previous state. | ✅ PR #10 |
-| **RW-4** | Route workspace: prices and notes | *+ Prix observé* (3 fields), price list per airline, editorial notes, history panel; operator entries auto-approved; pending imports shown separately | A price change is logged in under 20 seconds. The 35 pending fares can be reviewed from the workspace. | ⬜ |
+| **RW-3** | Route workspace: schedules | Calendar (8 weeks × 7 days), click to edit, *Appliquer un horaire* with preview, *Copier une semaine*, *Annuler*, *Tout est vérifié*, undo by batch, both directions | The owner's example (§6.2) is done in under 2 minutes with no repeated typing. Undo restores the previous state. | 🟡 in review |
+| **RW-4** | Route workspace: prices and notes | *+ Prix observé* (3 fields), price list per airline, editorial notes, history panel; operator entries auto-approved; pending imports shown separately | A price change is logged in under 20 seconds. The 35 pending fares can be reviewed from the workspace. | 🟡 in review (the old copied fares were deleted on 2026-10-31; 5 Air Congo fares remain to review) |
 | **RW-5** | Public route pages | `/vols`, `/vols/[route]`, `/vols/[route]/[airline]` rendered on the server from the model, following [SEO-AEO-GEO.md](SEO-AEO-GEO.md); sitemap from the database; request form linked to routes | P1 routes with real data are live, pass the page checklist and appear in the sitemap. | ⬜ |
 | **RW-6** | Helpers | "Also serves" for flights with stops; copy to the return route; keyboard shortcuts; bulk verify | Entering a flight with a stop on all three routes it serves takes one action. | ⬜ |
 | **RW-7** | Clean-up | Remove `FlightPattern` screens and API, the old `/explore` pages (with 301s) and the `price` column (S-3) | No code reads `FlightPattern`. Old URLs redirect. | 🟡 screens, API and public reads removed in P-13 (only the legacy clean-up script still names the table); the table drop and the 301s remain |
