@@ -144,30 +144,37 @@ Plus Jakarta Sans gives the most character for a pink, warm brand. It is about h
 **Arrows:** none of the five fonts includes the "→" glyph in its latin subset. Typed arrows render in a different fallback font. **Always use the arrow icon** (`RouteTitle` does this). In `<title>` tags and plain-text contexts, write "Kinshasa – Lubumbashi" (en dash).
 
 ### Type scale
-| Role | Class | Size | Use |
+Headings and lead lines take their classes from **`TYPE`** in `components/ds/typography.ts`, never retyped by hand. Sizes are written phone first: the first number is the phone size, the next ones apply from 640 px (`sm`) and 1024 px (`lg`).
+
+| Role | Where it comes from | Size (px) | Use |
 |---|---|---|---|
-| Display | `text-4xl font-extrabold tracking-tight` | 36 | Home hero only |
-| Page title (h1) | `text-3xl font-bold tracking-tight` | 30 | One per page |
-| Section (h2) | `text-xl font-bold tracking-tight` | 20 | |
+| Display | `TYPE.display` | 30 → 48 → 60 | Home hero only |
+| Page title (h1) | `TYPE.title` | 24 → 30 → 36 | One per page |
+| Headline (h2, landing) | `TYPE.headline` | 20 → 24 → 30 | Section titles on the home and `/about` |
+| Section (h2) | `TYPE.section` | 18 → 20 | Section titles on route, airline and hub pages |
+| Lead | `TYPE.lead` | 16 → 18 | The answer or intro line under a title |
 | Subhead | `text-base font-semibold` | 16 | Card titles, airline names |
 | Body | `text-base` | 16 | Never smaller on the public site |
-| Meta | `text-sm text-muted-foreground` | 14 | Sources, dates, captions |
-| Caption | `text-xs text-muted-foreground` | 12 | Table notes, timezone hints |
+| Meta | `text-sm text-muted-foreground` | 14 | Sources, dates, captions, section subtitles on phones |
+| Caption | `text-xs text-muted-foreground` | 12 | Table notes, timezone hints, labels inside search fields |
 
-On phones, page titles step down one size (`text-2xl md:text-3xl`).
+**Why phones get the smaller step** (P-17, owner 2026-11-02): at 390 px the v1 sizes wrapped the home title on three lines and the route answer on three, and pushed the search and the data below the first screen. Body text stays at 16 px: only headings and lead lines got smaller.
 
 ### Rules
 - **Numbers line up.** Times, prices and flight numbers use tabular figures. `<time>` and `<data>` get this automatically, and elsewhere use `tabular-nums`.
 - **Sentence case** for titles and buttons ("Voir les vols", not "Voir Les Vols").
-- **French punctuation.** French uses a non-breaking space before `: ; ! ?` and inside `« »`. The `Intl` formatters already handle numbers and currency.
+- **French punctuation.** French uses a non-breaking space before `: ; ! ?` and inside `« »`, so "vol ?" never ends a line on "?". In `i18n/locales/fr.json` it is written `\u00a0` (P-17: the 55 plain spaces there were replaced); in code, write `{"\u00a0: "}`. The `Intl` formatters already handle numbers and currency.
+- **Things that never break across lines:** dates in running text ("31 octobre 2026"), web addresses ("air-congo.com" broke at its hyphen) and hyphenated city names in narrow places ("Mbuji-Mayi"). Use `whitespace-nowrap` on them.
 
 ## 6. Space, shape and elevation
 
 - **Spacing:** 4 px grid (Tailwind's default scale). Common steps:
   - 8 px inside controls
   - 16 px page gutter on phones
-  - 24 px between related blocks
-  - 40 px between page sections
+  - 24 px between blocks of a page on phones, 32 px from 640 px (route, airline, hub pages)
+  - 40 px between home sections on phones, 64 px from 640 px
+  - cards: 14–16 px padding on phones, 20 px from 640 px
+- **Empty blocks take no space.** A wrapper that may render nothing (the alerts block) gets `empty:hidden`, so it does not add a gap of its own.
 - **Radius:**
   - `sm` 6 px: day chips, airline codes
   - `md` 8 px: buttons, inputs
@@ -260,9 +267,10 @@ The same word and colour mean the same thing everywhere.
 **Search and home** (2026-10-31)
 | Component | What it shows |
 |---|---|
-| `AirportCombobox` | Airport picker. Accepts a label or a bare IATA code (from a URL); shows the province for DRC airports; closed or restricted airports stay selectable with a badge (`AirportStatusBadge`). |
+| `AirportCombobox` | Airport picker. Accepts a label or a bare IATA code (from a URL); each airport in the list shows the city, the airport name and province, and the code on the right; closed or restricted airports stay selectable with a badge (`AirportStatusBadge`). Two looks: `field` (label above a bordered field, in forms) and `segment` (a row of the search card). It can be opened from outside (`open`), leave one airport out (`exclude`) and report a pick (`onPick`). On a touch screen the list opens without focusing its search box, so the keyboard does not cover the list; typing is one tap away. |
 | `AirportStatusNotice` (`components/search/`) | A danger or warning alert for each chosen airport that is closed or restricted: status, since when, note, source link. Shown on selection and stays visible when the search finds nothing. |
-| `HomeSearch` (`components/home/`) | Origin, swap, destination, search. **No date and no round-trip option**: results show the next days with flights, and the swap button is the return trip. |
+| `SearchForm` (`components/search/`) | **The search card** (P-17), used by the home, `/vols` and route pages. One white card; each field is a row 56 px tall (64 px from 1024 px) with an icon on the left (take-off, landing, calendar) and its label inside: empty, the row reads "Ville de départ"; filled, "Départ" sits small above "Kinshasa FIH". The swap button is a 36 px circle on the line between departure and arrival. The pink button closes the card, inside an 8 px margin. Phones and tablets stack the rows (178 px without the date, 237 px with it; the v1 form was 314 and 426 px); from 1024 px it is one row, the swap button on the line between the two cities (at 768 px the cities were cut short beside the date). **Choosing the departure opens the arrival list straight away**, on the arrival already chosen if there is one, otherwise on the first airport; the departure is left out of the arrival list, and choosing the current arrival as departure clears the arrival. Inspired by Skyscanner's compact form (owner's reference), not copied. |
+| `HomeSearch` (`components/home/`) | The search card without a date, on the hero. **No date and no round-trip option**: results show the next days with flights, and the swap button is the return trip. |
 | Home sections (`components/home/HomeSections.tsx`) | Hero, next departures (dated cards), tracked routes, airport status, how we work. Each data section is hidden when it has no data. |
 
 ### Planned (built with the route workspace, see [ROUTE-MODEL.md](ROUTE-MODEL.md))
@@ -301,7 +309,8 @@ The back office still works on a phone (simple menu), but it is not designed for
 - The button is the one way to the search. No nav link may lead to the same page: since RW-5 the search and the route index are one page (`/vols`), so there is no "Vols" link.
 - On a page with a search form (`id="recherche"`, from `SEARCH_ANCHOR` in `lib/links.ts`), the button scrolls back to the form and focuses "Départ", without motion if the visitor prefers reduced motion. Elsewhere it opens `/vols`.
 - No request link: help is offered after a search finds nothing, on the contact page and in the footer.
-- On phones (P-16, owner 2026-11-02; below 640 px): logo, then a **round, light pink search icon** (40 px; light so the page's own pink button stays the one to press), then a **borderless round menu icon**. From 640 px the full "Rechercher un vol" button. On a route page where the search is folded into one line, the search icon opens it.
+- Height: 56 px on phones, 64 px from 640 px (P-17).
+- On phones (P-16, owner 2026-11-02; below 640 px): logo, then a **round, light pink search icon** (40 px; light so the page's own pink button stays the one to press), then a **borderless round menu icon**. From 640 px the full "Rechercher un vol" button. On a page with a search card, the search icon scrolls to it and focuses "Départ".
 - **Phone menu** (opens from the right, at most 20 rem): the logo and a close button in a 64 px header; the sections as large links with an icon, the current page on a light pink background; one full-width "Rechercher un vol" button (it closes the menu, then scrolls to the page's search if there is one); at the bottom, a **Français | English switch** (two buttons, `aria-pressed`), WhatsApp and "Signaler une erreur" (with the current page). The panel itself takes focus when it opens, so no control shows a focus ring after a tap.
 
 **Back-office sidebar** (2026-10-31): grouped, with icons that match their meaning.
@@ -331,9 +340,12 @@ The back office still works on a phone (simple menu), but it is not designed for
 - **Every page starts the same way:** breadcrumbs, one H1 ("Vols Kinshasa → Lubumbashi", "CAA : Kinshasa → Lubumbashi"), one answer line (airlines, flights this week, lowest price with its date). Warnings (closed airport, suspended airline or route) come next, above everything else.
 - **Every page ends the same way** (`PageFacts`, owner 2026-11-02): "Mis à jour le · Horaires vérifiés le · Sources", then "Une information fausse ou dépassée ? Signalez-la" and the disclaimer. Dates are `<time>` elements. The link opens the contact form on "Signaler une erreur" with the **message started** ("Page : Kinshasa – Lubumbashi · CAA, mardi 10 novembre 2026, 08:00 / Ce qui est faux : ", cursor after it; `?sujet=erreur&page=…&titre=…`); the started text alone cannot be sent.
 - **Route page** (`/vols/a-b`, order by the owner, 2026-11-02): the answer and alerts; the **search box** filled with the route; "Par compagnie", one card per airline that is a single link (days, flights this week, latest price; the departure times from 640 px only, so cards keep one height on phones); "Départs" and the results; the return trip; then "À propos de ce trajet" (airports, time difference) beside "Besoin d'aide pour ce trajet ?".
-- **Search on a route page, phones** (`RouteSearch` with `summary`): one line, "Kinshasa → Lubumbashi · Toutes les dates · Modifier", that opens the full form and focuses "Départ". The full form is about 430 px tall at 390 px wide; folded, the first airline card stays on the first screen. From 768 px the form is always open, on one row.
+- **Airline card on phones** (P-17): the logo, then the name and the days beside it; under a line, the flights this week on the left and the price with a chevron on the right. "Tout sur … pour ce trajet" shows from 640 px (the whole card is the link). About 135–160 px tall instead of 190–230.
+- **Search on a route page** (`RouteSearch`): the same search card as the home, filled with the route, plus the date (owner, 2026-11-02, P-17). It replaced the one-line summary of P-16, which existed only because the old form was 430 px tall: the card is 237 px at 390 px wide and the first airline card still ends on the first screen (at 663 px). From 1024 px it is one row. On phones the date hint ("Facultatif…") is for screen readers only: "Toutes les dates" already says it.
 - **Airline page** (`/vols/a-b/caa`): the departure in full (times block, then duration, number, aircraft and flying days). Above it, when the airline flies the route more than once that day, the departure times as chips; under it, the next 14 dates as chips. Then the airline's services on the route, its note, and every validated price with its fare name, kind, travel date, source and the date it was seen. Beside it, "Réserver ce vol" (see Booking request below). Never a link to the airline's booking page.
-- **Hub** (`/vols`): the search box, then the routes grouped by departure city, each with its airlines (sorted by name), flights this week and lowest price.
+  - **On phones** (P-17): the header is the logo with the full name in grey, the title, the answer and "Comparer les compagnies sur ce trajet". Time and date chips sit on one line that swipes (the 14 dates took five lines), the selected one brought into view. In the departure block, the times are the only large figures (28 px); airport codes 14 px, airport names and the stop line 12 px; the facts have sentence-case labels ("Numéro de vol", no capitals). Every row of "Vols et horaires" has the same shape: times and days on one line, then duration, stops and number.
+- **Breadcrumbs** (P-17): always one line. When the trail is too long, the crumb before the current page (the route) ends with "…"; 13 px on phones.
+- **Hub** (`/vols`): the search box, then the routes grouped by departure city, each with its airlines (sorted by name), flights this week and lowest price. On phones each city is one list with a line between rows (P-17); from 640 px, a grid of cards. Route names in lists are semibold, not bold.
 - **Booking request** (`components/search/BookingRequest.tsx`, P-15): a header naming the departure ("CAA · lun. 9 nov. · 08:00 – 12:30 · BU 1633"); the price with its date when one was seen, otherwise one line saying the team gives it on the call; travellers (`Stepper`, 1 to 9) and class as two label-left rows; name; **phone only**, with "Nous vous rappelons à ce numéro, par appel ou sur WhatsApp"; errors under the field they concern; the button, then "Aucun paiement maintenant…". On phones: a bar fixed at the bottom with one centred button; it opens the form as a **sheet from the bottom**, fields scrolling and the button pinned to the bottom edge (safe-area aware).
 - **Date in the search** (`components/vols/DateField.tsx`, P-15): a field like the airport pickers (calendar icon, "Toutes les dates" when empty, a clear button). It opens our calendar: weeks start Monday, past days off, today outlined, selected day filled pink; on a route page, the days with a known flight have a pink dot (white on the selected day) and the footer explains it. Phones: a sheet from the bottom with 44 px days. Wider screens: a popover. Never the browser's date input.
 - **Text, not glyphs:** "–" between city names in running text and breadcrumbs; the arrow is the `RouteTitle` icon (the brand font has no "→").
@@ -416,8 +428,11 @@ A native app is item **P-8** in the plan, and only if usage justifies it. The sy
 | 2026-10-31 | Back-office sidebar grouped and dockable | Owner. |
 | 2026-11-02 | Phones get sheets from the bottom, with the main button on the bottom edge (booking request, calendar); counts use − and +; forms ask for a phone, not an email | Owner: the centred dialog left empty space under its button; the native date input looked basic. |
 | 2026-11-02 | Page dates and sources go at the bottom of route and airline pages | Owner. |
-| 2026-11-02 | Route page: search box, then airlines, then departures; on phones the search is one line that opens the form | Owner chose the order; the one line keeps the airlines on the first screen of a phone. |
+| 2026-11-02 | Route page: search box, then airlines, then departures; ~~on phones the search is one line that opens the form~~ (replaced in P-17 by the search card) | Owner chose the order; the one line kept the airlines on the first screen of a phone while the form was 430 px tall. |
 | 2026-11-02 | Phone navbar: round search icon, borderless menu icon, a fuller menu (large links, one button, language switch, WhatsApp, report) | Owner: the navbar did not look premium on phones (review in P-15). |
+| 2026-11-02 | Phones get a smaller step of the type scale for headings and lead lines (`TYPE`); tighter spacing between blocks; the search becomes one card of 56 px rows; choosing the departure opens the arrival list | Owner (P-17): text was larger than needed on phones, too much white space, the search form looked dated next to Skyscanner's compact one, and picking the arrival should follow picking the departure. Measured at 390 × 844: home search card 314 → 178 px, "Prochains départs" from 1027 → 629 px; route page results from 898 → 686 px. Body text stays 16 px. |
+| 2026-11-02 | Route pages show the same search card as the home (with the date), on phones too; the one-line summary is gone | Owner (P-17): the route page's search should match the landing page's. The card is short enough to keep the first airline on the first screen. |
+| 2026-11-02 | Airline page on phones: fewer type sizes, sentence-case labels, chips on one swipeable line, one shape for every schedule row; French punctuation with non-breaking spaces everywhere; branded 404 in French | Owner (P-17): "a typography mess" on the airline page on phones; lines ended on a lone "?" and dates split across lines. |
 
 **Changelog**
 - **v1 (2026-10-30):**
@@ -435,6 +450,16 @@ A native app is item **P-8** in the plan, and only if usage justifies it. The sy
   - `Stepper` (counts with − and +), `DateField` (our calendar, sheet on phones), `PageFacts` (dates, sources and "Signaler une erreur" at the end of route and airline pages)
   - booking request redesigned, phone only; phones get it as a sheet from the bottom
   - `/about` rebuilt (problem, offer, method, limits, intention, participation); footer columns Explorer · Clerikaa · Participer
+- **v1.4 (2026-11-02, P-17):**
+  - `TYPE` (`components/ds/typography.ts`): display, title, headline, section and lead, phone size first; every public heading uses it
+  - `SearchForm`: the search card shared by the home, `/vols` and route pages; `AirportCombobox` `segment` look, `open`/`onPick`/`exclude`; `DateField` restyled as a row of the card
+  - departure → arrival: the arrival list opens by itself; touch screens open the lists without the keyboard
+  - phones: navbar 56 px, tighter block spacing, shorter airline cards, smaller times in the departure block, hero route chips on one swipeable row
+  - route pages: the search card replaces the one-line summary (`RouteSearch` lost `summary`)
+  - airline page: departure block with fewer sizes and sentence-case labels, chips on one swipeable line, schedule rows of one shape, "Aller simple" capitalised, shorter "compare" link
+  - breadcrumbs on one line; `/vols` routes as one list per city on phones; page facts keep dates and addresses whole; footer spacing tightened on phones
+  - French non-breaking spaces before `: ; ! ?` and inside `« »` (55 + 6 in `fr.json`)
+  - 404 page in French with the navbar, footer, mark and two ways forward
 - **v1.3 (2026-11-02, P-16):**
   - phone navbar and menu redesigned; `SheetContent` takes `showClose={false}` when the content has its own close button
   - `RouteSearch` `summary`: the search as one line on phones

@@ -14,7 +14,7 @@
       "eyebrow": "Relevés auprès des compagnies, datés et vérifiés",
       "title": "Horaires et prix indicatifs des vols en RDC",
       "subtitle": "Comparez les compagnies, les jours de vol et les prix observés, d'une ville à l'autre.",
-      "popular": "Trajets suivis :"
+      "popular": "Trajets suivis\u00a0:"
     },
     "search": {
       "label": "Rechercher un trajet",
@@ -24,7 +24,7 @@
       "toPlaceholder": "Ville d'arrivée",
       "swap": "Inverser départ et arrivée",
       "submit": "Rechercher",
-      "hint": "Pas besoin de date : nous affichons les prochains jours de vol.",
+      "hint": "Pas besoin de date\u00a0: nous affichons les prochains jours de vol.",
       "missing": "Choisissez une ville de départ et une ville d'arrivée.",
       "sameAirport": "Choisissez deux villes différentes."
     },
@@ -58,11 +58,11 @@
       },
       "freshness": {
         "title": "Fraîcheur signalée",
-        "description": "Un horaire qui n'a pas été revérifié depuis 7 jours est marqué « À revérifier »."
+        "description": "Un horaire qui n'a pas été revérifié depuis 7 jours est marqué «\u00a0À revérifier\u00a0»."
       },
       "tickets": {
         "title": "Nous informons, nous ne vendons pas",
-        "description": "« Réserver ce vol » nous envoie votre demande : une agence de voyage partenaire confirme le tarif et émet le billet."
+        "description": "«\u00a0Réserver ce vol\u00a0» nous envoie votre demande\u00a0: une agence de voyage partenaire confirme le tarif et émet le billet."
       }
     },
     "about": {
@@ -98,7 +98,7 @@
       "missingFields": "Veuillez remplir tous les champs obligatoires",
       "submit": "Demander le Devis",
       "successTitle": "Demande Envoyée!",
-      "successMessage": "Merci ! Votre demande a bien été enregistrée."
+      "successMessage": "Merci\u00a0! Votre demande a bien été enregistrée."
     }
   },
   "explore": {
@@ -141,7 +141,7 @@
         "fastest": "Plus rapide",
         "soonest": "Plus proche"
       },
-      "sortHelp": "Recommandé : les vols directs d'abord, puis le meilleur équilibre entre le départ le plus proche, le prix et la durée.",
+      "sortHelp": "Recommandé\u00a0: les vols directs d'abord, puis le meilleur équilibre entre le départ le plus proche, le prix et la durée.",
       "from": "dès",
       "seenOn": "relevé le",
       "noPrice": "Prix non relevé",
@@ -151,7 +151,7 @@
       "stops": "{{count}} escales",
       "via": "via {{cities}}",
       "nextDay": "Arrivée le lendemain",
-      "next": "Prochain vol : {{date}}",
+      "next": "Prochain vol\u00a0: {{date}}",
       "view": "Voir le vol",
       "flies": "Vole le {{days}}"
     },
@@ -176,9 +176,9 @@
       "source": "source",
       "departed": "Ce vol est déjà parti.",
       "airlineNote": "Note sur la compagnie",
-      "disclaimer": "Horaires et prix indicatifs. Clerikaa informe et ne vend pas de billets : les réservations sont transmises à une agence de voyage partenaire, qui confirme le tarif et émet le billet.",
+      "disclaimer": "Horaires et prix indicatifs. Clerikaa informe et ne vend pas de billets\u00a0: les réservations sont transmises à une agence de voyage partenaire, qui confirme le tarif et émet le billet.",
       "bookFlight": "Réserver ce vol",
-      "bookIntro": "Envoyez votre demande : notre équipe vous recontacte pour confirmer le prix et la réservation.",
+      "bookIntro": "Envoyez votre demande\u00a0: notre équipe vous recontacte pour confirmer le prix et la réservation.",
       "bookingFor": "Vol du {{date}}",
       "travelers": "Nombre de voyageurs",
       "class": "Classe de voyage",
@@ -188,9 +188,16 @@
       "missingContact": "Indiquez votre nom et un moyen de vous joindre.",
       "requestFailed": "L'envoi a échoué. Réessayez dans un instant.",
       "requestSuccessTitle": "Demande envoyée",
-      "requestSuccessMessage": "Merci ! Nous vous recontactons au plus vite.",
+      "requestSuccessMessage": "Merci\u00a0! Nous vous recontactons au plus vite.",
       "newRequest": "Faire une autre demande"
     }
+  },
+  "notFound": {
+    "code": "Erreur 404",
+    "title": "Cette page n'existe pas",
+    "body": "Le lien est peut-être ancien, ou la page a changé d'adresse. Cherchez votre trajet\u00a0: les horaires et les prix sont sur sa page.",
+    "search": "Rechercher un vol",
+    "home": "Retour à l'accueil"
   },
   "about": {
     "eyebrow": "À propos de Clerikaa",
@@ -209,7 +216,7 @@
       "title": "Le problème",
       "lead": "Savoir qui vole entre deux villes congolaises, quels jours et à quel prix demande souvent plusieurs appels, un passage en agence ou à l'aéroport.",
       "items": {
-        "scattered": "Chaque compagnie publie ses horaires à sa façon : un programme en PDF qui change chaque semaine, une page web, un message sur les réseaux sociaux.",
+        "scattered": "Chaque compagnie publie ses horaires à sa façon\u00a0: un programme en PDF qui change chaque semaine, une page web, un message sur les réseaux sociaux.",
         "changes": "Les horaires changent souvent. Une information juste le mois dernier peut être fausse aujourd'hui, sans que rien ne le signale.",
         "prices": "Les prix sont rarement affichés publiquement, et presque jamais avec la date à laquelle ils étaient valables.",
         "global": "Les grands sites de voyage internationaux affichent parfois des compagnies à l'arrêt ou des aéroports fermés."
@@ -217,7 +224,7 @@
     },
     "offer": {
       "title": "Ce que vous trouvez ici",
-      "lead": "Pas une simple liste de vols : ce qu'il faut savoir pour choisir une compagnie sur un trajet.",
+      "lead": "Pas une simple liste de vols\u00a0: ce qu'il faut savoir pour choisir une compagnie sur un trajet.",
       "items": {
         "route": {
           "title": "Une page par trajet",
@@ -225,7 +232,7 @@
         },
         "airline": {
           "title": "Une page par compagnie sur chaque trajet",
-          "body": "Chaque départ en détail : heures locales, escales, numéro de vol et appareil quand ils sont publiés."
+          "body": "Chaque départ en détail\u00a0: heures locales, escales, numéro de vol et appareil quand ils sont publiés."
         },
         "prices": {
           "title": "Des prix datés",
@@ -233,11 +240,11 @@
         },
         "alerts": {
           "title": "Les alertes qui comptent",
-          "body": "Aéroport fermé, ligne suspendue, compagnie à l'arrêt : c'est écrit en haut de la page concernée."
+          "body": "Aéroport fermé, ligne suspendue, compagnie à l'arrêt\u00a0: c'est écrit en haut de la page concernée."
         },
         "booking": {
           "title": "Une demande de réservation",
-          "body": "Sur chaque départ, « Réserver ce vol » nous envoie votre demande avec votre numéro. Nous vous rappelons pour la confirmer, puis nous la transmettons à une agence de voyage partenaire, qui émet le billet."
+          "body": "Sur chaque départ, «\u00a0Réserver ce vol\u00a0» nous envoie votre demande avec votre numéro. Nous vous rappelons pour la confirmer, puis nous la transmettons à une agence de voyage partenaire, qui émet le billet."
         }
       }
     },
@@ -247,11 +254,11 @@
       "steps": {
         "collect": {
           "title": "Relever à la source",
-          "body": "Nous relevons les horaires et les prix là où les compagnies les publient : leurs programmes, leurs sites, leurs agences. Pour l'instant, ce travail est fait à la main, pas par un robot."
+          "body": "Nous relevons les horaires et les prix là où les compagnies les publient\u00a0: leurs programmes, leurs sites, leurs agences. Pour l'instant, ce travail est fait à la main, pas par un robot."
         },
         "check": {
           "title": "Vérifier avant de publier",
-          "body": "Une personne compare chaque horaire à sa source avant de le publier et note la date de vérification. Un horaire qui n'a pas été revérifié depuis 7 jours est signalé « À revérifier »."
+          "body": "Une personne compare chaque horaire à sa source avant de le publier et note la date de vérification. Un horaire qui n'a pas été revérifié depuis 7 jours est signalé «\u00a0À revérifier\u00a0»."
         },
         "date": {
           "title": "Dater et citer",
@@ -259,7 +266,7 @@
         },
         "publish": {
           "title": "Ne publier que ce que nous savons",
-          "body": "Quand nous n'avons pas d'information sur un trajet, la page le dit (« aucun vol connu ») au lieu d'inventer. Les compagnies sont présentées par ordre alphabétique, sans mise en avant."
+          "body": "Quand nous n'avons pas d'information sur un trajet, la page le dit («\u00a0aucun vol connu\u00a0») au lieu d'inventer. Les compagnies sont présentées par ordre alphabétique, sans mise en avant."
         }
       }
     },
@@ -267,18 +274,18 @@
       "title": "Nos limites",
       "lead": "Mieux vaut les connaître avant de voyager.",
       "items": {
-        "prices": "Les prix sont indicatifs : le tarif final est confirmé au moment de la réservation.",
-        "live": "Nous ne suivons pas les vols en temps réel. Les retards et les annulations de dernière minute n'apparaissent pas ici : vérifiez auprès de la compagnie le jour du départ.",
+        "prices": "Les prix sont indicatifs\u00a0: le tarif final est confirmé au moment de la réservation.",
+        "live": "Nous ne suivons pas les vols en temps réel. Les retards et les annulations de dernière minute n'apparaissent pas ici\u00a0: vérifiez auprès de la compagnie le jour du départ.",
         "coverage": "Nous couvrons uniquement les vols intérieurs en RDC, et pas encore toutes les compagnies ni tous les trajets.",
         "published": "Certaines compagnies publient peu d'informations, par exemple pas de numéro de vol. Nous montrons ce qui est publié, rien de plus.",
-        "time": "Les heures sont locales à chaque aéroport : la RDC a deux fuseaux horaires, Lubumbashi a une heure d'avance sur Kinshasa.",
-        "team": "Nous sommes une petite équipe. Une erreur peut nous échapper : si vous en voyez une, dites-le-nous.",
-        "tickets": "Nous ne sommes ni une compagnie aérienne ni une agence de voyage : notre métier est d'informer. Les réservations sont transmises à des agences partenaires, qui émettent les billets et en sont responsables. Aucun paiement ne se fait sur ce site."
+        "time": "Les heures sont locales à chaque aéroport\u00a0: la RDC a deux fuseaux horaires, Lubumbashi a une heure d'avance sur Kinshasa.",
+        "team": "Nous sommes une petite équipe. Une erreur peut nous échapper\u00a0: si vous en voyez une, dites-le-nous.",
+        "tickets": "Nous ne sommes ni une compagnie aérienne ni une agence de voyage\u00a0: notre métier est d'informer. Les réservations sont transmises à des agences partenaires, qui émettent les billets et en sont responsables. Aucun paiement ne se fait sur ce site."
       }
     },
     "intent": {
       "title": "Notre intention",
-      "p1": "Lister des vols ne suffit pas. Notre but est de donner, pour chaque trajet, l'information la plus utile possible : qui vole vraiment, quels jours, à quel prix récent, et ce qui a changé.",
+      "p1": "Lister des vols ne suffit pas. Notre but est de donner, pour chaque trajet, l'information la plus utile possible\u00a0: qui vole vraiment, quels jours, à quel prix récent, et ce qui a changé.",
       "p2": "À terme, nous voulons recevoir les programmes directement des compagnies, pour une information encore plus fiable et plus rapide à mettre à jour.",
       "promises": {
         "dated": "Chaque information est datée.",
@@ -293,26 +300,26 @@
       "items": {
         "error": {
           "title": "Signaler une erreur",
-          "body": "Un horaire faux, un vol qui n'existe plus, un aéroport rouvert : indiquez la page et ce qui a changé.",
+          "body": "Un horaire faux, un vol qui n'existe plus, un aéroport rouvert\u00a0: indiquez la page et ce qui a changé.",
           "cta": "Signaler une erreur"
         },
         "share": {
           "title": "Partager une information",
-          "body": "Un prix payé récemment, un nouveau vol, le programme affiché dans une agence : avec la date, c'est précieux. Une photo s'envoie sur WhatsApp.",
+          "body": "Un prix payé récemment, un nouveau vol, le programme affiché dans une agence\u00a0: avec la date, c'est précieux. Une photo s'envoie sur WhatsApp.",
           "cta": "Nous écrire"
         },
         "partners": {
           "title": "Compagnies, aéroports, agences",
-          "body": "Vous représentez une compagnie, un aéroport ou une agence ? Parlons de vos horaires et de la façon de les publier correctement.",
+          "body": "Vous représentez une compagnie, un aéroport ou une agence\u00a0? Parlons de vos horaires et de la façon de les publier correctement.",
           "cta": "Prendre contact"
         },
         "help": {
           "title": "Aider sur le contenu",
-          "body": "Vous voyagez souvent, vous travaillez en agence ou dans un aéroport ? Aidez-nous à tenir à jour les horaires et les prix des trajets que vous connaissez.",
+          "body": "Vous voyagez souvent, vous travaillez en agence ou dans un aéroport\u00a0? Aidez-nous à tenir à jour les horaires et les prix des trajets que vous connaissez.",
           "cta": "Proposer votre aide"
         }
       },
-      "whatsapp": "Vous préférez WhatsApp ? Écrivez-nous au"
+      "whatsapp": "Vous préférez WhatsApp\u00a0? Écrivez-nous au"
     },
     "cta": {
       "title": "Trouvez votre vol",
@@ -324,7 +331,7 @@
     "tagline": "Horaires et prix indicatifs des vols intérieurs en RDC, trajet par trajet.",
     "noTickets": "Prix indicatifs. Aucun paiement sur ce site.",
     "explore": "Explorer",
-    "help": "Besoin d'aide pour un vol ?",
+    "help": "Besoin d'aide pour un vol\u00a0?",
     "rights": "Tous droits réservés.",
     "contact": "Nous contacter",
     "method_line": "Relevés à la source, vérifiés et datés.",
@@ -347,16 +354,16 @@
       "CLOSED": "Fermé"
     },
     "notice": {
-      "CLOSED": "{{city}} ({{code}}) : aéroport fermé aux vols commerciaux",
-      "RESTRICTED": "{{city}} ({{code}}) : activité réduite",
+      "CLOSED": "{{city}} ({{code}})\u00a0: aéroport fermé aux vols commerciaux",
+      "RESTRICTED": "{{city}} ({{code}})\u00a0: activité réduite",
       "since": "depuis le {{date}}",
       "source": "Voir la source"
     }
   },
   "contact": {
     "title": "Nous contacter",
-    "intro": "Une question, une information fausse ou dépassée, ou vous représentez une compagnie aérienne ? Écrivez-nous.",
-    "noTickets": "Nous ne vendons pas de billets : notre métier est d'informer. Pour réserver, utilisez « Réserver ce vol » sur la page du vol : nous transmettons votre demande à une agence de voyage partenaire, qui émet le billet. Pour modifier ou annuler un billet, adressez-vous à l'agence qui l'a émis.",
+    "intro": "Une question, une information fausse ou dépassée, ou vous représentez une compagnie aérienne\u00a0? Écrivez-nous.",
+    "noTickets": "Nous ne vendons pas de billets\u00a0: notre métier est d'informer. Pour réserver, utilisez «\u00a0Réserver ce vol\u00a0» sur la page du vol\u00a0: nous transmettons votre demande à une agence de voyage partenaire, qui émet le billet. Pour modifier ou annuler un billet, adressez-vous à l'agence qui l'a émis.",
     "form": {
       "name": "Votre nom",
       "reply": "Email ou numéro WhatsApp",
@@ -373,9 +380,9 @@
       "submit": "Envoyer le message",
       "sending": "Envoi…",
       "failed": "L'envoi a échoué. Réessayez, ou écrivez-nous à {{email}} ou sur WhatsApp au {{whatsapp}}.",
-      "prefillPage": "Page : {{page}}",
-      "prefillWrong": "Ce qui est faux : ",
-      "messageHintPage": "La page est déjà indiquée : écrivez ce qui est faux, et la bonne information si vous l'avez."
+      "prefillPage": "Page\u00a0: {{page}}",
+      "prefillWrong": "Ce qui est faux\u00a0: ",
+      "messageHintPage": "La page est déjà indiquée\u00a0: écrivez ce qui est faux, et la bonne information si vous l'avez."
     },
     "sent": {
       "title": "Message envoyé",
@@ -384,12 +391,12 @@
     },
     "aside": {
       "emailTitle": "Écrire directement",
-      "whatsapp": "WhatsApp : {{number}}",
+      "whatsapp": "WhatsApp\u00a0: {{number}}",
       "flightTitle": "Pour un vol précis",
-      "flightBody": "Donnez-nous le trajet et la date : nous cherchons avec vous.",
+      "flightBody": "Donnez-nous le trajet et la date\u00a0: nous cherchons avec vous.",
       "flightCta": "Demander de l'aide pour un vol",
-      "correctionTitle": "Une erreur sur le site ?",
-      "correctionBody": "Les horaires changent souvent. Si une information est fausse, dites-le-nous : c'est le moyen le plus rapide de la corriger."
+      "correctionTitle": "Une erreur sur le site\u00a0?",
+      "correctionBody": "Les horaires changent souvent. Si une information est fausse, dites-le-nous\u00a0: c'est le moyen le plus rapide de la corriger."
     },
     "errors": {
       "name": "Indiquez votre nom.",
@@ -407,7 +414,7 @@
     },
     "search": {
       "date": "Date",
-      "dateHint": "Facultatif : sans date, les quatre prochaines semaines.",
+      "dateHint": "Facultatif\u00a0: sans date, les quatre prochaines semaines.",
       "submit": "Rechercher",
       "clearDate": "Effacer la date",
       "anyDate": "Toutes les dates",
@@ -417,7 +424,7 @@
     },
     "hub": {
       "title": "Les vols intérieurs en RDC",
-      "intro": "Choisissez un trajet ou cherchez-le. Pour chaque compagnie : les jours de vol, les horaires vérifiés et les prix observés.",
+      "intro": "Choisissez un trajet ou cherchez-le. Pour chaque compagnie\u00a0: les jours de vol, les horaires vérifiés et les prix observés.",
       "from": "Au départ de {{city}}",
       "flights_one": "{{count}} vol cette semaine",
       "flights_other": "{{count}} vols cette semaine",
@@ -444,12 +451,12 @@
       "ended": "{{airline}} ne dessert plus cette ligne.",
       "airlineSuspended": "{{airline}} a suspendu ses vols.",
       "noPriceYet": "Prix non relevé",
-      "return": "Le retour : {{from}} – {{to}}",
+      "return": "Le retour\u00a0: {{from}} – {{to}}",
       "about": "À propos de ce trajet",
       "sameZone": "Les deux villes sont dans le même fuseau horaire.",
       "sources": "Sources",
-      "helpTitle": "Besoin d'aide pour ce trajet ?",
-      "helpBody": "Donnez-nous la date et le nombre de voyageurs : notre équipe cherche avec vous et vous recontacte.",
+      "helpTitle": "Besoin d'aide pour ce trajet\u00a0?",
+      "helpBody": "Donnez-nous la date et le nombre de voyageurs\u00a0: notre équipe cherche avec vous et vous recontacte.",
       "helpCta": "Demander de l'aide",
       "noFlightsBody": "Nous n'avons pas d'horaire pour ce trajet en ce moment. Notre équipe peut chercher pour vous.",
       "otherDate": "Aucun vol connu ce jour-là. Voici les quatre prochaines semaines.",
@@ -457,14 +464,14 @@
         "SUSPENDED": "Ligne suspendue",
         "ENDED": "Ligne arrêtée"
       },
-      "timeAhead_one": "{{city}} a une heure d'avance sur {{other}} : les heures affichées sont locales à chaque aéroport.",
-      "timeAhead_other": "{{city}} a {{count}} heures d'avance sur {{other}} : les heures affichées sont locales à chaque aéroport."
+      "timeAhead_one": "{{city}} a une heure d'avance sur {{other}}\u00a0: les heures affichées sont locales à chaque aéroport.",
+      "timeAhead_other": "{{city}} a {{count}} heures d'avance sur {{other}}\u00a0: les heures affichées sont locales à chaque aéroport."
     },
     "airline": {
-      "h1": "{{airline}} :",
+      "h1": "{{airline}}\u00a0:",
       "answer": "{{airline}} vole {{days}} sur ce trajet",
       "answerNone": "{{airline}} n'a pas de vol connu sur ce trajet pour les quatre prochaines semaines.",
-      "compare": "Comparer avec les autres compagnies sur ce trajet",
+      "compare": "Comparer les compagnies sur ce trajet",
       "services": "Vols et horaires",
       "departures": "Prochains départs",
       "departure": "Départ du {{date}}",
@@ -491,7 +498,7 @@
     "book": {
       "title": "Réserver ce vol",
       "price": "Prix indicatif",
-      "noPrice": "Pas encore de prix relevé : notre équipe vous le donne quand elle vous rappelle.",
+      "noPrice": "Pas encore de prix relevé\u00a0: notre équipe vous le donne quand elle vous rappelle.",
       "travelers": "Voyageurs",
       "removeTraveler": "Retirer un voyageur",
       "addTraveler": "Ajouter un voyageur",
@@ -508,7 +515,7 @@
       "reassurance": "Aucun paiement maintenant. Nous vous rappelons pour confirmer le prix, puis une agence de voyage partenaire émet votre billet.",
       "failed": "L'envoi a échoué. Réessayez dans un instant.",
       "sentTitle": "Demande envoyée",
-      "sentBody": "Merci ! Nous vous rappelons au {{phone}}.",
+      "sentBody": "Merci\u00a0! Nous vous rappelons au {{phone}}.",
       "another": "Faire une autre demande",
       "close": "Fermer"
     },
@@ -518,7 +525,7 @@
       "verified": "Horaires vérifiés le",
       "sources_one": "Source",
       "sources_other": "Sources",
-      "report": "Une information fausse ou dépassée ? Signalez-la"
+      "report": "Une information fausse ou dépassée\u00a0? Signalez-la"
     }
   }
 }

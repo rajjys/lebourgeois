@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { CircleAlert, CircleCheck, Mail, MessageCircle, Plane, Send, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TYPE } from "@/components/ds/typography";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -92,14 +93,14 @@ export function ContactView() {
   }
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-      <header className="max-w-2xl space-y-3">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{t("contact.title")}</h1>
-        <p className="text-lg text-neutral-700">{t("contact.intro")}</p>
+    <div className="container mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-16 lg:px-8">
+      <header className="max-w-2xl space-y-2 sm:space-y-3">
+        <h1 className={cn(TYPE.title, "text-foreground")}>{t("contact.title")}</h1>
+        <p className={TYPE.lead}>{t("contact.intro")}</p>
         <p className="text-sm text-muted-foreground">{t("contact.noTickets")}</p>
       </header>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start">
+      <div className="mt-8 grid gap-8 sm:mt-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start">
         <section aria-labelledby="contact-form-title" className="rounded-2xl border bg-card p-5 shadow-card sm:p-6">
           <h2 id="contact-form-title" className="sr-only">
             {t("contact.title")}

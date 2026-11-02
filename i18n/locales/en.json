@@ -192,6 +192,13 @@
       "newRequest": "Send another request"
     }
   },
+  "notFound": {
+    "code": "Error 404",
+    "title": "This page does not exist",
+    "body": "The link may be old, or the page has moved. Search for your route: its schedules and prices are on its page.",
+    "search": "Search for a flight",
+    "home": "Back to home"
+  },
   "about": {
     "eyebrow": "About Clerikaa",
     "title": "Domestic flight information for the DRC, checked and dated",
@@ -464,7 +471,7 @@
       "h1": "{{airline}}:",
       "answer": "{{airline}} flies {{days}} on this route",
       "answerNone": "{{airline}} has no known flight on this route for the next four weeks.",
-      "compare": "Compare with the other airlines on this route",
+      "compare": "Compare airlines on this route",
       "services": "Flights and times",
       "departures": "Next departures",
       "departure": "Departure on {{date}}",

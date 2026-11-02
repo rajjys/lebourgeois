@@ -52,8 +52,6 @@ const Navbar = () => {
   const scrollToSearch = () => {
     const form = document.getElementById(SEARCH_ANCHOR);
     if (!form) return;
-    // Route pages on phones show the search as one line: open the form first.
-    form.querySelector<HTMLElement>("[data-search-expand]")?.click();
     requestAnimationFrame(() => {
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       form.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
@@ -82,7 +80,7 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid h-16 grid-cols-[auto_1fr] items-center gap-2 sm:gap-4 lg:grid-cols-[1fr_auto_1fr]">
+        <div className="grid h-14 grid-cols-[auto_1fr] items-center gap-2 sm:h-16 sm:gap-4 lg:grid-cols-[1fr_auto_1fr]">
           <Link href="/" aria-label={`${SITE.name}, ${t('nav.home')}`} className="justify-self-start">
             <Logo />
           </Link>
@@ -164,7 +162,7 @@ const Navbar = () => {
                   scrollToSearch();
                 }}
               >
-                <div className="flex h-16 shrink-0 items-center justify-between border-b pl-5 pr-3">
+                <div className="flex h-14 shrink-0 items-center justify-between border-b pl-5 pr-3 sm:h-16">
                   <Logo />
                   <SheetTitle className="sr-only">{t('nav.menu')}</SheetTitle>
                   <SheetClose
