@@ -296,9 +296,9 @@ The back office still works on a phone (simple menu), but it is not designed for
 ### Navigation
 
 **Public navbar** (updated 2026-10-31, P-12; Accueil added in RW-2 at the owner's request):
-- **Left:** logo (home). **Centre:** sections: Accueil, À propos, Contact. Vols (route index), Compagnies, Aéroports and État du réseau join when their pages exist (RW-5, E-1 → E-3 in [PLAN.md](PLAN.md#stage-4-publish)). **Right:** the **"Rechercher un vol"** button, then the language.
-- The button is the one way to the search. No nav link may lead to the same page ("Vols" returns only as the route index).
-- On a page with a search form (`id="recherche"`, from `SEARCH_ANCHOR` in `lib/links.ts`), the button scrolls back to the form and focuses "Départ", without motion if the visitor prefers reduced motion. Elsewhere it opens `/explore`.
+- **Left:** logo (home). **Centre:** sections: Accueil, À propos, Contact. Compagnies, Aéroports and État du réseau join when their pages exist (E-1 → E-3 in [PLAN.md](PLAN.md#stage-4-publish)). **Right:** the **"Rechercher un vol"** button, then the language.
+- The button is the one way to the search. No nav link may lead to the same page: since RW-5 the search and the route index are one page (`/vols`), so there is no "Vols" link.
+- On a page with a search form (`id="recherche"`, from `SEARCH_ANCHOR` in `lib/links.ts`), the button scrolls back to the form and focuses "Départ", without motion if the visitor prefers reduced motion. Elsewhere it opens `/vols`.
 - No request link: help is offered after a search finds nothing, on the contact page and in the footer.
 - On phones: logo, the button (icon only under 360 px), then the menu button. The menu opens from the right and holds the same sections and the language.
 
@@ -322,9 +322,15 @@ The back office still works on a phone (simple menu), but it is not designed for
 
 **Search results** (P-13; `components/search/`):
 - **Card:** airline name on top; its logo in a tile on the left (the code when there is none); times large with airport codes under them; duration, a line and "Direct" or "1 escale" in the middle; price ("dès 244 $", "relevé le 30 oct.") and "Voir le vol" on the right. On phones, price and button move to a bar at the bottom. The whole card is one link target (the button's area is stretched over the card).
-- **What stays off the card:** flight number, aircraft, stop names (in a tooltip) and sources. They are on the flight page. The date is not repeated when the visitor chose one; otherwise "Prochain vol : dim. 1 nov.".
+- **What stays off the card:** flight number, aircraft, stop names (in a tooltip) and sources. They are on the airline page. The date is not repeated when the visitor chose one; otherwise "Prochain vol : dim. 1 nov.".
 - **Sort tabs:** four cells (two by two on phones), each with the value of its first result, so the trade-off shows before clicking. The selected tab is filled with the brand colour.
-- **Flight page:** the times block first, then facts (duration, number, aircraft) and flying days, other departures as chips. Beside it, "Réserver ce vol": the price, then the booking request (travellers, class, name, phone or email). On phones that card becomes a fixed bar at the bottom that opens the same form. Never a link to the airline's booking page. A closed airport shows its warning above everything.
+
+**Route pages** (RW-5; `components/vols/`, see [ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)):
+- **Every page starts the same way:** breadcrumbs, one H1 ("Vols Kinshasa → Lubumbashi", "CAA : Kinshasa → Lubumbashi"), one answer line (airlines, flights this week, lowest price with its date), then "Mis à jour le" and "Horaires vérifiés le". Warnings (closed airport, suspended airline or route) come next, above everything else.
+- **Route page** (`/vols/a-b`): the search box filled with the route, the departures (the search results above), one row per airline (days, times, flights this week, latest price, link to its page), the return trip, then "À propos de ce trajet" (airports, time difference, sources) beside "Besoin d'aide pour ce trajet ?".
+- **Airline page** (`/vols/a-b/caa`): the departure in full (times block, then duration, number, aircraft and flying days). Above it, when the airline flies the route more than once that day, the departure times as chips; under it, the next 14 dates as chips. Then the airline's services on the route, its note, and every validated price with its fare name, kind, travel date, source and the date it was seen. Beside it, "Réserver ce vol": the price, then the booking request (travellers, class, name, phone or email). On phones that card becomes a fixed bar at the bottom that opens the same form. Never a link to the airline's booking page.
+- **Hub** (`/vols`): the search box, then the routes grouped by departure city, each with its airlines (sorted by name), flights this week and lowest price.
+- **Text, not glyphs:** "–" between city names in running text and breadcrumbs; the arrow is the `RouteTitle` icon (the brand font has no "→").
 
 **Back-office home** (B-1; `components/backoffice/DashboardHome.tsx`):
 - A row of four figures first. Each is a label, a value in the body sans with proportional figures, and one line of context; the whole tile links to where the work is. No change arrows without a real earlier figure to compare with.

@@ -97,9 +97,9 @@ Snapshot on **2026-10-31**:
 |---|---|
 | Security | ✅ Admin login, all write APIs protected, Next.js upgraded (4 critical vulnerabilities fixed), customer data no longer public. Deployed and verified in production (PR #1). |
 | Data model | ✅ Schema v3, route-centric, in production (**RW-1**, PR #8, 2026-10-31): routes with status and priority, airlines on routes, flights on dates, change history ([ROUTE-MODEL.md](ROUTE-MODEL.md)). |
-| Data | 🟡 **Production:** reference data loaded (2026-10-31); old data deleted with a backup (2026-10-31). On 2026-11-01, at the owner's request, the local preview data was copied in for the team to review: 586 upcoming flights on 44 airline-on-route records and 4 new routes (`scripts/push-preview-to-production.ts`). **CAA is published** (official timetable of 20 Oct, times confirmed by Skyscanner and FlightStats); **Air Congo is not** (its PDF disagrees with Skyscanner, see Waiting on). Each import is one action per route, so "Défaire" removes it. **Local:** the same preview data; the 5 Air Congo prices are pending, as in production. |
+| Data | 🟡 **Production:** reference data loaded (2026-10-31); old data deleted with a backup (2026-10-31). On 2026-11-01, at the owner's request, the local preview data was copied in for the team to review: 586 upcoming flights on 44 airline-on-route records and 4 new routes (`scripts/push-preview-to-production.ts`). **CAA is published** (official timetable of 20 Oct, times confirmed by Skyscanner and FlightStats). **Air Congo is published too** (owner, 2026-11-01: "the ones from the schedule, ignore Skyscanner for now"): its 20 airline-on-route records from the schedule PDF, by `scripts/publish-route-airlines.ts`, each logged in the route's history. All routes are still drafts, so their pages are not indexed yet (RW-5). Each import is one action per route, so "Défaire" removes it. **Local:** the same preview data; the 5 Air Congo prices are pending, as in production. |
 | Brand and design | ✅ **Clerikaa** in code (still served from `lebourgeois.cd`). Design system v1 merged (PR #5): tokens, font, logo, components, `/dashboard/design`. |
-| Public site | 🟡 Home rebuilt and rendered on the server (P-9, PR #6). Navbar search button, contact page and form fixes live (P-12, PR #7). Search results redesigned and read from dated flights, with a server-rendered flight page (P-13, PR #11). The search form and the request page are still rendered in the browser until RW-5. |
+| Public site | 🟡 Home rebuilt and rendered on the server (P-9, PR #6). Navbar search button, contact page and form fixes live (P-12, PR #7). Search results redesigned and read from dated flights, with a server-rendered flight page (P-13, PR #11). **RW-5 (PR #15, in review):** search and route pages are one structure under `/vols`, rendered on the server; `/explore` redirects there. The request page is still rendered in the browser. |
 | Leads | 🟡 Request form and contact form save to the database; both are visible in the back office (Demandes, Messages). Email alerts are built but on hold. |
 | Environments | ✅ Separate local dev database. Production migrations run automatically on deploy. |
 
@@ -210,7 +210,7 @@ Verified on 2026-10-30.
 - ✅ **S-9:** Schema v3, route-centric (= **RW-1**, PR #8, merged 2026-10-31).
 - ⬜ **S-2:** Source snapshot table (with C-4).
 - ⬜ **S-3:** Remove the old `FlightPattern.price` column (part of **RW-7**).
-- 🟡 **S-4:** Flight numbers stored as written (`BU1611`, `ET60`; Air Congo sells under ET numbers), shown `BU 1611`. Storage rules and database checks done in **RW-1**: one departure per route-airline, date and number, and per date and time (Air Congo's timetable has no numbers, so the number can be empty). Typed and shown in the back office since RW-3; public display with RW-5.
+- 🟡 **S-4:** Flight numbers stored as written (`BU1611`, `ET60`; Air Congo sells under ET numbers), shown `BU 1611`. Storage rules and database checks done in **RW-1**: one departure per route-airline, date and number, and per date and time (Air Congo's timetable has no numbers, so the number can be empty). Typed and shown in the back office since RW-3; shown publicly on the airline pages since RW-5.
 - 🟡 **S-5:** Change history (`ChangeLog`, **RW-1**): every back-office write to airports, airlines and schedules is recorded with who, when and the before/after values, in the same transaction. Since RW-4 (PR #12), each route page has a history panel: every workspace action with its detail, undone ones marked, plus single edits. The back-office-wide log is B-5.
 - ⬜ **S-6:** Airport coordinates → distances and flight durations.
 - ⬜ **S-7:** Baggage allowance and fare rules per airline.
@@ -251,7 +251,7 @@ Verified on 2026-10-30.
 **Today:**
 - The home page is rendered on the server (P-9). Search (`/explore`), flight detail, request form, contact and about are rendered in the browser (contact has its metadata on the server).
 - The FR/EN switch happens in the browser only.
-- Design system v1 is applied through tokens. Search, detail and request keep their old layouts until RW-5 and L-9.
+- Design system v1 is applied through tokens. Search and the flight page were replaced by the `/vols` pages in RW-5; the request page keeps its old layout until L-9.
 
 **Work items**
 - 🟡 **P-1:** Design research. Principles and references are in [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md#2-principles); a fuller competitor study is still to do. Study:
@@ -263,7 +263,7 @@ Verified on 2026-10-30.
 - ✅ **P-2:** Design system v1 (PR #5, merged 2026-10-30): tokens in a format a future mobile app can reuse (DTCG JSON), contrast checked in the build, Plus Jakarta Sans, Clerikaa logo, restyled primitives, product components (price, freshness, route title, airline mark, day strip), live reference at `/dashboard/design`. See [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md). Remaining components (search box, route card, schedule table…) come with RW-3 and RW-5.
 - ⬜ **P-3:** Server-rendered pages built from real data:
   - home (✅ done in P-9)
-  - route and route + airline pages (= **RW-5**)
+  - route and route + airline pages (= **RW-5**, 🟡 PR #15 in review)
   - airline, airport and network status pages (= **E-1 → E-3**)
 
   URL plan in [SEO-AEO-GEO.md](SEO-AEO-GEO.md#3-urls-and-site-structure).
@@ -496,6 +496,8 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | 2026-10-31 | Public contact address: the owner's email until a `clerikaa.com` mailbox exists. WhatsApp: the owner's number, +243 975 092 470. | Owner. |
 | 2026-11-01 | **One structure for search and pages** (owner proposal, agreed): `/explore` retired in RW-5; every search leads to `/vols/a-b`, which is both the result and the indexable route page; `/vols` is the hub with the search box; departures open on the airline page. Details in ROUTE-MODEL §7. | A search page and a route page with the same data would split visitors and search engines between two URLs. |
 | 2026-11-01 | **Preview data copied to production** for review: CAA published, Air Congo not. | The owner needs data to present; CAA's times are confirmed by two outside sources, Air Congo's are contradicted by one. |
+| 2026-11-01 | **Air Congo published from its schedule PDF** (owner: "ignore Skyscanner for now"). | The owner accepts the schedule as the source; the Skyscanner difference stays on the team's review list. |
+| 2026-11-01 | **RW-5 refinements confirmed** (owner): a departure opens on the airline page (`?date=`, no URL per departure); a pair without a published route renders "aucun vol connu" with `noindex`, out of the sitemap and never linked. Added in the build: `&heure=` picks one of several departures on the same day; a published route is indexed only once it has an airline published on it or an airport notice (ROUTE-MODEL §7 "first published"); the navbar keeps no "Vols" link since the button opens `/vols`. | CAA flies some routes three times a day, so a date alone cannot say which departure a result card meant. The back office lets a route be set to *Publiée* with nothing on it, which would index an empty page. |
 | 2026-11-01 | **"À jour" for a route** (B-1): an active airline published on it, every active airline checked within 7 days, flights known for the coming week. Flights must be known two weeks ahead, otherwise the route is listed under "Horaires à prolonger". | Makes the M3 exit test ("the owner manages at least 10 P1 routes") countable, and matches the 7-day verification window. |
 | 2026-11-01 | **Prices in the workspace** (RW-4): a price typed by the operator is validated at once; imported or copied prices wait in "À valider". A real price that went out of date is never deleted, it is history; delete is for typing mistakes. Price and note actions are batches, so "Défaire" reverts them too. | The operator is the reviewer; history feeds the price chart (P-7) and archive (F-8). |
 | 2026-10-31 | **Booking stays with Clerikaa.** "Réserver ce vol" sends a booking request to our team; the site never sends visitors to an airline's booking page. A "Réserver sur caacongo.com" button tried in P-13 was removed before merging. | Owner: "we are not here to promote the airline". The request is the product's lead. |
@@ -512,8 +514,8 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | What | Who | Blocks |
 |---|---|---|
 | Review the 5 Air Congo prices in production (Routes → filter "Prix à valider"). They are the "From USD" fares from air-congo.com; Kinshasa as origin is an assumption. | Owner | Prices shown publicly |
-| Review the imported data (a team member's first task): Air Congo first. Its PDF lists one Lubumbashi → Kinshasa flight at 19:10; Skyscanner shows 12:30 and 19:30. Correct it in the route workspace, then switch "Publiée" on per route. CAA: confirm against this week's timetable. | Team | Air Congo on the public site |
-| Confirm the RW-5 structure details marked ❓ in ROUTE-MODEL §7 (departures as `?date=` on the airline page; unpublished pairs render `noindex`) | Owner | RW-5 |
+| Review the imported data (a team member's first task). Air Congo is published from its schedule PDF (owner, 2026-11-01); the PDF lists one Lubumbashi → Kinshasa flight at 19:10 where Skyscanner shows 12:30 and 19:30, set aside for now. CAA: confirm against this week's timetable. | Team | Accuracy of the public pages |
+| Set the P1 routes to *Publiée* (route page in the back office), once their data is reviewed. Until then the `/vols` pages work for visitors but carry `noindex` and stay out of the sitemap. All 38 production routes (18 of them P1) were drafts on 2026-11-02. | Owner / team | RW-5 exit test (pages indexed) |
 | Training crawlers: allow or block ([SEO-AEO-GEO.md §8](SEO-AEO-GEO.md#8-ai-engines-specifically)) | Owner | F-6 |
 | Buy `clerikaa.com` (available on 2026-10-30) | Owner | Rebrand track, L-4 |
 | Resend account verification | Owner / Resend | L-4 |

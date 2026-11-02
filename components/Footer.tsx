@@ -3,17 +3,16 @@ import { Logo } from "@/components/brand/Logo";
 import Link from "next/link";
 import { useTranslation } from 'react-i18next';
 import { SITE } from "@/lib/site";
-import { requestHref } from "@/lib/links";
+import { requestHref, VOLS_HREF } from "@/lib/links";
 
-// Route, airline and airport links join the footer when their pages exist (RW-5, E-1, E-2):
-// links to search results don't help crawlers, links to real pages do.
+// Airline and airport links join the footer when their pages exist (E-1, E-2); the routes are on /vols.
 const Footer = () => {
   const { t } = useTranslation();
 
   const columns = [
     {
       title: t('footer.explore'),
-      links: [{ href: "/explore", label: t('footer.search') }],
+      links: [{ href: VOLS_HREF, label: t('footer.search') }],
     },
     {
       title: SITE.name,

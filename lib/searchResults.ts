@@ -19,7 +19,7 @@ export type Price = {
   sourceUrl: string | null;
 };
 
-export type Airline = { code: string; name: string; logo: string | null };
+export type Airline = { code: string; slug: string; name: string; logo: string | null };
 
 export type SearchFlight = {
   id: string;

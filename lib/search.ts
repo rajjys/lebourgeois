@@ -75,7 +75,7 @@ export async function searchRoute(fromCode: string, toCode: string, date: string
       date: { gte: new Date(`${start}T00:00:00Z`), lte: new Date(`${addDays(start, SEARCH_DAYS - 1)}T00:00:00Z`) },
       routeAirline: { ...(PUBLIC_FLIGHT.routeAirline as object), route: { originId: origin.id, destinationId: destination.id } },
     },
-    include: { routeAirline: { include: { airline: { select: { code: true, name: true, logo: true } } } } },
+    include: { routeAirline: { include: { airline: { select: { code: true, slug: true, name: true, logo: true } } } } },
     orderBy: [{ date: "asc" }, { departureTime: "asc" }],
   });
   const upcoming = rows.filter((f) => isUpcoming(f, local));
@@ -94,11 +94,9 @@ export async function searchRoute(fromCode: string, toCode: string, date: string
   return { origin: place(origin), destination: place(destination), date, today: local.day, services };
 }
 
-export type SearchResult = NonNullable<Awaited<ReturnType<typeof searchRoute>>>;
-
 /**
- * One departure, for its own page: the details that don't belong in a list (number, aircraft,
- * stops, other dates, sources). Null when the flight is unknown or not public.
+ * One departure, shown in full on its airline page: the details that don't belong in a list (number,
+ * aircraft, stops, other dates, sources). Null when the flight is unknown or not public.
  */
 export async function loadFlight(id: string, now: Date = new Date()) {
   const flight = await prisma.flight.findFirst({
@@ -139,7 +137,7 @@ export async function loadFlight(id: string, now: Date = new Date()) {
     aircraft: flight.aircraft,
     verifiedAt: (flight.verifiedAt ?? flight.routeAirline.verifiedAt)?.toISOString() ?? null,
     sourceUrl: flight.sourceUrl ?? flight.routeAirline.verifiedSourceUrl,
-    airline: { code: airline.code, name: airline.name, logo: airline.logo },
+    airline: { code: airline.code, slug: airline.slug, name: airline.name, logo: airline.logo },
     note: flight.routeAirline.note,
     origin: airportFacts(route.origin),
     destination: airportFacts(route.destination),

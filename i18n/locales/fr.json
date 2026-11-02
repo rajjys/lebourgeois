@@ -275,5 +275,90 @@
       "messageShort": "Le message est trop court (10 caractères minimum).",
       "messageLong": "Le message est trop long (3 000 caractères maximum)."
     }
+  },
+  "vols": {
+    "breadcrumb": {
+      "home": "Accueil",
+      "vols": "Vols"
+    },
+    "search": {
+      "date": "Date",
+      "dateHint": "Facultatif : sans date, les quatre prochaines semaines.",
+      "submit": "Rechercher",
+      "clearDate": "Toutes les dates"
+    },
+    "hub": {
+      "title": "Les vols intérieurs en RDC",
+      "intro": "Choisissez un trajet ou cherchez-le. Pour chaque compagnie : les jours de vol, les horaires vérifiés et les prix observés.",
+      "from": "Au départ de {{city}}",
+      "flights_one": "{{count}} vol cette semaine",
+      "flights_other": "{{count}} vols cette semaine",
+      "empty": "Aucun trajet n'est encore publié. Utilisez la recherche ci-dessus.",
+      "all": "Toutes les routes"
+    },
+    "route": {
+      "h1": "Vols",
+      "airlines_one": "{{count}} compagnie ({{names}})",
+      "airlines_other": "{{count}} compagnies ({{names}})",
+      "flights_one": "{{count}} vol cette semaine",
+      "flights_other": "{{count}} vols cette semaine",
+      "from": "dès {{price}} (observé le {{date}})",
+      "none": "Aucun vol connu sur ce trajet pour les quatre prochaines semaines.",
+      "updated": "Mis à jour le {{date}}",
+      "verified": "Horaires vérifiés le {{date}}",
+      "results": "Départs",
+      "byAirline": "Par compagnie",
+      "days": "Jours de vol",
+      "times_one": "Départ à {{times}}",
+      "times_other": "Départs à {{times}}",
+      "seeAirline": "Tout sur {{airline}} pour ce trajet",
+      "suspended": "{{airline}} a suspendu cette ligne.",
+      "ended": "{{airline}} ne dessert plus cette ligne.",
+      "airlineSuspended": "{{airline}} a suspendu ses vols.",
+      "noPriceYet": "Prix non relevé",
+      "return": "Le retour : {{from}} – {{to}}",
+      "about": "À propos de ce trajet",
+      "sameZone": "Les deux villes sont dans le même fuseau horaire.",
+      "sources": "Sources",
+      "helpTitle": "Besoin d'aide pour ce trajet ?",
+      "helpBody": "Donnez-nous la date et le nombre de voyageurs : notre équipe cherche avec vous et vous recontacte.",
+      "helpCta": "Demander de l'aide",
+      "noFlightsBody": "Nous n'avons pas d'horaire pour ce trajet en ce moment. Notre équipe peut chercher pour vous.",
+      "otherDate": "Aucun vol connu ce jour-là. Voici les quatre prochaines semaines.",
+      "badge": {
+        "SUSPENDED": "Ligne suspendue",
+        "ENDED": "Ligne arrêtée"
+      },
+      "timeAhead_one": "{{city}} a une heure d'avance sur {{other}} : les heures affichées sont locales à chaque aéroport.",
+      "timeAhead_other": "{{city}} a {{count}} heures d'avance sur {{other}} : les heures affichées sont locales à chaque aéroport."
+    },
+    "airline": {
+      "h1": "{{airline}} :",
+      "answer": "{{airline}} vole {{days}} sur ce trajet",
+      "answerNone": "{{airline}} n'a pas de vol connu sur ce trajet pour les quatre prochaines semaines.",
+      "compare": "Comparer avec les autres compagnies sur ce trajet",
+      "services": "Vols et horaires",
+      "departures": "Prochains départs",
+      "departure": "Départ du {{date}}",
+      "pick": "Choisissez une date pour voir ce départ et le réserver.",
+      "prices": "Prix observés",
+      "noPrices": "Aucun prix relevé pour cette compagnie sur ce trajet.",
+      "note": "Bon à savoir",
+      "fromDate": "vol du {{date}}",
+      "fromPrice": "à partir de",
+      "sameDay": "Heure de départ",
+      "moreDates": "Autres dates",
+      "fareKind": {
+        "FROM_PRICE": "Prix d'appel",
+        "QUOTE": "Prix pour un jour de voyage"
+      },
+      "oneWay": "aller simple",
+      "roundTrip": "aller-retour",
+      "travel": "voyage le {{date}}",
+      "observed": "Relevé le",
+      "source": "Source",
+      "flightNo": "Vol {{number}}",
+      "noDeparture": "Pas de départ connu dans les quatre prochaines semaines. Notre équipe peut chercher pour vous."
+    }
   }
 }
