@@ -21,32 +21,44 @@ import { cn } from "@/lib/utils/cn-utils";
 const WHATSAPP_DISPLAY = SITE.whatsapp.replace(/^\+(\d{3})(\d{3})(\d{3})(\d{3})$/, "+$1 $2 $3 $4");
 const WHATSAPP_HREF = `https://wa.me/${SITE.whatsapp.replace(/^\+/, "")}`;
 
-// ?sujet=erreur&page=/vols/... lets any page link to "report a mistake on this page".
+// ?sujet=erreur&page=/vols/...&titre=Kinshasa – Lubumbashi lets any page link to "report a mistake on
+// this page": the topic is chosen, the message starts with the page's name, and the path goes with the
+// message for the back office (Messages shows it as "Page : …").
 const TOPIC_PARAM: Record<string, ContactInput["topic"]> = {
   question: "QUESTION",
   erreur: "CORRECTION",
   compagnie: "AIRLINE",
 };
 
+/** The page's name from the link, on one line and short: it only starts the visitor's own message. */
+const pageTitle = (value: string | null) => (value ?? "").replace(/\s+/g, " ").trim().slice(0, 120);
+
 export function ContactView() {
   const { t } = useTranslation();
   const params = useSearchParams();
   const [sent, setSent] = useState<{ name: string; reply: string } | null>(null);
   const [failed, setFailed] = useState(false);
+  const initialTopic = TOPIC_PARAM[params.get("sujet") ?? ""] ?? "QUESTION";
+  const title = pageTitle(params.get("titre"));
+  // "Page : Kinshasa – Lubumbashi · CAA, mardi 10 novembre 2026\nCe qui est faux : "
+  const [prefill] = useState(() =>
+    title ? [t("contact.form.prefillPage", { page: title }), initialTopic === "CORRECTION" ? t("contact.form.prefillWrong") : ""].join("\n") : "",
+  );
 
   const {
     register,
     handleSubmit,
     reset,
     control,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<ContactInput>({
     resolver: zodResolver(ContactSchema),
     defaultValues: {
       name: "",
       reply: "",
-      topic: TOPIC_PARAM[params.get("sujet") ?? ""] ?? "QUESTION",
-      message: "",
+      topic: initialTopic,
+      message: prefill,
       pageUrl: params.get("page") ?? "",
       website: "",
     },
@@ -58,6 +70,12 @@ export function ContactView() {
   };
 
   async function onSubmit(values: ContactInput) {
+    // The started message alone says nothing: ask for the visitor's part.
+    const own = prefill && values.message.trim().startsWith(prefill.trim()) ? values.message.trim().slice(prefill.trim().length) : values.message;
+    if (own.trim().length < 3) {
+      setError("message", { message: "contact.errors.describe" }, { shouldFocus: true });
+      return;
+    }
     setFailed(false);
     try {
       const res = await fetch("/api/contact", {
@@ -156,9 +174,15 @@ export function ContactView() {
                   aria-invalid={!!errors.message}
                   aria-describedby="contact-message-msg"
                   {...register("message")}
+                  onFocus={(e) => {
+                    // Started message: write after it, not before.
+                    const field = e.currentTarget;
+                    if (prefill && field.value === prefill) field.setSelectionRange(prefill.length, prefill.length);
+                  }}
                 />
                 <p id="contact-message-msg" className={cn("text-xs", errors.message ? "text-danger" : "text-muted-foreground")}>
-                  {error("message") ?? (topic === "CORRECTION" ? t("contact.form.messageHint") : "")}
+                  {error("message") ??
+                    (topic === "CORRECTION" ? t(prefill ? "contact.form.messageHintPage" : "contact.form.messageHint") : "")}
                 </p>
               </div>
 

@@ -6,7 +6,8 @@
     "openMenu": "Ouvrir le menu",
     "menu": "Menu",
     "contact": "Contact",
-    "search": "Rechercher un vol"
+    "search": "Rechercher un vol",
+    "closeMenu": "Fermer le menu"
   },
   "home": {
     "hero": {
@@ -60,8 +61,8 @@
         "description": "Un horaire qui n'a pas été revérifié depuis 7 jours est marqué « À revérifier »."
       },
       "tickets": {
-        "title": "Pas de vente de billets",
-        "description": "Nous ne vendons pas de billets : vous réservez auprès de la compagnie ou de votre agence."
+        "title": "Nous informons, nous ne vendons pas",
+        "description": "« Réserver ce vol » nous envoie votre demande : une agence de voyage partenaire confirme le tarif et émet le billet."
       }
     },
     "about": {
@@ -175,7 +176,7 @@
       "source": "source",
       "departed": "Ce vol est déjà parti.",
       "airlineNote": "Note sur la compagnie",
-      "disclaimer": "Horaires et prix indicatifs. Clerikaa ne vend pas de billets : la compagnie ou une agence confirme le tarif.",
+      "disclaimer": "Horaires et prix indicatifs. Clerikaa informe et ne vend pas de billets : les réservations sont transmises à une agence de voyage partenaire, qui confirme le tarif et émet le billet.",
       "bookFlight": "Réserver ce vol",
       "bookIntro": "Envoyez votre demande : notre équipe vous recontacte pour confirmer le prix et la réservation.",
       "bookingFor": "Vol du {{date}}",
@@ -236,7 +237,7 @@
         },
         "booking": {
           "title": "Une demande de réservation",
-          "body": "Sur chaque départ, « Réserver ce vol » nous envoie votre demande avec votre numéro : notre équipe vous rappelle pour confirmer le prix et la réservation."
+          "body": "Sur chaque départ, « Réserver ce vol » nous envoie votre demande avec votre numéro. Nous vous rappelons pour la confirmer, puis nous la transmettons à une agence de voyage partenaire, qui émet le billet."
         }
       }
     },
@@ -272,7 +273,7 @@
         "published": "Certaines compagnies publient peu d'informations, par exemple pas de numéro de vol. Nous montrons ce qui est publié, rien de plus.",
         "time": "Les heures sont locales à chaque aéroport : la RDC a deux fuseaux horaires, Lubumbashi a une heure d'avance sur Kinshasa.",
         "team": "Nous sommes une petite équipe. Une erreur peut nous échapper : si vous en voyez une, dites-le-nous.",
-        "tickets": "Nous ne sommes pas une compagnie aérienne et nous ne vendons pas de billets en ligne : aucun paiement ne se fait sur ce site."
+        "tickets": "Nous ne sommes ni une compagnie aérienne ni une agence de voyage : notre métier est d'informer. Les réservations sont transmises à des agences partenaires, qui émettent les billets et en sont responsables. Aucun paiement ne se fait sur ce site."
       }
     },
     "intent": {
@@ -282,7 +283,7 @@
       "promises": {
         "dated": "Chaque information est datée.",
         "sourced": "Chaque horaire et chaque prix cite sa source.",
-        "corrected": "Une erreur signalée est vérifiée et corrigée.",
+        "corrected": "Chaque signalement est lu par une personne, et l'erreur est corrigée dès que nous avons l'information à jour.",
         "neutral": "Aucune compagnie n'est mise en avant."
       }
     },
@@ -306,8 +307,8 @@
           "cta": "Prendre contact"
         },
         "help": {
-          "title": "Aider le projet",
-          "body": "Relevés d'horaires, traduction, design, développement, idées ou retours d'expérience : dites-nous ce que vous aimeriez apporter.",
+          "title": "Aider sur le contenu",
+          "body": "Vous voyagez souvent, vous travaillez en agence ou dans un aéroport ? Aidez-nous à tenir à jour les horaires et les prix des trajets que vous connaissez.",
           "cta": "Proposer votre aide"
         }
       },
@@ -355,7 +356,7 @@
   "contact": {
     "title": "Nous contacter",
     "intro": "Une question, une information fausse ou dépassée, ou vous représentez une compagnie aérienne ? Écrivez-nous.",
-    "noTickets": "Nous ne vendons pas de billets en ligne. Pour réserver un vol, utilisez « Réserver ce vol » sur sa page ; pour modifier ou annuler un billet, adressez-vous à la compagnie.",
+    "noTickets": "Nous ne vendons pas de billets : notre métier est d'informer. Pour réserver, utilisez « Réserver ce vol » sur la page du vol : nous transmettons votre demande à une agence de voyage partenaire, qui émet le billet. Pour modifier ou annuler un billet, adressez-vous à l'agence qui l'a émis.",
     "form": {
       "name": "Votre nom",
       "reply": "Email ou numéro WhatsApp",
@@ -371,7 +372,10 @@
       "messageHint": "Pour une erreur, indiquez la page et ce qui est faux.",
       "submit": "Envoyer le message",
       "sending": "Envoi…",
-      "failed": "L'envoi a échoué. Réessayez, ou écrivez-nous à {{email}} ou sur WhatsApp au {{whatsapp}}."
+      "failed": "L'envoi a échoué. Réessayez, ou écrivez-nous à {{email}} ou sur WhatsApp au {{whatsapp}}.",
+      "prefillPage": "Page : {{page}}",
+      "prefillWrong": "Ce qui est faux : ",
+      "messageHintPage": "La page est déjà indiquée : écrivez ce qui est faux, et la bonne information si vous l'avez."
     },
     "sent": {
       "title": "Message envoyé",
@@ -392,7 +396,8 @@
       "reply": "Indiquez un email ou un numéro de téléphone valide.",
       "topic": "Choisissez un sujet.",
       "messageShort": "Le message est trop court (10 caractères minimum).",
-      "messageLong": "Le message est trop long (3 000 caractères maximum)."
+      "messageLong": "Le message est trop long (3 000 caractères maximum).",
+      "describe": "Écrivez ce qui est faux, en quelques mots."
     }
   },
   "vols": {
@@ -407,7 +412,8 @@
       "clearDate": "Effacer la date",
       "anyDate": "Toutes les dates",
       "flightDays": "Jour avec un vol connu",
-      "pickDate": "Date du vol"
+      "pickDate": "Date du vol",
+      "edit": "Modifier"
     },
     "hub": {
       "title": "Les vols intérieurs en RDC",
@@ -499,7 +505,7 @@
       "phoneError": "Indiquez un numéro de téléphone complet.",
       "submit": "Envoyer la demande",
       "sending": "Envoi…",
-      "reassurance": "Aucun paiement maintenant : notre équipe vous rappelle pour confirmer le prix et la réservation.",
+      "reassurance": "Aucun paiement maintenant. Nous vous rappelons pour confirmer le prix, puis une agence de voyage partenaire émet votre billet.",
       "failed": "L'envoi a échoué. Réessayez dans un instant.",
       "sentTitle": "Demande envoyée",
       "sentBody": "Merci ! Nous vous rappelons au {{phone}}.",

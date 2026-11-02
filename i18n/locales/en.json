@@ -6,7 +6,8 @@
     "openMenu": "Open menu",
     "menu": "Menu",
     "contact": "Contact",
-    "search": "Search flights"
+    "search": "Search flights",
+    "closeMenu": "Close menu"
   },
   "home": {
     "hero": {
@@ -60,8 +61,8 @@
         "description": "A schedule not re-checked for 7 days is marked \"Check again\"."
       },
       "tickets": {
-        "title": "No ticket sales",
-        "description": "We don't sell tickets: you book with the airline or your travel agency."
+        "title": "We inform, we do not sell",
+        "description": "\"Book this flight\" sends us your request: a partner travel agency confirms the fare and issues the ticket."
       }
     },
     "about": {
@@ -175,7 +176,7 @@
       "source": "source",
       "departed": "This flight has already left.",
       "airlineNote": "About this airline",
-      "disclaimer": "Indicative schedules and prices. Clerikaa does not sell tickets: the airline or an agency confirms the fare.",
+      "disclaimer": "Indicative schedules and prices. Clerikaa informs and does not sell tickets: bookings are passed to a partner travel agency, which confirms the fare and issues the ticket.",
       "bookFlight": "Book this flight",
       "bookIntro": "Send your request: our team gets back to you to confirm the price and the booking.",
       "bookingFor": "Flight on {{date}}",
@@ -236,7 +237,7 @@
         },
         "booking": {
           "title": "A booking request",
-          "body": "On each departure, \"Book this flight\" sends us your request with your number: our team calls you back to confirm the price and the booking."
+          "body": "On each departure, \"Book this flight\" sends us your request with your number. We call you back to confirm it, then pass it to a partner travel agency, which issues the ticket."
         }
       }
     },
@@ -272,7 +273,7 @@
         "published": "Some airlines publish little information, for example no flight numbers. We show what is published, nothing more.",
         "time": "Times are local to each airport: the DRC has two time zones, Lubumbashi is one hour ahead of Kinshasa.",
         "team": "We are a small team. A mistake can slip through: if you see one, tell us.",
-        "tickets": "We are not an airline and we do not sell tickets online: no payment is made on this site."
+        "tickets": "We are neither an airline nor a travel agency: our job is to inform. Bookings are passed to partner agencies, which issue the tickets and are responsible for them. No payment is made on this site."
       }
     },
     "intent": {
@@ -282,7 +283,7 @@
       "promises": {
         "dated": "Every piece of information is dated.",
         "sourced": "Every schedule and every price cites its source.",
-        "corrected": "A reported mistake is checked and corrected.",
+        "corrected": "Every report is read by a person, and the mistake is corrected as soon as we have the updated information.",
         "neutral": "No airline is promoted."
       }
     },
@@ -306,8 +307,8 @@
           "cta": "Get in touch"
         },
         "help": {
-          "title": "Help the project",
-          "body": "Collecting schedules, translation, design, development, ideas or travel experience: tell us what you would like to bring.",
+          "title": "Help with the content",
+          "body": "Do you travel often, or work at an agency or an airport? Help us keep the schedules and prices up to date on the routes you know.",
           "cta": "Offer your help"
         }
       },
@@ -355,7 +356,7 @@
   "contact": {
     "title": "Contact us",
     "intro": "A question, information that is wrong or out of date, or you represent an airline? Write to us.",
-    "noTickets": "We do not sell tickets online. To book a flight, use \"Book this flight\" on its page; to change or cancel a ticket, contact the airline.",
+    "noTickets": "We do not sell tickets: our job is to inform. To book, use \"Book this flight\" on the flight's page: we pass your request to a partner travel agency, which issues the ticket. To change or cancel a ticket, contact the agency that issued it.",
     "form": {
       "name": "Your name",
       "reply": "Email or WhatsApp number",
@@ -371,7 +372,10 @@
       "messageHint": "For a mistake, tell us the page and what is wrong.",
       "submit": "Send message",
       "sending": "Sending…",
-      "failed": "Sending failed. Try again, or write to us at {{email}} or on WhatsApp at {{whatsapp}}."
+      "failed": "Sending failed. Try again, or write to us at {{email}} or on WhatsApp at {{whatsapp}}.",
+      "prefillPage": "Page: {{page}}",
+      "prefillWrong": "What is wrong: ",
+      "messageHintPage": "The page is already filled in: write what is wrong, and the right information if you have it."
     },
     "sent": {
       "title": "Message sent",
@@ -392,7 +396,8 @@
       "reply": "Enter a valid email or phone number.",
       "topic": "Choose a subject.",
       "messageShort": "The message is too short (10 characters minimum).",
-      "messageLong": "The message is too long (3,000 characters maximum)."
+      "messageLong": "The message is too long (3,000 characters maximum).",
+      "describe": "Write what is wrong, in a few words."
     }
   },
   "vols": {
@@ -407,7 +412,8 @@
       "clearDate": "Clear the date",
       "anyDate": "Any date",
       "flightDays": "Day with a known flight",
-      "pickDate": "Flight date"
+      "pickDate": "Flight date",
+      "edit": "Change"
     },
     "hub": {
       "title": "Domestic flights in the DRC",
@@ -499,7 +505,7 @@
       "phoneError": "Enter a complete phone number.",
       "submit": "Send the request",
       "sending": "Sending…",
-      "reassurance": "No payment now: our team calls you back to confirm the price and the booking.",
+      "reassurance": "No payment now. We call you back to confirm the price, then a partner travel agency issues your ticket.",
       "failed": "Sending failed. Try again in a moment.",
       "sentTitle": "Request sent",
       "sentBody": "Thank you! We will call you back on {{phone}}.",

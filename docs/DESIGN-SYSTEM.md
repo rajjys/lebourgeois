@@ -301,7 +301,8 @@ The back office still works on a phone (simple menu), but it is not designed for
 - The button is the one way to the search. No nav link may lead to the same page: since RW-5 the search and the route index are one page (`/vols`), so there is no "Vols" link.
 - On a page with a search form (`id="recherche"`, from `SEARCH_ANCHOR` in `lib/links.ts`), the button scrolls back to the form and focuses "Départ", without motion if the visitor prefers reduced motion. Elsewhere it opens `/vols`.
 - No request link: help is offered after a search finds nothing, on the contact page and in the footer.
-- On phones: logo, the button (icon only under 360 px), then the menu button. The menu opens from the right and holds the same sections and the language.
+- On phones (P-16, owner 2026-11-02; below 640 px): logo, then a **round, light pink search icon** (40 px; light so the page's own pink button stays the one to press), then a **borderless round menu icon**. From 640 px the full "Rechercher un vol" button. On a route page where the search is folded into one line, the search icon opens it.
+- **Phone menu** (opens from the right, at most 20 rem): the logo and a close button in a 64 px header; the sections as large links with an icon, the current page on a light pink background; one full-width "Rechercher un vol" button (it closes the menu, then scrolls to the page's search if there is one); at the bottom, a **Français | English switch** (two buttons, `aria-pressed`), WhatsApp and "Signaler une erreur" (with the current page). The panel itself takes focus when it opens, so no control shows a focus ring after a tap.
 
 **Back-office sidebar** (2026-10-31): grouped, with icons that match their meaning.
 | Group | Items |
@@ -328,8 +329,9 @@ The back office still works on a phone (simple menu), but it is not designed for
 
 **Route pages** (RW-5; `components/vols/`, see [ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)):
 - **Every page starts the same way:** breadcrumbs, one H1 ("Vols Kinshasa → Lubumbashi", "CAA : Kinshasa → Lubumbashi"), one answer line (airlines, flights this week, lowest price with its date). Warnings (closed airport, suspended airline or route) come next, above everything else.
-- **Every page ends the same way** (`PageFacts`, owner 2026-11-02): "Mis à jour le · Horaires vérifiés le · Sources", then "Une information fausse ou dépassée ? Signalez-la" (the contact form on that topic, with the page) and the disclaimer. Dates are `<time>` elements.
-- **Route page** (`/vols/a-b`): "Par compagnie" first, one card per airline that is a single link (days, times, flights this week, latest price); then "Départs" with the search box filled with the route and the results; the return trip; then "À propos de ce trajet" (airports, time difference) beside "Besoin d'aide pour ce trajet ?".
+- **Every page ends the same way** (`PageFacts`, owner 2026-11-02): "Mis à jour le · Horaires vérifiés le · Sources", then "Une information fausse ou dépassée ? Signalez-la" and the disclaimer. Dates are `<time>` elements. The link opens the contact form on "Signaler une erreur" with the **message started** ("Page : Kinshasa – Lubumbashi · CAA, mardi 10 novembre 2026, 08:00 / Ce qui est faux : ", cursor after it; `?sujet=erreur&page=…&titre=…`); the started text alone cannot be sent.
+- **Route page** (`/vols/a-b`, order by the owner, 2026-11-02): the answer and alerts; the **search box** filled with the route; "Par compagnie", one card per airline that is a single link (days, flights this week, latest price; the departure times from 640 px only, so cards keep one height on phones); "Départs" and the results; the return trip; then "À propos de ce trajet" (airports, time difference) beside "Besoin d'aide pour ce trajet ?".
+- **Search on a route page, phones** (`RouteSearch` with `summary`): one line, "Kinshasa → Lubumbashi · Toutes les dates · Modifier", that opens the full form and focuses "Départ". The full form is about 430 px tall at 390 px wide; folded, the first airline card stays on the first screen. From 768 px the form is always open, on one row.
 - **Airline page** (`/vols/a-b/caa`): the departure in full (times block, then duration, number, aircraft and flying days). Above it, when the airline flies the route more than once that day, the departure times as chips; under it, the next 14 dates as chips. Then the airline's services on the route, its note, and every validated price with its fare name, kind, travel date, source and the date it was seen. Beside it, "Réserver ce vol" (see Booking request below). Never a link to the airline's booking page.
 - **Hub** (`/vols`): the search box, then the routes grouped by departure city, each with its airlines (sorted by name), flights this week and lowest price.
 - **Booking request** (`components/search/BookingRequest.tsx`, P-15): a header naming the departure ("CAA · lun. 9 nov. · 08:00 – 12:30 · BU 1633"); the price with its date when one was seen, otherwise one line saying the team gives it on the call; travellers (`Stepper`, 1 to 9) and class as two label-left rows; name; **phone only**, with "Nous vous rappelons à ce numéro, par appel ou sur WhatsApp"; errors under the field they concern; the button, then "Aucun paiement maintenant…". On phones: a bar fixed at the bottom with one centred button; it opens the form as a **sheet from the bottom**, fields scrolling and the button pinned to the bottom edge (safe-area aware).
@@ -414,6 +416,8 @@ A native app is item **P-8** in the plan, and only if usage justifies it. The sy
 | 2026-10-31 | Back-office sidebar grouped and dockable | Owner. |
 | 2026-11-02 | Phones get sheets from the bottom, with the main button on the bottom edge (booking request, calendar); counts use − and +; forms ask for a phone, not an email | Owner: the centred dialog left empty space under its button; the native date input looked basic. |
 | 2026-11-02 | Page dates and sources go at the bottom of route and airline pages | Owner. |
+| 2026-11-02 | Route page: search box, then airlines, then departures; on phones the search is one line that opens the form | Owner chose the order; the one line keeps the airlines on the first screen of a phone. |
+| 2026-11-02 | Phone navbar: round search icon, borderless menu icon, a fuller menu (large links, one button, language switch, WhatsApp, report) | Owner: the navbar did not look premium on phones (review in P-15). |
 
 **Changelog**
 - **v1 (2026-10-30):**
@@ -431,3 +435,7 @@ A native app is item **P-8** in the plan, and only if usage justifies it. The sy
   - `Stepper` (counts with − and +), `DateField` (our calendar, sheet on phones), `PageFacts` (dates, sources and "Signaler une erreur" at the end of route and airline pages)
   - booking request redesigned, phone only; phones get it as a sheet from the bottom
   - `/about` rebuilt (problem, offer, method, limits, intention, participation); footer columns Explorer · Clerikaa · Participer
+- **v1.3 (2026-11-02, P-16):**
+  - phone navbar and menu redesigned; `SheetContent` takes `showClose={false}` when the content has its own close button
+  - `RouteSearch` `summary`: the search as one line on phones
+  - "Signaler une erreur" starts the contact message with the page

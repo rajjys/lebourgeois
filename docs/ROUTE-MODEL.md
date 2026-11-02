@@ -421,12 +421,13 @@ Why: Google removes a URL from its index when it returns an error, and treats a 
 |---|---|---|
 | Answer | One sentence: who flies, how often, from what price, as of when. "2 compagnies (CAA, Air Congo) · 9 vols par semaine · dès 244 $ (observé le 30 oct.)" | Computed |
 | Status banners | Airport closed or restricted; airline suspended | Airport, Airline |
-| Per airline ("Par compagnie", first since 2026-11-02, owner) | Day strip, usual times, flights this week, latest price with its date, link to the airline page | Computed from Flight, FareObservation |
-| Search box and departures | The search filled with the route (its calendar marks the days with a flight), then the departures of the next four weeks or of the chosen date | Flight |
+| Search box (after the answer since 2026-11-02, owner) | The search filled with the route; its calendar marks the days with a flight. On phones, one line that opens the form | Flight |
+| Per airline ("Par compagnie", before the departures, owner 2026-11-02) | Day strip, usual times (not on phones), flights this week, latest price with its date, link to the airline page | Computed from Flight, FareObservation |
+| Departures | The departures of the next four weeks or of the chosen date | Flight |
 | Return trip | Short summary of the return route, with a link (only when that page is worth a visit) | Reverse Route |
 | About this route | Editorial note; airport names; time difference | Route.note, Airport |
 | Help | "Besoin d'aide pour ce trajet ?" link to the request form, prefilled with the route | Request |
-| Sources and freshness (last, owner 2026-11-02) | "Mis à jour le", "Horaires vérifiés le", source links, "Signaler une erreur" | updatedAt, verifiedAt, sourceUrl |
+| Sources and freshness (last, owner 2026-11-02) | "Mis à jour le", "Horaires vérifiés le", source links, "Signaler une erreur" (opens the contact form with the message started with the page and the day) | updatedAt, verifiedAt, sourceUrl |
 
 ## 8. Which routes first
 
