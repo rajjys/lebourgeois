@@ -421,13 +421,12 @@ Why: Google removes a URL from its index when it returns an error, and treats a 
 |---|---|---|
 | Answer | One sentence: who flies, how often, from what price, as of when. "2 compagnies (CAA, Air Congo) · 9 vols par semaine · dès 244 $ (observé le 30 oct.)" | Computed |
 | Status banners | Airport closed or restricted; airline suspended | Airport, Airline |
-| Next departures | Next 14 days: date, airline, flight, times, stops | Flight |
-| Weekly pattern | Per airline: day strip, usual times, flight numbers | Computed from Flight |
-| Prices | Per airline and fare: amount, observation date, source | FareObservation |
-| Return trip | Short summary of the return route, with a link | Reverse Route |
+| Per airline ("Par compagnie", first since 2026-11-02, owner) | Day strip, usual times, flights this week, latest price with its date, link to the airline page | Computed from Flight, FareObservation |
+| Search box and departures | The search filled with the route (its calendar marks the days with a flight), then the departures of the next four weeks or of the chosen date | Flight |
+| Return trip | Short summary of the return route, with a link (only when that page is worth a visit) | Reverse Route |
 | About this route | Editorial note; airport names; time difference | Route.note, Airport |
-| Sources and freshness | "Vérifié le …", source links | verifiedAt, sourceUrl |
 | Help | "Besoin d'aide pour ce trajet ?" link to the request form, prefilled with the route | Request |
+| Sources and freshness (last, owner 2026-11-02) | "Mis à jour le", "Horaires vérifiés le", source links, "Signaler une erreur" | updatedAt, verifiedAt, sourceUrl |
 
 ## 8. Which routes first
 
@@ -476,7 +475,7 @@ Each phase is one PR, off `main`, never stacked. Each has an exit test. The IDs 
 | **RW-2** | Network board | `/dashboard/routes`: list, filters, computed next flight, "known until" and freshness; create a route (pick two airports, slug generated) | All draft and published routes are listed with correct computed values. A new route can be created in under 30 seconds. | ✅ PR #9 |
 | **RW-3** | Route workspace: schedules | Calendar (8 weeks × 7 days), click to edit, *Appliquer un horaire* with preview, *Copier une semaine*, *Annuler*, *Tout est vérifié*, undo by batch, both directions | The owner's example (§6.2) is done in under 2 minutes with no repeated typing. Undo restores the previous state. | ✅ PR #10 |
 | **RW-4** | Route workspace: prices and notes | *+ Prix observé* (3 fields), price list per airline, editorial notes, history panel; operator entries auto-approved; pending imports shown separately | A price change is logged in under 20 seconds. The 35 pending fares can be reviewed from the workspace. | ✅ PR #12 (the old copied fares were deleted on 2026-10-31; 5 Air Congo fares wait for the owner's review) |
-| **RW-5** | Public route pages | `/vols` (hub with search), `/vols/[route]` (route page and search result, `?date=` filter), `/vols/[route]/[airline]` (airline page, departure via `?date=`, booking request) rendered on the server from the model, following [SEO-AEO-GEO.md](SEO-AEO-GEO.md); search everywhere leads to these pages; `/explore` retired with 301s; sitemap from the database; request form linked to routes | P1 routes with real data are live, pass the page checklist and appear in the sitemap. | 🟡 built, in review (PR #15). Live and indexed once routes are set to *Publiée*: all production routes are still drafts |
+| **RW-5** | Public route pages | `/vols` (hub with search), `/vols/[route]` (route page and search result, `?date=` filter), `/vols/[route]/[airline]` (airline page, departure via `?date=`, booking request) rendered on the server from the model, following [SEO-AEO-GEO.md](SEO-AEO-GEO.md); search everywhere leads to these pages; `/explore` retired with 301s; sitemap from the database; request form linked to routes | P1 routes with real data are live, pass the page checklist and appear in the sitemap. | ✅ PR #15. All production routes set to *Publiée* on 2026-11-02; 34 indexable, the 4 Kalemie and Muanda routes stay `noindex` until an airline is published on them |
 | **RW-6** | Helpers | "Also serves" for flights with stops; copy to the return route; keyboard shortcuts; bulk verify | Entering a flight with a stop on all three routes it serves takes one action. | ⬜ |
 | **RW-7** | Clean-up | Remove `FlightPattern` screens and API, the old `/explore` pages (with 301s) and the `price` column (S-3) | No code reads `FlightPattern`. Old URLs redirect. | 🟡 screens, API and public reads removed in P-13 (only the legacy clean-up script still names the table); `/explore` replaced by redirects and the browser search API (`/api/flights/search`) removed in RW-5; the table drop remains |
 

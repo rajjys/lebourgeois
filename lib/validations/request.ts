@@ -16,3 +16,13 @@ export const RequestSchema = z.object({
 
 export type RequestInput = z.infer<typeof RequestSchema>;
 export type RequestFields = "clientName" | "clientEmail" | "clientPhone" | "prefersWhatsapp" | "flightNumber" | "originCity" | "destinationCity" | "travelDate" | "travelClass" | "travelers" | "source";
+
+/**
+ * A number our team can call: digits with the usual separators, 9 to 15 digits (E.164 allows 15;
+ * a Congolese number is 9 after +243, 10 with the leading 0).
+ */
+export const isPhoneNumber = (value: string) => {
+  const v = value.trim();
+  const digits = v.replace(/\D/g, "").length;
+  return /^\+?[\d\s().-]+$/.test(v) && digits >= 9 && digits <= 15;
+};

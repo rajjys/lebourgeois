@@ -14,8 +14,8 @@ import { cn } from "@/lib/utils/cn-utils";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { AirportCombobox } from "@/components/AirportCombobox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Stepper } from "@/components/ds/Stepper";
+import { isPhoneNumber } from "@/lib/validations/request";
 import { enUS, fr } from "date-fns/locale";
 import React from 'react'
 import { createRequest } from "@/services/requests";
@@ -52,12 +52,9 @@ const RequestTicket = () => {
     name: "",
     from: searchParams.get("from") ?? "",
     to: searchParams.get("to") ?? "",
-    travelers: searchParams.get("travelers") ?? "1",
+    travelers: Math.min(9, Math.max(1, Number(searchParams.get("travelers")) || 1)),
     travelClass: searchParams.get("travelClass") ?? "economy",
-    contactMethod: "phone",
-    email: "",
     phone: "",
-    isWhatsapp: true,
   };
 });
 
@@ -66,10 +63,8 @@ const RequestTicket = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const missingContact =
-      formData.contactMethod === "email" ? !formData.email : !formData.phone;
-
-    if (!formData.name || !formData.from || !formData.to || !departureDate || !formData.travelClass || missingContact) {
+    // A phone number is enough to call back (owner, 2026-11-02): no email, no WhatsApp question.
+    if (!formData.name || !formData.from || !formData.to || !departureDate || !formData.travelClass || !isPhoneNumber(formData.phone)) {
       toast.error(t("request.form.missingFields", { defaultValue: "Please fill in all required fields" }));
       return;
     }
@@ -83,15 +78,16 @@ const RequestTicket = () => {
     try {
       await createRequest({
         clientName: formData.name,
-        clientEmail: formData.contactMethod === "email" ? formData.email : null,
-        clientPhone: formData.contactMethod === "phone" ? formData.phone : null,
-        prefersWhatsapp: formData.isWhatsapp,
+        clientEmail: null,
+        clientPhone: formData.phone.trim(),
+        // The team calls or writes on WhatsApp, whichever answers (the schema's default).
+        prefersWhatsapp: true,
         flightNumber: "TBD", // To be determined - this is a general request
         originCity: formData.from,
         destinationCity: formData.to,
         travelDate: departureDate,
         travelClass: formData.travelClass as "economy" | "business" | "first",
-        travelers: Number(formData.travelers),
+        travelers: formData.travelers,
         source: "request-form",
       });
 
@@ -104,12 +100,9 @@ const RequestTicket = () => {
         name: "",
         from: "",
         to: "",
-        travelers: "1",
+        travelers: 1,
         travelClass: "economy",
-        contactMethod: "phone",
-        email: "",
         phone: "",
-        isWhatsapp: true,
       });
       setDepartureDate(undefined);
       setReturnDate(undefined);
@@ -238,21 +231,14 @@ const RequestTicket = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="text-muted-foreground" htmlFor="travelers">{t('request.form.travelers')}</Label>
-                    <Select
-                      value={formData.travelers}
-                      onValueChange={(value) => setFormData({ ...formData, travelers: value })}
-                    >
-                      <SelectTrigger id="travelers" className="font-medium">
-                        <SelectValue placeholder={t('request.form.travelers')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                          <SelectItem key={num} value={num.toString()}>
-                            {num}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="flex h-10 items-center">
+                      <Stepper
+                        id="travelers"
+                        value={formData.travelers}
+                        onChange={(travelers) => setFormData({ ...formData, travelers })}
+                        labels={{ decrease: t("vols.book.removeTraveler"), increase: t("vols.book.addTraveler") }}
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="travelClass" className="text-muted-foreground">{t('request.form.class')} *</Label>
@@ -273,71 +259,25 @@ const RequestTicket = () => {
                   </div>
                 </div>
 
-                {/* Contact Info */}
-                <div className="space-y-4 pt-4 border-t border-border">
-                  <div className="space-y-3">
-                    <Label className="text-muted-foreground">{t("request.form.preferredContact")}</Label>
-                    <RadioGroup
-                      value={formData.contactMethod}
-                      onValueChange={(value) =>
-                        setFormData({ ...formData, contactMethod: value as "email" | "phone" })
-                      }
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-                    >
-                      <div className="flex items-center gap-2 rounded-md border border-border p-3">
-                        <RadioGroupItem value="email" id="contact-email" />
-                        <Label htmlFor="contact-email" className="cursor-pointer">
-                          {t("request.form.contactByEmail")}
-                        </Label>
-                      </div>
-                      <div className="flex items-center gap-2 rounded-md border border-border p-3">
-                        <RadioGroupItem value="phone" id="contact-phone" />
-                        <Label htmlFor="contact-phone" className="cursor-pointer">
-                          {t("request.form.contactByPhone")}
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-
-                  {formData.contactMethod === "email" ? (
-                    <div className="space-y-2">
-                      <Label className="text-muted-foreground" htmlFor="email">{t("request.form.email")} *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder={t("request.form.emailPlaceholder")}
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        required
-                      />
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Label className="text-muted-foreground" htmlFor="phone">{t("request.form.phone")} *</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder={t("request.form.phonePlaceholder")}
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        required
-                      />
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id="isWhatsapp"
-                          checked={formData.isWhatsapp}
-                          onCheckedChange={(checked) =>
-                            setFormData({ ...formData, isWhatsapp: Boolean(checked) })
-                          }
-                        />
-                        <Label htmlFor="isWhatsapp">{t("request.form.isWhatsapp")}</Label>
-                      </div>
-                    </div>
-                  )}
+                {/* Contact: a phone number is enough */}
+                <div className="space-y-2 border-t border-border pt-4">
+                  <Label className="text-muted-foreground" htmlFor="phone">{t("request.form.phone")} *</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder={t("request.form.phonePlaceholder")}
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    aria-describedby="phone-hint"
+                    required
+                  />
+                  <p id="phone-hint" className="text-xs text-muted-foreground">{t("vols.book.phoneHint")}</p>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full">
-                  {t('request.form.submit')}
+                <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? t("vols.book.sending") : t('request.form.submit')}
                 </Button>
               </form>
             </CardContent>

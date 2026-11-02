@@ -13,9 +13,10 @@ import { BookingRequest } from "@/components/search/BookingRequest";
 import { AirlineTile, useStopsLabel } from "@/components/search/ResultCard";
 import { Breadcrumbs } from "@/components/vols/Breadcrumbs";
 import { DepartureDetail } from "@/components/vols/DepartureDetail";
+import { PageFacts } from "@/components/vols/PageFacts";
 import { formatDuration } from "@/lib/flights";
 import { airlineRouteHref, requestHref, VOLS_HREF } from "@/lib/links";
-import { formatDateLong, formatDateShort, formatDayMonth, formatDayMonthYear, formatFlightNumber, formatPrice, formatWeekdays, shortAirlineName as shortName, WEEKDAYS } from "@/lib/format";
+import { formatDateLong, formatDateShort, formatDayMonth, formatFlightNumber, formatPrice, formatWeekdays, shortAirlineName as shortName, WEEKDAYS } from "@/lib/format";
 import type { AirlinePage } from "@/lib/routePages";
 import { cn } from "@/lib/utils/cn-utils";
 
@@ -74,18 +75,6 @@ export function AirlinePageView({ data }: { data: AirlinePage }) {
           <RouteTitle as="span" origin={origin.city} destination={destination.city} />
         </h1>
         <p className="text-lg text-neutral-700">{answer}</p>
-        <p className="text-sm text-muted-foreground">
-          {t("vols.route.updated", { date: formatDayMonthYear(new Date(data.updatedAt)) })}
-          {data.verifiedAt && <> · {t("vols.route.verified", { date: formatDayMonthYear(new Date(data.verifiedAt)) })}</>}
-          {data.verifiedSource && (
-            <>
-              {" · "}
-              <a href={data.verifiedSource.url} target="_blank" rel="noopener noreferrer" className="text-link underline">
-                {t("explore.detail.source")} : {data.verifiedSource.host}
-              </a>
-            </>
-          )}
-        </p>
         <Link href={routeLink} className="inline-flex items-center gap-1 text-sm font-medium text-link hover:underline">
           <ArrowLeft className="size-4" aria-hidden="true" />
           {t("vols.airline.compare")}
@@ -108,7 +97,7 @@ export function AirlinePageView({ data }: { data: AirlinePage }) {
         )}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+      <div className={cn("grid gap-8 lg:items-start", f && "lg:grid-cols-[minmax(0,1fr)_21rem]")}>
         <div className="min-w-0 space-y-8">
           <section aria-labelledby="departures-title" className="space-y-4">
             <h2 id="departures-title" className="text-xl font-bold">
@@ -247,11 +236,14 @@ export function AirlinePageView({ data }: { data: AirlinePage }) {
           </section>
         </div>
 
-        <aside className="space-y-4 lg:sticky lg:top-20">
-          {f && <BookingRequest flight={f} />}
-          <p className="text-xs text-muted-foreground">{t("explore.detail.disclaimer")}</p>
-        </aside>
+        {f && (
+          <aside className="lg:sticky lg:top-20">
+            <BookingRequest flight={f} />
+          </aside>
+        )}
       </div>
+
+      <PageFacts updatedAt={data.updatedAt} verifiedAt={data.verifiedAt} sources={data.verifiedSource ? [data.verifiedSource] : []} />
     </div>
   );
 }

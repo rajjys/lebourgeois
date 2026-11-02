@@ -14,10 +14,11 @@ import { AirportStatusAlert } from "@/components/search/AirportStatusNotice";
 import { AirlineTile, ResultCard } from "@/components/search/ResultCard";
 import { SortTabs } from "@/components/search/SortTabs";
 import { Breadcrumbs } from "@/components/vols/Breadcrumbs";
+import { PageFacts } from "@/components/vols/PageFacts";
 import { RouteSearch } from "@/components/vols/RouteSearch";
 import { sortServices, type SortKey } from "@/lib/searchResults";
 import { airlineRouteHref, requestHref, VOLS_HREF } from "@/lib/links";
-import { formatDateLong, formatDayMonth, formatDayMonthYear, formatPrice, formatWeekdays, shortAirlineName as shortName, WEEKDAYS } from "@/lib/format";
+import { formatDateLong, formatDayMonth, formatPrice, formatWeekdays, shortAirlineName as shortName, WEEKDAYS } from "@/lib/format";
 import type { RoutePage } from "@/lib/routePages";
 
 const day = (d: string) => new Date(`${d}T00:00:00Z`);
@@ -30,8 +31,9 @@ const offset = (zone: string) => {
 };
 
 /**
- * The route page (docs/ROUTE-MODEL.md §7): the answer first, then the departures (it is also
- * the search result), then each airline, the return trip, the route itself and the sources.
+ * The route page (docs/ROUTE-MODEL.md §7): the answer first, then each airline, then the search box
+ * and the departures (it is also the search result), the return trip, the route itself, and last the
+ * dates and sources.
  * Rendered on the server with its data, so every fact is in the HTML.
  */
 export function RoutePageView({ data }: { data: RoutePage }) {
@@ -73,11 +75,6 @@ export function RoutePageView({ data }: { data: RoutePage }) {
           <RouteTitle as="span" origin={origin.city} destination={destination.city} />
         </h1>
         <p className="text-lg text-neutral-700">{answer}</p>
-        <p className="text-sm text-muted-foreground">
-          {[data.updatedAt && t("vols.route.updated", { date: formatDayMonthYear(new Date(data.updatedAt)) }), data.verifiedAt && t("vols.route.verified", { date: formatDayMonthYear(new Date(data.verifiedAt)) })]
-            .filter(Boolean)
-            .join(" · ")}
-        </p>
       </header>
 
       <div className="space-y-3">
@@ -98,7 +95,58 @@ export function RoutePageView({ data }: { data: RoutePage }) {
           ))}
       </div>
 
-      <RouteSearch initialFrom={origin.code} initialTo={destination.code} initialDate={data.date} today={data.today} />
+      {data.airlines.length > 0 && (
+        // First after the answer (owner, 2026-11-02): travellers here pick an airline more than an hour,
+        // and comparing airlines is what the site is for.
+        <section aria-labelledby="airlines-title" className="space-y-3">
+          <h2 id="airlines-title" className="text-xl font-bold">
+            {t("vols.route.byAirline")}
+          </h2>
+          <ul className="space-y-3">
+            {data.airlines.map((a) => (
+              <li key={a.code}>
+                <Link
+                  href={airlineRouteHref(data.slug, a.slug, a.next?.date)}
+                  className="group flex flex-wrap items-start gap-x-4 gap-y-3 rounded-2xl border bg-card p-4 transition-colors hover:border-primary sm:items-center sm:gap-x-5 sm:p-5"
+                >
+                  <AirlineTile code={a.code} logo={a.logo} />
+                  <div className="min-w-0 flex-1 space-y-1.5">
+                    <p className="flex flex-wrap items-center gap-2 font-semibold">
+                      {a.name}
+                      {a.routeStatus !== "ACTIVE" && <Badge variant="warning">{t(`vols.route.badge.${a.routeStatus}`)}</Badge>}
+                    </p>
+                    {a.days.length > 0 && (
+                      <DayStrip days={a.days} letters={letters} label={t("explore.results.flies", { days: formatWeekdays(a.days) })} />
+                    )}
+                    <p className="text-sm text-muted-foreground">
+                      {[a.times.length && t("vols.route.times", { count: a.times.length, times: a.times.join(", ") }), t("vols.route.flights", { count: a.flightsThisWeek })]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                  </div>
+                  <div className="flex w-full flex-col items-start gap-1.5 border-t pt-3 sm:w-auto sm:items-end sm:border-0 sm:pt-0">
+                    {a.price ? (
+                      <PriceTag
+                        amount={a.price.amount}
+                        observedAt={new Date(a.price.observedAt)}
+                        kind={a.price.kind === "FROM_PRICE" ? "from" : "quote"}
+                        labels={{ from: t("explore.results.from"), observed: t("explore.results.seenOn") }}
+                        className="sm:items-end"
+                      />
+                    ) : (
+                      <span className="text-sm text-muted-foreground">{t("vols.route.noPriceYet")}</span>
+                    )}
+                    <span className="inline-flex items-center gap-1 text-sm font-medium text-link group-hover:underline">
+                      {t("vols.route.seeAirline", { airline: shortName(a.name) })}
+                      <ArrowRight className="size-4" aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section aria-labelledby="results-title" className="space-y-4">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -109,6 +157,7 @@ export function RoutePageView({ data }: { data: RoutePage }) {
             {dated ? t("explore.results.onDate", { date: formatDateLong(day(data.date!)) }) : t("explore.results.window")}
           </p>
         </div>
+        <RouteSearch initialFrom={origin.code} initialTo={destination.code} initialDate={data.date} today={data.today} flightDates={data.flightDates} />
         {data.date && !dated && <p className="text-sm text-muted-foreground">{t("vols.route.otherDate")}</p>}
         {results.length > 0 ? (
           <>
@@ -130,52 +179,6 @@ export function RoutePageView({ data }: { data: RoutePage }) {
           </div>
         )}
       </section>
-
-      {data.airlines.length > 0 && (
-        <section aria-labelledby="airlines-title" className="space-y-3">
-          <h2 id="airlines-title" className="text-xl font-bold">
-            {t("vols.route.byAirline")}
-          </h2>
-          <ul className="divide-y rounded-2xl border bg-card">
-            {data.airlines.map((a) => (
-              <li key={a.code} className="flex flex-wrap items-center gap-x-5 gap-y-3 p-4 sm:p-5">
-                <AirlineTile code={a.code} logo={a.logo} />
-                <div className="min-w-0 flex-1 space-y-1.5">
-                  <p className="flex flex-wrap items-center gap-2 font-semibold">
-                    {a.name}
-                    {a.routeStatus !== "ACTIVE" && <Badge variant="warning">{t(`vols.route.badge.${a.routeStatus}`)}</Badge>}
-                  </p>
-                  {a.days.length > 0 && (
-                    <DayStrip days={a.days} letters={letters} label={t("explore.results.flies", { days: formatWeekdays(a.days) })} />
-                  )}
-                  <p className="text-sm text-muted-foreground">
-                    {[a.times.length && t("vols.route.times", { count: a.times.length, times: a.times.join(", ") }), t("vols.route.flights", { count: a.flightsThisWeek })]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </p>
-                </div>
-                <div className="flex flex-col items-start gap-2 sm:items-end">
-                  {a.price ? (
-                    <PriceTag
-                      amount={a.price.amount}
-                      observedAt={new Date(a.price.observedAt)}
-                      kind={a.price.kind === "FROM_PRICE" ? "from" : "quote"}
-                      labels={{ from: t("explore.results.from"), observed: t("explore.results.seenOn") }}
-                      className="sm:items-end"
-                    />
-                  ) : (
-                    <span className="text-sm text-muted-foreground">{t("vols.route.noPriceYet")}</span>
-                  )}
-                  <Link href={airlineRouteHref(data.slug, a.slug, a.next?.date)} className="inline-flex items-center gap-1 text-sm font-medium text-link hover:underline">
-                    {t("vols.route.seeAirline", { airline: shortName(a.name) })}
-                    <ArrowRight className="size-4" aria-hidden="true" />
-                  </Link>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
 
       {data.reverse?.linked && (
         <Link href={`/vols/${data.reverse.slug}`} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-5 transition-colors hover:border-primary">
@@ -206,19 +209,6 @@ export function RoutePageView({ data }: { data: RoutePage }) {
               ? t("vols.route.sameZone")
               : t("vols.route.timeAhead", { count: Math.abs(ahead), ...(ahead > 0 ? { city: destination.city, other: origin.city } : { city: origin.city, other: destination.city }) })}
           </p>
-          {data.sources.length > 0 && (
-            <p className="mt-3 text-sm">
-              <span className="font-medium">{t("vols.route.sources")} : </span>
-              {data.sources.map((s, i) => (
-                <span key={s.url}>
-                  {i > 0 && ", "}
-                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-link underline">
-                    {s.host}
-                  </a>
-                </span>
-              ))}
-            </p>
-          )}
         </section>
         <section aria-labelledby="help-title" className="rounded-2xl border p-5">
           <h2 id="help-title" className="flex items-center gap-2 font-semibold">
@@ -232,7 +222,7 @@ export function RoutePageView({ data }: { data: RoutePage }) {
         </section>
       </div>
 
-      <p className="text-xs text-muted-foreground">{t("explore.detail.disclaimer")}</p>
+      <PageFacts updatedAt={data.updatedAt} verifiedAt={data.verifiedAt} sources={data.sources} />
     </div>
   );
 }

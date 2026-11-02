@@ -13,8 +13,8 @@ import { weekdayOf } from "@/lib/flights";
  * - /vols/a-b renders for any two known airports: it is also the search result.
  * - It is indexable (robots, sitemap) when the route is PUBLISHED and has something to show: an airline
  *   published on it (even suspended or ended: the page stays as a record) or an airport notice.
- * - It is linked from our own pages (hub, home, return trip) when it has public data or is
- *   published; a pair with nothing to show is never linked, so search engines never see it.
+ * - It is linked from our own pages (hub, home, return trip) when it has departures or is
+ *   indexable; a pair with nothing to show is never linked, so search engines never see it.
  */
 
 /** §7 "first published": the operator published the route, and the page has content. */
@@ -110,6 +110,17 @@ export async function loadRoutePage(slug: string, date: string | null, now: Date
     : [];
   const weekCount = new Map(weekFlights.map((w) => [w.routeAirlineId, w._count]));
 
+  // Every day with a public departure from today on, for the dots in the search box's calendar.
+  const flightDays = route
+    ? await prisma.flight.findMany({
+        where: { ...PUBLIC_FLIGHT, routeAirline: { routeId: route.id, isPublished: true, airline: { isPublished: true } }, date: { gte: new Date(`${today}T00:00:00Z`) } },
+        select: { date: true },
+        distinct: ["date"],
+        orderBy: { date: "asc" },
+        take: 120,
+      })
+    : [];
+
   const airlines = routeAirlines.map((ra) => {
     const own = services.filter((s) => s.routeAirlineId === ra.id);
     return {
@@ -130,7 +141,12 @@ export async function loadRoutePage(slug: string, date: string | null, now: Date
 
   const reverse = await prisma.route.findUnique({
     where: { originId_destinationId: { originId: destination.id, destinationId: origin.id } },
-    select: { id: true, slug: true, status: true },
+    select: {
+      id: true,
+      slug: true,
+      status: true,
+      _count: { select: { airlines: { where: { isPublished: true, airline: { isPublished: true } } } } },
+    },
   });
   const [reverseServices, reverseWeek] = reverse
     ? await Promise.all([
@@ -174,13 +190,17 @@ export async function loadRoutePage(slug: string, date: string | null, now: Date
     today,
     results: dated ? results!.services : services,
     dated,
+    flightDates: flightDays.map((f) => dayOf(f.date)),
     airlines,
     reverse: reverse
       ? {
           slug: reverse.slug,
           airlines: [...new Set(reverseServices.map((s) => shortAirlineName(s.airline.name)))].sort(),
           flightsThisWeek: reverseWeek,
-          linked: reverse.status === "PUBLISHED" || reverseServices.length > 0,
+          // Linked only when that page is worth a visit: the same rule as indexing (never link a noindex page).
+          linked:
+            reverseServices.length > 0 ||
+            hasContent({ status: reverse.status, publishedAirlines: reverse._count.airlines, origin: destination, destination: origin }),
         }
       : null,
     updatedAt: updatedAt?.toISOString() ?? null,

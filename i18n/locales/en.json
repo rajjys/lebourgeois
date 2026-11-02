@@ -192,29 +192,148 @@
     }
   },
   "about": {
-    "title": "About",
-    "mission": {
-      "title": "Our mission",
-      "description": "Make information about domestic flights in the DRC (airlines, schedules, prices) easy to find and compare."
+    "eyebrow": "About Clerikaa",
+    "title": "Domestic flight information for the DRC, checked and dated",
+    "lead": "Clerikaa gathers the schedules and prices of domestic flights in the DRC, route by route, so you can compare airlines before you travel. Every piece of information carries its date and its source.",
+    "figures": {
+      "routes_one": "route tracked",
+      "routes_other": "routes tracked",
+      "airlines_one": "airline with published flights",
+      "airlines_other": "airlines with published flights",
+      "flights_one": "flight in the next 7 days",
+      "flights_other": "flights in the next 7 days",
+      "note": "Figures computed from the data published on the site, updated every hour."
     },
-    "approach": {
-      "title": "Where the data comes from",
-      "description": "Schedules and prices are collected from the airlines and then checked. Prices are indicative: the final fare is always confirmed by the airline or your agency at booking time."
+    "problem": {
+      "title": "The problem",
+      "lead": "Finding out who flies between two Congolese cities, on which days and at what price often takes several calls, a visit to an agency or a trip to the airport.",
+      "items": {
+        "scattered": "Each airline publishes its schedule its own way: a PDF timetable that changes every week, a web page, a social media post.",
+        "changes": "Schedules change often. Information that was right last month can be wrong today, with nothing to say so.",
+        "prices": "Prices are rarely shown publicly, and almost never with the date they were valid.",
+        "global": "Large international travel sites sometimes show grounded airlines or closed airports."
+      }
     },
-    "expertise": {
-      "title": "What we are not",
-      "description": "We are not an airline and we do not sell tickets."
+    "offer": {
+      "title": "What you find here",
+      "lead": "Not just a list of flights: what you need to know to choose an airline on a route.",
+      "items": {
+        "route": {
+          "title": "One page per route",
+          "body": "The airlines that fly it, their flying days, their times and the number of flights this week, side by side."
+        },
+        "airline": {
+          "title": "One page per airline on each route",
+          "body": "Each departure in detail: local times, stops, flight number and aircraft when they are published."
+        },
+        "prices": {
+          "title": "Dated prices",
+          "body": "Every price shows the day it was seen and its source. A price without a date is not published."
+        },
+        "alerts": {
+          "title": "The alerts that matter",
+          "body": "Closed airport, suspended route, grounded airline: it is written at the top of the page concerned."
+        },
+        "booking": {
+          "title": "A booking request",
+          "body": "On each departure, \"Book this flight\" sends us your request with your number: our team calls you back to confirm the price and the booking."
+        }
+      }
     },
-    "cta": "Find your flight"
+    "method": {
+      "title": "Our method",
+      "lead": "Flight information is only useful if it is accurate. This is how we work.",
+      "steps": {
+        "collect": {
+          "title": "Collect at the source",
+          "body": "We collect schedules and prices where the airlines publish them: their timetables, their websites, their agencies. For now this work is done by hand, not by a robot."
+        },
+        "check": {
+          "title": "Check before publishing",
+          "body": "A person compares each schedule with its source before publishing it and records the date it was checked. A schedule not re-checked for 7 days is marked \"To re-check\"."
+        },
+        "date": {
+          "title": "Date and cite",
+          "body": "Every page says when its data changed, when the schedules were checked and where they come from. Every price carries the date it was seen."
+        },
+        "publish": {
+          "title": "Publish only what we know",
+          "body": "When we have no information on a route, the page says so (\"no known flight\") instead of making something up. Airlines are listed in alphabetical order, none is promoted."
+        }
+      }
+    },
+    "limits": {
+      "title": "Our limits",
+      "lead": "Better to know them before you travel.",
+      "items": {
+        "prices": "Prices are indicative: the final fare is confirmed when you book.",
+        "live": "We do not track flights in real time. Delays and last-minute cancellations do not appear here: check with the airline on the day of departure.",
+        "coverage": "We only cover domestic flights in the DRC, and not yet every airline or every route.",
+        "published": "Some airlines publish little information, for example no flight numbers. We show what is published, nothing more.",
+        "time": "Times are local to each airport: the DRC has two time zones, Lubumbashi is one hour ahead of Kinshasa.",
+        "team": "We are a small team. A mistake can slip through: if you see one, tell us.",
+        "tickets": "We are not an airline and we do not sell tickets online: no payment is made on this site."
+      }
+    },
+    "intent": {
+      "title": "What we are aiming for",
+      "p1": "Listing flights is not enough. Our goal is to give, for each route, the most useful information possible: who really flies, on which days, at what recent price, and what has changed.",
+      "p2": "In time, we want to receive timetables directly from the airlines, for information that is even more reliable and quicker to update.",
+      "promises": {
+        "dated": "Every piece of information is dated.",
+        "sourced": "Every schedule and every price cites its source.",
+        "corrected": "A reported mistake is checked and corrected.",
+        "neutral": "No airline is promoted."
+      }
+    },
+    "join": {
+      "title": "Get involved",
+      "lead": "Clerikaa improves with the people who travel, who work in aviation, or who simply want to help. Every contribution is welcome.",
+      "items": {
+        "error": {
+          "title": "Report a mistake",
+          "body": "A wrong time, a flight that no longer exists, a reopened airport: tell us the page and what changed.",
+          "cta": "Report a mistake"
+        },
+        "share": {
+          "title": "Share information",
+          "body": "A price you paid recently, a new flight, the timetable posted in an agency: with the date, it is valuable. A photo can be sent on WhatsApp.",
+          "cta": "Write to us"
+        },
+        "partners": {
+          "title": "Airlines, airports, agencies",
+          "body": "Do you represent an airline, an airport or an agency? Let's talk about your schedules and how to publish them correctly.",
+          "cta": "Get in touch"
+        },
+        "help": {
+          "title": "Help the project",
+          "body": "Collecting schedules, translation, design, development, ideas or travel experience: tell us what you would like to bring.",
+          "cta": "Offer your help"
+        }
+      },
+      "whatsapp": "Prefer WhatsApp? Write to us at"
+    },
+    "cta": {
+      "title": "Find your flight",
+      "body": "Search for a route and compare airlines, their flying days and their observed prices.",
+      "button": "See flights and routes"
+    }
   },
   "footer": {
-    "tagline": "Schedules and indicative fares for domestic flights in the DRC.",
-    "noTickets": "We don't sell tickets.",
+    "tagline": "Indicative schedules and prices for domestic flights in the DRC, route by route.",
+    "noTickets": "Indicative prices. No payment on this site.",
     "explore": "Explore",
-    "search": "Search a flight",
     "help": "Need help with a flight?",
     "rights": "All rights reserved.",
-    "contact": "Contact us"
+    "contact": "Contact us",
+    "method_line": "Collected at the source, checked and dated.",
+    "routes": "Flights and routes",
+    "method": "Our method",
+    "limits": "Our limits",
+    "join": "Get involved",
+    "reportError": "Report a mistake",
+    "partners": "Airlines and agencies",
+    "contribute": "Help the project"
   },
   "airportPicker": {
     "placeholder": "Choose an airport",
@@ -236,7 +355,7 @@
   "contact": {
     "title": "Contact us",
     "intro": "A question, information that is wrong or out of date, or you represent an airline? Write to us.",
-    "noTickets": "We do not sell tickets: to book, change or cancel, contact the airline.",
+    "noTickets": "We do not sell tickets online. To book a flight, use \"Book this flight\" on its page; to change or cancel a ticket, contact the airline.",
     "form": {
       "name": "Your name",
       "reply": "Email or WhatsApp number",
@@ -285,7 +404,10 @@
       "date": "Date",
       "dateHint": "Optional: without a date, the next four weeks.",
       "submit": "Search",
-      "clearDate": "All dates"
+      "clearDate": "Clear the date",
+      "anyDate": "Any date",
+      "flightDays": "Day with a known flight",
+      "pickDate": "Flight date"
     },
     "hub": {
       "title": "Domestic flights in the DRC",
@@ -359,6 +481,38 @@
       "source": "Source",
       "flightNo": "Flight {{number}}",
       "noDeparture": "No departure known in the next four weeks. Our team can look for you."
+    },
+    "book": {
+      "title": "Book this flight",
+      "price": "Indicative price",
+      "noPrice": "No price seen yet: our team gives it to you when they call back.",
+      "travelers": "Travellers",
+      "removeTraveler": "Remove a traveller",
+      "addTraveler": "Add a traveller",
+      "class": "Class",
+      "name": "Full name",
+      "namePlaceholder": "Your name",
+      "nameError": "Enter your name.",
+      "phone": "Phone",
+      "phonePlaceholder": "+243 81 234 56 78",
+      "phoneHint": "We call you back on this number, by phone or on WhatsApp.",
+      "phoneError": "Enter a complete phone number.",
+      "submit": "Send the request",
+      "sending": "Sending…",
+      "reassurance": "No payment now: our team calls you back to confirm the price and the booking.",
+      "failed": "Sending failed. Try again in a moment.",
+      "sentTitle": "Request sent",
+      "sentBody": "Thank you! We will call you back on {{phone}}.",
+      "another": "Make another request",
+      "close": "Close"
+    },
+    "facts": {
+      "label": "Sources and updates",
+      "updated": "Updated on",
+      "verified": "Schedules checked on",
+      "sources_one": "Source",
+      "sources_other": "Sources",
+      "report": "Wrong or outdated information? Report it"
     }
   }
 }
