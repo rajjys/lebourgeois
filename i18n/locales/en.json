@@ -275,5 +275,90 @@
       "messageShort": "The message is too short (10 characters minimum).",
       "messageLong": "The message is too long (3,000 characters maximum)."
     }
+  },
+  "vols": {
+    "breadcrumb": {
+      "home": "Home",
+      "vols": "Flights"
+    },
+    "search": {
+      "date": "Date",
+      "dateHint": "Optional: without a date, the next four weeks.",
+      "submit": "Search",
+      "clearDate": "All dates"
+    },
+    "hub": {
+      "title": "Domestic flights in the DRC",
+      "intro": "Pick a route or search for it. For each airline: flying days, checked times and prices seen.",
+      "from": "From {{city}}",
+      "flights_one": "{{count}} flight this week",
+      "flights_other": "{{count}} flights this week",
+      "empty": "No route is published yet. Use the search above.",
+      "all": "All routes"
+    },
+    "route": {
+      "h1": "Flights",
+      "airlines_one": "{{count}} airline ({{names}})",
+      "airlines_other": "{{count}} airlines ({{names}})",
+      "flights_one": "{{count}} flight this week",
+      "flights_other": "{{count}} flights this week",
+      "from": "from {{price}} (seen on {{date}})",
+      "none": "No flight known on this route for the next four weeks.",
+      "updated": "Updated on {{date}}",
+      "verified": "Schedules checked on {{date}}",
+      "results": "Departures",
+      "byAirline": "By airline",
+      "days": "Flying days",
+      "times_one": "Departs at {{times}}",
+      "times_other": "Departures at {{times}}",
+      "seeAirline": "All about {{airline}} on this route",
+      "suspended": "{{airline}} has suspended this route.",
+      "ended": "{{airline}} no longer flies this route.",
+      "airlineSuspended": "{{airline}} has suspended its flights.",
+      "noPriceYet": "No price yet",
+      "return": "The return trip: {{from}} – {{to}}",
+      "about": "About this route",
+      "sameZone": "Both cities are in the same time zone.",
+      "sources": "Sources",
+      "helpTitle": "Need help with this route?",
+      "helpBody": "Tell us the date and how many travellers: our team looks with you and gets back to you.",
+      "helpCta": "Ask for help",
+      "noFlightsBody": "We have no schedule for this route right now. Our team can look for you.",
+      "otherDate": "No flight known that day. Here are the next four weeks.",
+      "badge": {
+        "SUSPENDED": "Route suspended",
+        "ENDED": "Route ended"
+      },
+      "timeAhead_one": "{{city}} is one hour ahead of {{other}}: times shown are local to each airport.",
+      "timeAhead_other": "{{city}} is {{count}} hours ahead of {{other}}: times shown are local to each airport."
+    },
+    "airline": {
+      "h1": "{{airline}}:",
+      "answer": "{{airline}} flies {{days}} on this route",
+      "answerNone": "{{airline}} has no known flight on this route for the next four weeks.",
+      "compare": "Compare with the other airlines on this route",
+      "services": "Flights and times",
+      "departures": "Next departures",
+      "departure": "Departure on {{date}}",
+      "pick": "Pick a date to see that departure and book it.",
+      "prices": "Prices seen",
+      "noPrices": "No price seen yet for this airline on this route.",
+      "note": "Good to know",
+      "fromDate": "flight on {{date}}",
+      "fromPrice": "from",
+      "sameDay": "Departure time",
+      "moreDates": "Other dates",
+      "fareKind": {
+        "FROM_PRICE": "Lowest advertised fare",
+        "QUOTE": "Fare for a travel date"
+      },
+      "oneWay": "one way",
+      "roundTrip": "round trip",
+      "travel": "travel on {{date}}",
+      "observed": "Seen on",
+      "source": "Source",
+      "flightNo": "Flight {{number}}",
+      "noDeparture": "No departure known in the next four weeks. Our team can look for you."
+    }
   }
 }

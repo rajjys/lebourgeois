@@ -1,5 +1,6 @@
 'use client'
 import Link from "next/link";
+import { VOLS_HREF } from "@/lib/links";
 import { useTranslation } from 'react-i18next';
 
 const About = () => {
@@ -46,7 +47,7 @@ const About = () => {
                 {t('about.cta')}
               </h2>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/explore" className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-card hover:shadow-hover text-base">
+                <Link href={VOLS_HREF} className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors shadow-card hover:shadow-hover text-base">
                   {t('home.about.cta')}
                 </Link>
               </div>

@@ -10,7 +10,7 @@ import { PriceTag } from "@/components/ds/PriceTag";
 import { RouteTitle } from "@/components/ds/RouteTitle";
 import { Badge } from "@/components/ui/badge";
 import { daysBetween, formatDateShort, formatDayMonthYear, formatFlightNumber } from "@/lib/format";
-import { routeHref } from "@/lib/links";
+import { airlineRouteHref, routeHref, VOLS_HREF } from "@/lib/links";
 import type { AirportAlert, HomeData, TrackedRoute, UpcomingDeparture } from "@/lib/home";
 
 // Matches the "verify" window chosen on 2026-10-31 (docs/ROUTE-MODEL.md §11).
@@ -72,7 +72,7 @@ function DepartureCard({ d }: { d: UpcomingDeparture }) {
   const checkedAt = d.checkedAt ? new Date(d.checkedAt) : null;
   return (
     <Link
-      href={`/explore/${d.id}`}
+      href={airlineRouteHref(d.routeSlug, d.airline.slug, d.date, d.departureTime)}
       className="flex h-full flex-col rounded-xl border bg-card p-4 shadow-card transition-colors hover:border-primary"
     >
       <div className="flex items-baseline justify-between gap-2">
@@ -153,6 +153,10 @@ export function TrackedRoutes({ routes }: { routes: TrackedRoute[] }) {
             </li>
           ))}
         </ul>
+        <Link href={VOLS_HREF} className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-link hover:underline">
+          {t("vols.hub.all")}
+          <ChevronRight className="size-4" aria-hidden="true" />
+        </Link>
       </div>
     </section>
   );

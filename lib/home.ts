@@ -13,6 +13,7 @@ type Place = { code: string; city: string; slug: string };
 
 export type UpcomingDeparture = {
   id: string;
+  routeSlug: string;
   /** Local calendar date at the origin, "YYYY-MM-DD". */
   date: string;
   departureTime: string;
@@ -20,7 +21,7 @@ export type UpcomingDeparture = {
   flightNumber: string | null;
   origin: Place;
   destination: Place;
-  airline: { code: string; name: string; logo: string | null };
+  airline: { code: string; slug: string; name: string; logo: string | null };
   /** Latest validated price for this airline on this route, and when it was seen. */
   price: number | null;
   priceObservedAt: string | null;
@@ -81,13 +82,14 @@ export async function getHomeData(now = new Date()) {
     const price = prices.get(f.routeAirlineId);
     departures.push({
       id: f.id,
+      routeSlug: route.slug,
       date: dayOf(f.date),
       departureTime: f.departureTime,
       arrivalTime: f.arrivalTime,
       flightNumber: f.flightNumber,
       origin: place(route.origin),
       destination: place(route.destination),
-      airline: { code: airline.code, name: airline.name, logo: airline.logo },
+      airline: { code: airline.code, slug: airline.slug, name: airline.name, logo: airline.logo },
       price: price?.amount ?? null,
       priceObservedAt: price?.observedAt ?? null,
       checkedAt: (f.verifiedAt ?? f.routeAirline.verifiedAt)?.toISOString() ?? null,

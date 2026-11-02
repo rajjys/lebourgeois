@@ -9,6 +9,7 @@ import { PriceTag } from "@/components/ds/PriceTag";
 import { formatDuration, weekdayOf } from "@/lib/flights";
 import { formatDateShort, formatWeekdays, WEEKDAYS } from "@/lib/format";
 import type { Service } from "@/lib/searchResults";
+import { airlineRouteHref } from "@/lib/links";
 import { cn } from "@/lib/utils/cn-utils";
 
 /**
@@ -47,11 +48,13 @@ export function ResultCard({
   service,
   origin,
   destination,
+  routeSlug,
   dateChosen,
 }: {
   service: Service;
   origin: string;
   destination: string;
+  routeSlug: string;
   dateChosen: boolean;
 }) {
   const { t } = useTranslation();
@@ -59,7 +62,8 @@ export function ResultCard({
   const s = service;
   const letters = WEEKDAYS.map((d) => t(`explore.results.daysOfWeek.${d.toLowerCase()}`));
   const nextDate = new Date(`${s.next.date}T00:00:00Z`);
-  const href = `/explore/${s.next.flightId}`;
+  // The airline's page on this route, on this departure (docs/ROUTE-MODEL.md §7).
+  const href = airlineRouteHref(routeSlug, s.airline.slug, s.next.date, s.departureTime);
 
   return (
     <article className="group relative overflow-hidden rounded-2xl border bg-card shadow-card transition-shadow hover:border-primary/40 hover:shadow-hover">

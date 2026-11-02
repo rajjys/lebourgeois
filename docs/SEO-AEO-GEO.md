@@ -88,7 +88,7 @@ Decided by the owner on 2026-10-30: **all public URLs in French**. Google says "
 - There is no trailing slash, and every page has a single canonical URL.
 - Every page sits at most 3 clicks from the home page. Pages link to each other (map below).
 - **A page is never removed or redirected because service changed** (suspension, end of a route, closed airport). It stays online and says what changed. Redirects are only for URLs that change ([ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)).
-- **Until RW-5:** `/explore` is the search page and `/explore/[id]` (one departure, keyed by its database id, server-rendered since P-13) is `noindex`. **From RW-5** the search leads to the route pages themselves (`/vols/a-b`), so there is one indexable page per route instead of a search page and a route page with the same data (ROUTE-MODEL §7, owner 2026-11-01). Both are replaced by `/vols/...` with 301 redirects in RW-7. Route links in the code all go through `lib/links.ts`, so switching them is one change.
+- **Since RW-5** the search leads to the route pages themselves (`/vols/a-b`), so there is one indexable page per route instead of a search page and a route page with the same data (ROUTE-MODEL §7, owner 2026-11-01). `/explore` and `/explore/[id]` permanently redirect to `/vols/...`. `?date=` and `?heure=` never change the canonical. A route page is indexed (robots, sitemap) once the route is *Publiée* **and** has an airline published on it or an airport notice; until then it renders for visitors with `noindex`. Route links in the code all go through `lib/links.ts`.
 
 ### 3.1 Internal links (owner priority, 2026-10-31)
 
@@ -96,7 +96,7 @@ Links only help search engines when they point at **indexable pages with content
 
 | From | Links to | When |
 |---|---|---|
-| Home | Search (hero), tracked routes, next departures, airport statuses | ✅ now (to search results until RW-5) |
+| Home | Search (hero), tracked routes, next departures, airport statuses | ✅ to route and airline pages since RW-5 |
 | Home | Route pages, airline pages, airport pages, network status | RW-5, E-1, E-2, E-3 |
 | Navbar | "Rechercher un vol" button; À propos, Contact; then Vols (route index), Compagnies, Aéroports, État du réseau | As each page ships; today À propos and Contact |
 | Footer | Busiest routes, airlines, airports, À propos, Méthodologie, Contact, help | As each page ships |

@@ -11,11 +11,11 @@ import { usePathname } from "next/navigation";
 import { Logo } from "@/components/brand/Logo";
 import CountryFlag from "react-country-flag"
 import { SITE } from "@/lib/site";
-import { SEARCH_ANCHOR } from "@/lib/links";
+import { SEARCH_ANCHOR, VOLS_HREF } from "@/lib/links";
 
 // Logo left, sections in the middle (Accueil, À propos, Contact), the search button and language on the right.
-// The search button is the only way to /explore, so there is no "Vols" link doing the same.
-// Vols (route index), Compagnies and Aéroports join when their pages exist (docs/PLAN.md, RW-5, E-1, E-2).
+// The button opens /vols, which is both the search and the route index (RW-5), so there is no "Vols" link doing the same.
+// Compagnies and Aéroports join when their pages exist (E-1, E-2).
 const Navbar = () => {
   const pathname = usePathname();
   const { t, i18n } = useTranslation();
@@ -50,7 +50,7 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid h-16 grid-cols-[auto_1fr] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
+        <div className="grid h-16 grid-cols-[auto_1fr] items-center gap-2 sm:gap-4 lg:grid-cols-[1fr_auto_1fr]">
           <Link href="/" aria-label={`${SITE.name}, ${t('nav.home')}`} className="justify-self-start">
             <Logo />
           </Link>
@@ -67,7 +67,7 @@ const Navbar = () => {
 
           <div className="flex items-center gap-2 justify-self-end">
             <Button asChild size="sm" className="h-9">
-              <Link href="/explore" onClick={goToSearch}>
+              <Link href={VOLS_HREF} onClick={goToSearch}>
                 <Search className="size-4" aria-hidden="true" />
                 <span className="max-[359px]:sr-only">{t('nav.search')}</span>
               </Link>

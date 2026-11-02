@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { ArrowLeftRight, Search } from "lucide-react";
 import { AirportCombobox, airportCode } from "@/components/AirportCombobox";
 import { AirportStatusNotice } from "@/components/search/AirportStatusNotice";
 import { Button } from "@/components/ui/button";
 import { SEARCH_ANCHOR } from "@/lib/links";
+import { useRouteSearch } from "@/components/vols/RouteSearch";
 
 /**
  * Origin and destination only. No date: the results show the next days with flights,
@@ -16,7 +16,7 @@ import { SEARCH_ANCHOR } from "@/lib/links";
  */
 export function HomeSearch() {
   const { t } = useTranslation();
-  const router = useRouter();
+  const go = useRouteSearch();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [tried, setTried] = useState(false);
@@ -29,7 +29,7 @@ export function HomeSearch() {
     event.preventDefault();
     setTried(true);
     if (!fromCode || !toCode || sameAirport) return;
-    router.push(`/explore?from=${fromCode}&to=${toCode}`);
+    go(fromCode, toCode); // the route page is the result (docs/ROUTE-MODEL.md §7)
   };
 
   return (

@@ -38,6 +38,9 @@ export const daysBetween = (from: Date, to: Date) => Math.max(0, Math.floor((to.
 /** "aujourd’hui", "hier", "il y a 10 jours" */
 export const formatDaysAgo = (d: Date, now: Date = new Date()) => relative.format(-daysBetween(d, now), "day");
 
+/** "Compagnie Africaine d'Aviation (CAA)" → "CAA": the name people search for. */
+export const shortAirlineName = (name: string) => name.match(/\(([^)]+)\)\s*$/)?.[1] ?? name;
+
 /** "BU1611" → "BU 1611" */
 export const formatFlightNumber = (n: string) => n.replace(/^([A-Z0-9]{2})\s*(\d{1,4}[A-Z]?)$/i, "$1 $2").toUpperCase();
 
