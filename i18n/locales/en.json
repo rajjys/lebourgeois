@@ -70,8 +70,8 @@
     }
   },
   "request": {
-    "title": "Request a Flight Ticket",
-    "subtitle": "Fill out the form below and our team will contact you with the best flight options.",
+    "title": "Ask for help with a flight",
+    "subtitle": "Give us the route, the date and the number of travellers: our team searches with you and gets back to you.",
     "form": {
       "from": "From",
       "fromPlaceholder": "Departure city or airport",
@@ -460,6 +460,7 @@
       "helpCta": "Ask for help",
       "noFlightsBody": "We have no schedule for this route right now. Our team can look for you.",
       "otherDate": "No flight known that day. Here are the next four weeks.",
+      "allDates": "All dates",
       "badge": {
         "SUSPENDED": "Route suspended",
         "ENDED": "Route ended"

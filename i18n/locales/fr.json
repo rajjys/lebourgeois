@@ -70,8 +70,8 @@
     }
   },
   "request": {
-    "title": "Demander un Devis Personnalisé",
-    "subtitle": "Remplissez le formulaire ci-dessous et notre équipe vous contactera avec les meilleures options de vol.",
+    "title": "Demander de l'aide pour un vol",
+    "subtitle": "Donnez-nous le trajet, la date et le nombre de voyageurs\u00a0: notre équipe cherche avec vous et vous recontacte.",
     "form": {
       "from": "De",
       "fromPlaceholder": "Ville ou aéroport de départ",
@@ -460,6 +460,7 @@
       "helpCta": "Demander de l'aide",
       "noFlightsBody": "Nous n'avons pas d'horaire pour ce trajet en ce moment. Notre équipe peut chercher pour vous.",
       "otherDate": "Aucun vol connu ce jour-là. Voici les quatre prochaines semaines.",
+      "allDates": "Toutes les dates",
       "badge": {
         "SUSPENDED": "Ligne suspendue",
         "ENDED": "Ligne arrêtée"

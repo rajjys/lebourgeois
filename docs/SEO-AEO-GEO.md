@@ -114,7 +114,7 @@ Links only help search engines when they point at **indexable pages with content
 **MUST**
 1. **The facts in the server HTML.** None of the major AI crawlers runs JavaScript (Vercel's study of AI crawlers). Schedules, prices, dates and sources must be in the HTML the server sends, never loaded in the browser afterwards. This is the default with Next.js server components; client-only data fetching is forbidden for these blocks.
 2. **A unique `<title>` and meta description**, built from the data:
-   - Title: `Vols Kinshasa – Lubumbashi : horaires et prix (CAA, Air Congo) | Clerikaa`
+   - Title: `Vols Kinshasa – Lubumbashi : horaires et prix (CAA, Air Congo)`. Route and airline titles carry no " | Clerikaa" (owner, 2026-11-02): with it they ran 69 to 75 characters, Google cuts around 60, and the route words must come through. Google shows the site name above the result anyway. Other pages keep the suffix.
    - Description: `2 compagnies, 9 vols par semaine, dès 244 $ (prix observé le 30 oct. 2026). Jours, horaires et escales vérifiés.`
    - If only one airline flies the route, name it in the title. That captures "… caa" searches without a duplicate page.
 3. **One `<h1>`** that matches the search: "Vols Kinshasa → Lubumbashi" (the arrow is an icon; see [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md#5-typography)).
@@ -132,6 +132,7 @@ Links only help search engines when they point at **indexable pages with content
 6. **Sources.** Each price and schedule links to where it came from (airline site, timetable PDF, agency quote). Airport and airline statuses link to their source.
 7. **A canonical tag**, plus **`hreflang`** links once English pages exist ([§6](#6-languages)).
 8. **Breadcrumbs**: Accueil › Vols › Kinshasa → Lubumbashi.
+9. **The page's own link preview** (F-2, 2026-11-02). `og:title`, `og:description`, `og:url`, `og:image` and the X card describe the page, not the site. Build the metadata with `pageMetadata()` (`lib/seo.ts`); never set `title` and `description` alone, or the page inherits the root layout's preview (Next.js merges metadata shallowly). Route and airline pages have a share image drawn from their data (`opengraph-image.tsx` next to the page, `lib/og.tsx`): only facts the page shows, prices with their observation date and year, 1200 × 630, under 100 KB.
 
 **SHOULD**
 - Add a short, human-written note per top-tier route: airports, time difference, practical notes.
@@ -179,7 +180,7 @@ Google's rules:
 - **Sitemap generated from the database:** only pages that pass the publication rules ([ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)).
   - `lastmod` is the date the **data** last changed, not the build date. Google uses `lastmod` only when it is "consistently and verifiably" accurate.
   - Google ignores `priority` and `changefreq`, so drop them.
-- **robots.txt** (generated in `app/robots.ts`): keep the back office, API and login blocked. Explicitly allow search and AI-search crawlers ([§8](#8-ai-engines-specifically)).
+- **robots.txt** (generated in `app/robots.ts`): keep the back office, API and login blocked. The AI crawlers of [§8](#8-ai-engines-specifically) are named and allowed; their group repeats the blocked paths, because a crawler that finds its own name skips the `*` rules.
 - Register the site in **Google Search Console** and **Bing Webmaster Tools** (F-5).
   - Leave Search Console's new "Search generative AI control" on **Include**. Excluding removes us from AI Overviews and AI Mode.
 - **IndexNow** (F-5): notify Bing (also Yandex, Seznam, Naver, Yep, Internet Archive, Amazonbot) whenever a route's data changes. Google does not use IndexNow; it relies on the sitemap.
@@ -201,7 +202,7 @@ Google's rules:
 | Perplexity-User | User-triggered fetches; "generally ignores robots.txt" | Allow |
 | Claude-SearchBot / Claude-User | Anthropic's search indexing / user-requested fetches | **Allow** |
 | Applebot | Siri and Spotlight | Allow |
-| GPTBot, ClaudeBot, Google-Extended, Applebot-Extended | **Model training.** Google-Extended also controls grounding in the Gemini apps, but not Google Search. | ❓ **Owner decision.** Recommendation: **allow** for now, because being known to the models helps citations and the data is public anyway. Revisit before licensing data to agencies (M8), when the data itself becomes the product. |
+| GPTBot, ClaudeBot, Google-Extended, Applebot-Extended | **Model training.** Google-Extended also controls grounding in the Gemini apps, but not Google Search. | **Allow** (owner, 2026-11-02): being known to the models helps citations, and the data is public anyway. Revisit before licensing data to agencies (M8), when the data itself becomes the product. |
 
 Bing announced on 2026-10-30 a new `ai-training` preference and page-level `ai-grounding` controls, honoured from 2027-02-01. We leave both at their default (allowed).
 
@@ -317,6 +318,7 @@ Copy this into the PR description for any new or changed public page.
 ```
 - [ ] Facts (schedules, prices, dates, sources) are in the server HTML (check with curl / view-source)
 - [ ] Unique <title> and meta description built from data; airline named in title if it is the only one
+- [ ] Metadata built with pageMetadata(): og:title, og:description, og:url are the page's own; share image checked (view /…/opengraph-image)
 - [ ] One <h1>; answer-first summary sentence
 - [ ] "Mis à jour le", "Vérifié le", "observé le" dates visible and correct
 - [ ] Sources linked

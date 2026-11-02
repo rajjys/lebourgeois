@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { AboutView } from "@/components/about/AboutView";
 import { loadHub } from "@/lib/routePages";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "À propos : ce que fait Clerikaa, notre méthode et nos limites",
+  shareTitle: "Clerikaa : l'information sur les vols intérieurs en RDC, vérifiée et datée",
   description:
     "Pourquoi Clerikaa existe, comment nous relevons, vérifions et datons les horaires et les prix des vols intérieurs en RDC, ce que nous ne faisons pas, et comment participer.",
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 // The figures change with the data, not with each visit.
 export const revalidate = 3600;

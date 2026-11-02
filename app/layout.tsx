@@ -4,6 +4,7 @@ import "./globals.css";
 import { I18nProvider } from "@/components/I18nProvider";
 import { Toaster as Sonner, Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next"
+import { OPEN_GRAPH_BASE } from "@/lib/seo";
 import { SITE } from "@/lib/site";
 
 // One variable font, latin subset (~27 KB): covers French accents and tabular figures.
@@ -23,14 +24,13 @@ export const metadata: Metadata = {
   // No canonical here: a root-level canonical is inherited by every page and
   // marks them all as duplicates of the homepage. Pages set their own.
   // Icons come from app/icon.svg and app/apple-icon.tsx
+  // Fallback only, for pages without their own metadata (404, login). Public pages build theirs
+  // with pageMetadata (lib/seo.ts); no og:url here, so no page is shared as the home by mistake.
+  // Image comes from app/opengraph-image.tsx.
   openGraph: {
+    ...OPEN_GRAPH_BASE,
     title: `${SITE.name} — Horaires et prix des vols intérieurs en RDC`,
     description: SITE.description,
-    url: SITE.url,
-    siteName: SITE.name,
-    locale: "fr_CD",
-    // Image comes from app/opengraph-image.tsx
-    type: "website",
   },
   twitter: {
     card: "summary_large_image",
