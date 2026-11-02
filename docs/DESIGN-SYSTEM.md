@@ -254,6 +254,7 @@ The same word and colour mean the same thing everywhere.
 | `RouteTitle` | Origin, arrow icon, destination (the screen reader hears "à"), as a heading or inline. |
 | `AirlineMark` | IATA code chip and airline name. |
 | `DayStrip` | Operating days L M M J V S D: flying days tinted, other days faded, one day solid (`highlight`: the date searched or the next departure). Letters and the spoken sentence can be passed in for English. |
+| `Stepper` | A small count chosen with − and + (travellers, 1 to 9): two 40 px round buttons, the value between them, announced when it changes. Replaces a select for counts. |
 | `Logo`, `LogoMark` | Brand (in `components/brand/`). |
 
 **Search and home** (2026-10-31)
@@ -326,10 +327,13 @@ The back office still works on a phone (simple menu), but it is not designed for
 - **Sort tabs:** four cells (two by two on phones), each with the value of its first result, so the trade-off shows before clicking. The selected tab is filled with the brand colour.
 
 **Route pages** (RW-5; `components/vols/`, see [ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)):
-- **Every page starts the same way:** breadcrumbs, one H1 ("Vols Kinshasa → Lubumbashi", "CAA : Kinshasa → Lubumbashi"), one answer line (airlines, flights this week, lowest price with its date), then "Mis à jour le" and "Horaires vérifiés le". Warnings (closed airport, suspended airline or route) come next, above everything else.
-- **Route page** (`/vols/a-b`): the search box filled with the route, the departures (the search results above), one row per airline (days, times, flights this week, latest price, link to its page), the return trip, then "À propos de ce trajet" (airports, time difference, sources) beside "Besoin d'aide pour ce trajet ?".
-- **Airline page** (`/vols/a-b/caa`): the departure in full (times block, then duration, number, aircraft and flying days). Above it, when the airline flies the route more than once that day, the departure times as chips; under it, the next 14 dates as chips. Then the airline's services on the route, its note, and every validated price with its fare name, kind, travel date, source and the date it was seen. Beside it, "Réserver ce vol": the price, then the booking request (travellers, class, name, phone or email). On phones that card becomes a fixed bar at the bottom that opens the same form. Never a link to the airline's booking page.
+- **Every page starts the same way:** breadcrumbs, one H1 ("Vols Kinshasa → Lubumbashi", "CAA : Kinshasa → Lubumbashi"), one answer line (airlines, flights this week, lowest price with its date). Warnings (closed airport, suspended airline or route) come next, above everything else.
+- **Every page ends the same way** (`PageFacts`, owner 2026-11-02): "Mis à jour le · Horaires vérifiés le · Sources", then "Une information fausse ou dépassée ? Signalez-la" (the contact form on that topic, with the page) and the disclaimer. Dates are `<time>` elements.
+- **Route page** (`/vols/a-b`): "Par compagnie" first, one card per airline that is a single link (days, times, flights this week, latest price); then "Départs" with the search box filled with the route and the results; the return trip; then "À propos de ce trajet" (airports, time difference) beside "Besoin d'aide pour ce trajet ?".
+- **Airline page** (`/vols/a-b/caa`): the departure in full (times block, then duration, number, aircraft and flying days). Above it, when the airline flies the route more than once that day, the departure times as chips; under it, the next 14 dates as chips. Then the airline's services on the route, its note, and every validated price with its fare name, kind, travel date, source and the date it was seen. Beside it, "Réserver ce vol" (see Booking request below). Never a link to the airline's booking page.
 - **Hub** (`/vols`): the search box, then the routes grouped by departure city, each with its airlines (sorted by name), flights this week and lowest price.
+- **Booking request** (`components/search/BookingRequest.tsx`, P-15): a header naming the departure ("CAA · lun. 9 nov. · 08:00 – 12:30 · BU 1633"); the price with its date when one was seen, otherwise one line saying the team gives it on the call; travellers (`Stepper`, 1 to 9) and class as two label-left rows; name; **phone only**, with "Nous vous rappelons à ce numéro, par appel ou sur WhatsApp"; errors under the field they concern; the button, then "Aucun paiement maintenant…". On phones: a bar fixed at the bottom with one centred button; it opens the form as a **sheet from the bottom**, fields scrolling and the button pinned to the bottom edge (safe-area aware).
+- **Date in the search** (`components/vols/DateField.tsx`, P-15): a field like the airport pickers (calendar icon, "Toutes les dates" when empty, a clear button). It opens our calendar: weeks start Monday, past days off, today outlined, selected day filled pink; on a route page, the days with a known flight have a pink dot (white on the selected day) and the footer explains it. Phones: a sheet from the bottom with 44 px days. Wider screens: a popover. Never the browser's date input.
 - **Text, not glyphs:** "–" between city names in running text and breadcrumbs; the arrow is the `RouteTitle` icon (the brand font has no "→").
 
 **Back-office home** (B-1; `components/backoffice/DashboardHome.tsx`):
@@ -408,6 +412,8 @@ A native app is item **P-8** in the plan, and only if usage justifies it. The sy
 | 2026-10-31 | Search asks for no date, one way only | Owner: show the next days with flights instead of "no flight on that date". |
 | 2026-10-31 | Nothing moves on its own | Owner: the carousel moved too fast and showed no dates. |
 | 2026-10-31 | Back-office sidebar grouped and dockable | Owner. |
+| 2026-11-02 | Phones get sheets from the bottom, with the main button on the bottom edge (booking request, calendar); counts use − and +; forms ask for a phone, not an email | Owner: the centred dialog left empty space under its button; the native date input looked basic. |
+| 2026-11-02 | Page dates and sources go at the bottom of route and airline pages | Owner. |
 
 **Changelog**
 - **v1 (2026-10-30):**
@@ -421,3 +427,7 @@ A native app is item **P-8** in the plan, and only if usage justifies it. The sy
   - `AirportStatusNotice`, `AirportStatusBadge`, `HomeSearch`
   - public navbar and footer reorganised; back-office sidebar grouped and dockable
   - `formatDayMonthYear` ("6 juin 2026") added to `lib/format.ts`
+- **v1.2 (2026-11-02, P-15):**
+  - `Stepper` (counts with − and +), `DateField` (our calendar, sheet on phones), `PageFacts` (dates, sources and "Signaler une erreur" at the end of route and airline pages)
+  - booking request redesigned, phone only; phones get it as a sheet from the bottom
+  - `/about` rebuilt (problem, offer, method, limits, intention, participation); footer columns Explorer · Clerikaa · Participer

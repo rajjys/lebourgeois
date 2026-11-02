@@ -192,29 +192,148 @@
     }
   },
   "about": {
-    "title": "À propos",
-    "mission": {
-      "title": "Notre mission",
-      "description": "Rendre les informations sur les vols intérieurs en RDC (compagnies, horaires, prix) faciles à trouver et à comparer."
+    "eyebrow": "À propos de Clerikaa",
+    "title": "L'information sur les vols intérieurs en RDC, vérifiée et datée",
+    "lead": "Clerikaa rassemble les horaires et les prix des vols intérieurs en RDC, trajet par trajet, pour que vous puissiez comparer les compagnies avant de voyager. Chaque information porte sa date et sa source.",
+    "figures": {
+      "routes_one": "trajet suivi",
+      "routes_other": "trajets suivis",
+      "airlines_one": "compagnie avec des vols publiés",
+      "airlines_other": "compagnies avec des vols publiés",
+      "flights_one": "vol dans les 7 prochains jours",
+      "flights_other": "vols dans les 7 prochains jours",
+      "note": "Chiffres calculés à partir des données publiées sur le site, mis à jour toutes les heures."
     },
-    "approach": {
-      "title": "D'où viennent les données",
-      "description": "Les horaires et prix sont relevés auprès des compagnies aériennes puis vérifiés. Les prix sont indicatifs : le tarif final est toujours confirmé par la compagnie ou votre agence au moment de la réservation."
+    "problem": {
+      "title": "Le problème",
+      "lead": "Savoir qui vole entre deux villes congolaises, quels jours et à quel prix demande souvent plusieurs appels, un passage en agence ou à l'aéroport.",
+      "items": {
+        "scattered": "Chaque compagnie publie ses horaires à sa façon : un programme en PDF qui change chaque semaine, une page web, un message sur les réseaux sociaux.",
+        "changes": "Les horaires changent souvent. Une information juste le mois dernier peut être fausse aujourd'hui, sans que rien ne le signale.",
+        "prices": "Les prix sont rarement affichés publiquement, et presque jamais avec la date à laquelle ils étaient valables.",
+        "global": "Les grands sites de voyage internationaux affichent parfois des compagnies à l'arrêt ou des aéroports fermés."
+      }
     },
-    "expertise": {
-      "title": "Ce que nous ne sommes pas",
-      "description": "Nous ne sommes pas une compagnie aérienne et nous ne vendons pas de billets."
+    "offer": {
+      "title": "Ce que vous trouvez ici",
+      "lead": "Pas une simple liste de vols : ce qu'il faut savoir pour choisir une compagnie sur un trajet.",
+      "items": {
+        "route": {
+          "title": "Une page par trajet",
+          "body": "Les compagnies qui le desservent, leurs jours de vol, leurs horaires et le nombre de vols de la semaine, côte à côte."
+        },
+        "airline": {
+          "title": "Une page par compagnie sur chaque trajet",
+          "body": "Chaque départ en détail : heures locales, escales, numéro de vol et appareil quand ils sont publiés."
+        },
+        "prices": {
+          "title": "Des prix datés",
+          "body": "Chaque prix affiche le jour où il a été relevé et sa source. Un prix sans date n'est pas publié."
+        },
+        "alerts": {
+          "title": "Les alertes qui comptent",
+          "body": "Aéroport fermé, ligne suspendue, compagnie à l'arrêt : c'est écrit en haut de la page concernée."
+        },
+        "booking": {
+          "title": "Une demande de réservation",
+          "body": "Sur chaque départ, « Réserver ce vol » nous envoie votre demande avec votre numéro : notre équipe vous rappelle pour confirmer le prix et la réservation."
+        }
+      }
     },
-    "cta": "Trouvez votre vol"
+    "method": {
+      "title": "Notre méthode",
+      "lead": "Une information de vol n'est utile que si elle est exacte. Voici comment nous travaillons.",
+      "steps": {
+        "collect": {
+          "title": "Relever à la source",
+          "body": "Nous relevons les horaires et les prix là où les compagnies les publient : leurs programmes, leurs sites, leurs agences. Pour l'instant, ce travail est fait à la main, pas par un robot."
+        },
+        "check": {
+          "title": "Vérifier avant de publier",
+          "body": "Une personne compare chaque horaire à sa source avant de le publier et note la date de vérification. Un horaire qui n'a pas été revérifié depuis 7 jours est signalé « À revérifier »."
+        },
+        "date": {
+          "title": "Dater et citer",
+          "body": "Chaque page indique quand ses données ont changé, quand les horaires ont été vérifiés et d'où ils viennent. Chaque prix porte la date à laquelle il a été relevé."
+        },
+        "publish": {
+          "title": "Ne publier que ce que nous savons",
+          "body": "Quand nous n'avons pas d'information sur un trajet, la page le dit (« aucun vol connu ») au lieu d'inventer. Les compagnies sont présentées par ordre alphabétique, sans mise en avant."
+        }
+      }
+    },
+    "limits": {
+      "title": "Nos limites",
+      "lead": "Mieux vaut les connaître avant de voyager.",
+      "items": {
+        "prices": "Les prix sont indicatifs : le tarif final est confirmé au moment de la réservation.",
+        "live": "Nous ne suivons pas les vols en temps réel. Les retards et les annulations de dernière minute n'apparaissent pas ici : vérifiez auprès de la compagnie le jour du départ.",
+        "coverage": "Nous couvrons uniquement les vols intérieurs en RDC, et pas encore toutes les compagnies ni tous les trajets.",
+        "published": "Certaines compagnies publient peu d'informations, par exemple pas de numéro de vol. Nous montrons ce qui est publié, rien de plus.",
+        "time": "Les heures sont locales à chaque aéroport : la RDC a deux fuseaux horaires, Lubumbashi a une heure d'avance sur Kinshasa.",
+        "team": "Nous sommes une petite équipe. Une erreur peut nous échapper : si vous en voyez une, dites-le-nous.",
+        "tickets": "Nous ne sommes pas une compagnie aérienne et nous ne vendons pas de billets en ligne : aucun paiement ne se fait sur ce site."
+      }
+    },
+    "intent": {
+      "title": "Notre intention",
+      "p1": "Lister des vols ne suffit pas. Notre but est de donner, pour chaque trajet, l'information la plus utile possible : qui vole vraiment, quels jours, à quel prix récent, et ce qui a changé.",
+      "p2": "À terme, nous voulons recevoir les programmes directement des compagnies, pour une information encore plus fiable et plus rapide à mettre à jour.",
+      "promises": {
+        "dated": "Chaque information est datée.",
+        "sourced": "Chaque horaire et chaque prix cite sa source.",
+        "corrected": "Une erreur signalée est vérifiée et corrigée.",
+        "neutral": "Aucune compagnie n'est mise en avant."
+      }
+    },
+    "join": {
+      "title": "Participer",
+      "lead": "Clerikaa s'améliore avec celles et ceux qui voyagent, qui travaillent dans l'aérien, ou qui veulent simplement aider. Toute contribution est la bienvenue.",
+      "items": {
+        "error": {
+          "title": "Signaler une erreur",
+          "body": "Un horaire faux, un vol qui n'existe plus, un aéroport rouvert : indiquez la page et ce qui a changé.",
+          "cta": "Signaler une erreur"
+        },
+        "share": {
+          "title": "Partager une information",
+          "body": "Un prix payé récemment, un nouveau vol, le programme affiché dans une agence : avec la date, c'est précieux. Une photo s'envoie sur WhatsApp.",
+          "cta": "Nous écrire"
+        },
+        "partners": {
+          "title": "Compagnies, aéroports, agences",
+          "body": "Vous représentez une compagnie, un aéroport ou une agence ? Parlons de vos horaires et de la façon de les publier correctement.",
+          "cta": "Prendre contact"
+        },
+        "help": {
+          "title": "Aider le projet",
+          "body": "Relevés d'horaires, traduction, design, développement, idées ou retours d'expérience : dites-nous ce que vous aimeriez apporter.",
+          "cta": "Proposer votre aide"
+        }
+      },
+      "whatsapp": "Vous préférez WhatsApp ? Écrivez-nous au"
+    },
+    "cta": {
+      "title": "Trouvez votre vol",
+      "body": "Cherchez un trajet et comparez les compagnies, leurs jours de vol et leurs prix observés.",
+      "button": "Voir les vols et les trajets"
+    }
   },
   "footer": {
-    "tagline": "Horaires et prix indicatifs des vols intérieurs en RDC.",
-    "noTickets": "Nous ne vendons pas de billets.",
+    "tagline": "Horaires et prix indicatifs des vols intérieurs en RDC, trajet par trajet.",
+    "noTickets": "Prix indicatifs. Aucun paiement sur ce site.",
     "explore": "Explorer",
-    "search": "Rechercher un vol",
     "help": "Besoin d'aide pour un vol ?",
     "rights": "Tous droits réservés.",
-    "contact": "Nous contacter"
+    "contact": "Nous contacter",
+    "method_line": "Relevés à la source, vérifiés et datés.",
+    "routes": "Vols et trajets",
+    "method": "Notre méthode",
+    "limits": "Nos limites",
+    "join": "Participer",
+    "reportError": "Signaler une erreur",
+    "partners": "Compagnies et agences",
+    "contribute": "Aider le projet"
   },
   "airportPicker": {
     "placeholder": "Choisir un aéroport",
@@ -236,7 +355,7 @@
   "contact": {
     "title": "Nous contacter",
     "intro": "Une question, une information fausse ou dépassée, ou vous représentez une compagnie aérienne ? Écrivez-nous.",
-    "noTickets": "Nous ne vendons pas de billets : pour réserver, modifier ou annuler, adressez-vous à la compagnie.",
+    "noTickets": "Nous ne vendons pas de billets en ligne. Pour réserver un vol, utilisez « Réserver ce vol » sur sa page ; pour modifier ou annuler un billet, adressez-vous à la compagnie.",
     "form": {
       "name": "Votre nom",
       "reply": "Email ou numéro WhatsApp",
@@ -285,7 +404,10 @@
       "date": "Date",
       "dateHint": "Facultatif : sans date, les quatre prochaines semaines.",
       "submit": "Rechercher",
-      "clearDate": "Toutes les dates"
+      "clearDate": "Effacer la date",
+      "anyDate": "Toutes les dates",
+      "flightDays": "Jour avec un vol connu",
+      "pickDate": "Date du vol"
     },
     "hub": {
       "title": "Les vols intérieurs en RDC",
@@ -359,6 +481,38 @@
       "source": "Source",
       "flightNo": "Vol {{number}}",
       "noDeparture": "Pas de départ connu dans les quatre prochaines semaines. Notre équipe peut chercher pour vous."
+    },
+    "book": {
+      "title": "Réserver ce vol",
+      "price": "Prix indicatif",
+      "noPrice": "Pas encore de prix relevé : notre équipe vous le donne quand elle vous rappelle.",
+      "travelers": "Voyageurs",
+      "removeTraveler": "Retirer un voyageur",
+      "addTraveler": "Ajouter un voyageur",
+      "class": "Classe",
+      "name": "Nom complet",
+      "namePlaceholder": "Votre nom",
+      "nameError": "Indiquez votre nom.",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+243 81 234 56 78",
+      "phoneHint": "Nous vous rappelons à ce numéro, par appel ou sur WhatsApp.",
+      "phoneError": "Indiquez un numéro de téléphone complet.",
+      "submit": "Envoyer la demande",
+      "sending": "Envoi…",
+      "reassurance": "Aucun paiement maintenant : notre équipe vous rappelle pour confirmer le prix et la réservation.",
+      "failed": "L'envoi a échoué. Réessayez dans un instant.",
+      "sentTitle": "Demande envoyée",
+      "sentBody": "Merci ! Nous vous rappelons au {{phone}}.",
+      "another": "Faire une autre demande",
+      "close": "Fermer"
+    },
+    "facts": {
+      "label": "Sources et mises à jour",
+      "updated": "Mis à jour le",
+      "verified": "Horaires vérifiés le",
+      "sources_one": "Source",
+      "sources_other": "Sources",
+      "report": "Une information fausse ou dépassée ? Signalez-la"
     }
   }
 }

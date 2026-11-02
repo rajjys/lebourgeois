@@ -3,12 +3,11 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { ArrowLeftRight, Search, X } from "lucide-react";
+import { ArrowLeftRight, Search } from "lucide-react";
 import { AirportCombobox, airportCode } from "@/components/AirportCombobox";
 import { AirportStatusNotice } from "@/components/search/AirportStatusNotice";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { DateField } from "@/components/vols/DateField";
 import { useAirports } from "@/hooks/useAirports";
 import { SEARCH_ANCHOR } from "@/lib/links";
 import { cn } from "@/lib/utils/cn-utils";
@@ -36,12 +35,15 @@ export function RouteSearch({
   initialTo = "",
   initialDate = null,
   today,
+  flightDates,
   className,
 }: {
   initialFrom?: string;
   initialTo?: string;
   initialDate?: string | null;
   today: string;
+  /** The page's route's days with a departure: shown in the calendar while the airports are unchanged. */
+  flightDates?: string[];
   className?: string;
 }) {
   const { t } = useTranslation();
@@ -53,6 +55,7 @@ export function RouteSearch({
   const fromCode = airportCode(from);
   const toCode = airportCode(to);
   const sameAirport = !!fromCode && fromCode === toCode;
+  const sameRoute = fromCode === airportCode(initialFrom) && toCode === airportCode(initialTo);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -69,7 +72,7 @@ export function RouteSearch({
       aria-label={t("home.search.label")}
       className={cn("rounded-2xl border bg-card p-3 shadow-card sm:p-4", className)}
     >
-      <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_11rem_auto] md:items-end md:gap-3">
+      <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_12.5rem_auto] md:items-end md:gap-3">
         <AirportCombobox id="route-from" label={t("home.search.from")} placeholder={t("home.search.fromPlaceholder")} value={from} onChange={setFrom} triggerClassName="h-14 py-2" />
         <Button
           type="button"
@@ -86,19 +89,7 @@ export function RouteSearch({
           <ArrowLeftRight className="size-4 rotate-90 md:rotate-0" aria-hidden="true" />
         </Button>
         <AirportCombobox id="route-to" label={t("home.search.to")} placeholder={t("home.search.toPlaceholder")} value={to} onChange={setTo} triggerClassName="h-14 py-2" />
-        <div className="space-y-2">
-          <Label htmlFor="route-date" className="text-sm font-medium text-muted-foreground">
-            {t("vols.search.date")}
-          </Label>
-          <div className="relative">
-            <Input id="route-date" type="date" min={today} value={date} onChange={(e) => setDate(e.target.value)} className="h-14 pr-9" aria-describedby="route-date-hint" />
-            {date && (
-              <button type="button" onClick={() => setDate("")} className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground" aria-label={t("vols.search.clearDate")}>
-                <X className="size-4" aria-hidden="true" />
-              </button>
-            )}
-          </div>
-        </div>
+        <DateField id="route-date" value={date} onChange={setDate} min={today} flightDates={sameRoute ? flightDates : undefined} describedBy="route-date-hint" />
         <Button type="submit" size="lg" className="mt-2 h-14 md:mt-0">
           <Search className="size-4" aria-hidden="true" />
           {t("vols.search.submit")}

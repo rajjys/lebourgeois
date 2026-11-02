@@ -121,6 +121,7 @@ Links only help search engines when they point at **indexable pages with content
 4. **The answer first.** The first block states who flies, how often, from what price, and as of when, in a plain sentence. Then the details.
 5. **Dates, visible and honest.**
    - Google asks for a prominent date with a label such as "Mis à jour le".
+   - Placement (owner, 2026-11-02): on route and airline pages the page dates sit in a labelled block at the **end** of the page ("Sources et mises à jour"), not under the H1. They stay visible text in `<time>` elements; each price keeps its "observé le" where it is shown. If Search Console shows the wrong dates for these pages, raise this again.
    - Visible dates and structured-data dates must match.
    - The page date must describe the page, not the events it covers.
    - So we keep three dates apart:
