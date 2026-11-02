@@ -3,13 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { ArrowLeftRight, ArrowRight, Info, LifeBuoy } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, ChevronRight, Info, LifeBuoy } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DayStrip } from "@/components/ds/DayStrip";
 import { PriceTag } from "@/components/ds/PriceTag";
 import { RouteTitle } from "@/components/ds/RouteTitle";
+import { TYPE } from "@/components/ds/typography";
 import { AirportStatusAlert } from "@/components/search/AirportStatusNotice";
 import { AirlineTile, ResultCard } from "@/components/search/ResultCard";
 import { SortTabs } from "@/components/search/SortTabs";
@@ -20,6 +21,7 @@ import { sortServices, type SortKey } from "@/lib/searchResults";
 import { airlineRouteHref, requestHref, VOLS_HREF } from "@/lib/links";
 import { formatDateLong, formatDayMonth, formatPrice, formatWeekdays, shortAirlineName as shortName, WEEKDAYS } from "@/lib/format";
 import type { RoutePage } from "@/lib/routePages";
+import { cn } from "@/lib/utils/cn-utils";
 
 const day = (d: string) => new Date(`${d}T00:00:00Z`);
 
@@ -60,7 +62,7 @@ export function RoutePageView({ data }: { data: RoutePage }) {
   const ahead = offset(destination.timezone) - offset(origin.timezone);
 
   return (
-    <div className="container mx-auto max-w-5xl space-y-8 px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+    <div className="container mx-auto max-w-5xl space-y-6 px-4 pb-16 pt-4 sm:space-y-8 sm:px-6 sm:pt-6 lg:px-8">
       <Breadcrumbs
         items={[
           { label: t("vols.breadcrumb.home"), href: "/" },
@@ -69,15 +71,16 @@ export function RoutePageView({ data }: { data: RoutePage }) {
         ]}
       />
 
-      <header className="space-y-3">
-        <h1 className="flex flex-wrap items-baseline gap-x-2 text-3xl font-bold tracking-tight sm:text-4xl">
+      <header className="space-y-2 sm:space-y-3">
+        <h1 className={cn(TYPE.title, "flex flex-wrap items-baseline gap-x-2")}>
           <span>{t("vols.route.h1")}</span>
           <RouteTitle as="span" origin={origin.city} destination={destination.city} />
         </h1>
-        <p className="text-lg text-neutral-700">{answer}</p>
+        <p className={TYPE.lead}>{answer}</p>
       </header>
 
-      <div className="space-y-3">
+      {/* empty:hidden: with no alert, the empty block must not add a gap of its own. */}
+      <div className="space-y-3 empty:hidden">
         {[origin, destination].map((a) => (
           <AirportStatusAlert key={a.code} airport={a} />
         ))}
@@ -101,57 +104,62 @@ export function RoutePageView({ data }: { data: RoutePage }) {
         initialDate={data.date}
         today={data.today}
         flightDates={data.flightDates}
-        summary={{ from: origin.city, to: destination.city }}
       />
 
       {data.airlines.length > 0 && (
         // Before the departures (owner, 2026-11-02): travellers here pick an airline more than an hour,
         // and comparing airlines is what the site is for.
         <section aria-labelledby="airlines-title" className="space-y-3">
-          <h2 id="airlines-title" className="text-xl font-bold">
+          <h2 id="airlines-title" className={TYPE.section}>
             {t("vols.route.byAirline")}
           </h2>
           <ul className="space-y-3">
             {data.airlines.map((a) => (
               <li key={a.code}>
+                {/* Phones (P-17): name and days beside the logo, then one line with the flights this
+                    week, the price and a chevron; "Tout sur …" from 640px. About 150px instead of 230. */}
                 <Link
                   href={airlineRouteHref(data.slug, a.slug, a.next?.date)}
-                  className="group flex flex-wrap items-start gap-x-4 gap-y-3 rounded-2xl border bg-card p-4 transition-colors hover:border-primary sm:items-center sm:gap-x-5 sm:p-5"
+                  className="group flex flex-wrap items-center gap-x-3 gap-y-3 rounded-2xl border bg-card p-3.5 transition-colors hover:border-primary sm:flex-nowrap sm:gap-x-5 sm:p-5"
                 >
                   <AirlineTile code={a.code} logo={a.logo} />
                   <div className="min-w-0 flex-1 space-y-1.5">
-                    <p className="flex flex-wrap items-center gap-2 font-semibold">
+                    <p className="flex flex-wrap items-center gap-2 font-semibold leading-snug">
                       {a.name}
                       {a.routeStatus !== "ACTIVE" && <Badge variant="warning">{t(`vols.route.badge.${a.routeStatus}`)}</Badge>}
                     </p>
                     {a.days.length > 0 && (
                       <DayStrip days={a.days} letters={letters} label={t("explore.results.flies", { days: formatWeekdays(a.days) })} />
                     )}
-                    {/* Phones: the count only, so an airline with many departure times does not make
-                        its card taller than the others (owner, 2026-11-02). The times are on its page. */}
-                    <p className="text-sm text-muted-foreground">
+                    {/* Wider screens: departure times and the count. Phones show the count on the line
+                        below, never the times, so cards keep one height (owner, 2026-11-02). */}
+                    <p className="hidden text-sm text-muted-foreground sm:block">
                       {a.times.length > 0 && (
-                        <span className="hidden sm:inline">
+                        <>
                           {t("vols.route.times", { count: a.times.length, times: a.times.join(", ") })}
                           {" · "}
-                        </span>
+                        </>
                       )}
                       {t("vols.route.flights", { count: a.flightsThisWeek })}
                     </p>
                   </div>
-                  <div className="flex w-full flex-col items-start gap-1.5 border-t pt-3 sm:w-auto sm:items-end sm:border-0 sm:pt-0">
-                    {a.price ? (
-                      <PriceTag
-                        amount={a.price.amount}
-                        observedAt={new Date(a.price.observedAt)}
-                        kind={a.price.kind === "FROM_PRICE" ? "from" : "quote"}
-                        labels={{ from: t("explore.results.from"), observed: t("explore.results.seenOn") }}
-                        className="sm:items-end"
-                      />
-                    ) : (
-                      <span className="text-sm text-muted-foreground">{t("vols.route.noPriceYet")}</span>
-                    )}
-                    <span className="inline-flex items-center gap-1 text-sm font-medium text-link group-hover:underline">
+                  <div className="flex w-full items-center justify-between gap-3 border-t pt-3 sm:w-auto sm:flex-col sm:items-end sm:gap-1.5 sm:border-0 sm:pt-0">
+                    <span className="text-sm text-muted-foreground sm:hidden">{t("vols.route.flights", { count: a.flightsThisWeek })}</span>
+                    <span className="flex items-center gap-1 sm:contents">
+                      {a.price ? (
+                        <PriceTag
+                          amount={a.price.amount}
+                          observedAt={new Date(a.price.observedAt)}
+                          kind={a.price.kind === "FROM_PRICE" ? "from" : "quote"}
+                          labels={{ from: t("explore.results.from"), observed: t("explore.results.seenOn") }}
+                          className="items-end text-right"
+                        />
+                      ) : (
+                        <span className="text-sm text-muted-foreground">{t("vols.route.noPriceYet")}</span>
+                      )}
+                      <ChevronRight className="size-5 shrink-0 text-muted-foreground sm:hidden" aria-hidden="true" />
+                    </span>
+                    <span className="hidden items-center gap-1 text-sm font-medium text-link group-hover:underline sm:inline-flex">
                       {t("vols.route.seeAirline", { airline: shortName(a.name) })}
                       <ArrowRight className="size-4" aria-hidden="true" />
                     </span>
@@ -163,9 +171,9 @@ export function RoutePageView({ data }: { data: RoutePage }) {
         </section>
       )}
 
-      <section aria-labelledby="results-title" className="space-y-4">
+      <section aria-labelledby="results-title" className="space-y-3 sm:space-y-4">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <h2 id="results-title" className="text-xl font-bold">
+          <h2 id="results-title" className={TYPE.section}>
             {t("vols.route.results")}
           </h2>
           <p className="text-sm text-muted-foreground first-letter:uppercase">
@@ -185,7 +193,7 @@ export function RoutePageView({ data }: { data: RoutePage }) {
             </ul>
           </>
         ) : (
-          <div className="rounded-2xl border border-dashed p-6 text-center">
+          <div className="rounded-2xl border border-dashed p-5 text-center sm:p-6">
             <p className="text-muted-foreground">{t("vols.route.noFlightsBody")}</p>
             <Button asChild variant="outline" className="mt-4">
               <Link href={requestHref(origin.code, destination.code)}>{t("vols.route.helpCta")}</Link>
@@ -195,7 +203,7 @@ export function RoutePageView({ data }: { data: RoutePage }) {
       </section>
 
       {data.reverse?.linked && (
-        <Link href={`/vols/${data.reverse.slug}`} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-5 transition-colors hover:border-primary">
+        <Link href={`/vols/${data.reverse.slug}`} className="flex items-center justify-between gap-3 rounded-2xl border bg-card p-4 transition-colors hover:border-primary sm:p-5">
           <span className="flex items-center gap-3">
             <ArrowLeftRight className="size-5 text-brand" aria-hidden="true" />
             <span>
@@ -209,8 +217,8 @@ export function RoutePageView({ data }: { data: RoutePage }) {
         </Link>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <section aria-labelledby="about-title" className="rounded-2xl bg-muted p-5">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+        <section aria-labelledby="about-title" className="rounded-2xl bg-muted p-4 sm:p-5">
           <h2 id="about-title" className="font-semibold">
             {t("vols.route.about")}
           </h2>
@@ -224,7 +232,7 @@ export function RoutePageView({ data }: { data: RoutePage }) {
               : t("vols.route.timeAhead", { count: Math.abs(ahead), ...(ahead > 0 ? { city: destination.city, other: origin.city } : { city: origin.city, other: destination.city }) })}
           </p>
         </section>
-        <section aria-labelledby="help-title" className="rounded-2xl border p-5">
+        <section aria-labelledby="help-title" className="rounded-2xl border p-4 sm:p-5">
           <h2 id="help-title" className="flex items-center gap-2 font-semibold">
             <LifeBuoy className="size-4 text-brand" aria-hidden="true" />
             {t("vols.route.helpTitle")}

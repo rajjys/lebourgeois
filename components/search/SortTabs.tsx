@@ -48,7 +48,7 @@ export function SortTabs({
             onClick={() => onChange(key)}
             title={key === "best" ? t("explore.results.sortHelp") : undefined}
             className={cn(
-              "min-w-0 px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+              "min-w-0 px-3.5 py-2.5 text-left transition-colors sm:px-4 sm:py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
               i % 2 === 1 && "border-l",
               i >= 2 && "border-t sm:border-t-0",
               i === 2 && "sm:border-l",

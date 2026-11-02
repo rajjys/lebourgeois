@@ -42,14 +42,14 @@ const Footer = () => {
 
   return (
     <footer className="mt-auto border-t border-border bg-muted">
-      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-[2fr_1fr_1fr_1fr]">
+      <div className="container mx-auto px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:gap-y-10 md:grid-cols-[2fr_1fr_1fr_1fr]">
           <div className="col-span-2 space-y-3 md:col-span-1">
             <Logo />
             <p className="max-w-sm text-sm text-muted-foreground">{t('footer.tagline')}</p>
             <p className="max-w-sm text-sm text-muted-foreground">{t('footer.method_line')}</p>
             <p className="text-sm text-muted-foreground">
-              WhatsApp :{" "}
+              WhatsApp{"\u00a0: "}
               <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className="font-medium text-foreground hover:text-link">
                 {WHATSAPP_DISPLAY}
               </a>
@@ -72,7 +72,7 @@ const Footer = () => {
           ))}
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row sm:justify-between">
+        <div className="mt-8 flex flex-col gap-2 border-t border-border pt-6 text-sm text-muted-foreground sm:mt-10 sm:flex-row sm:justify-between">
           <p>&copy; {new Date().getFullYear()} {SITE.name}. {t('footer.rights')}</p>
           <p>{t('footer.noTickets')}</p>
         </div>

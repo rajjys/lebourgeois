@@ -60,6 +60,8 @@ export function DateField({
   const isMobile = useIsMobile();
   const cell = isMobile ? "size-11" : "size-10";
 
+  // A row of the search card (docs/DESIGN-SYSTEM.md, search card): label inside, small on top;
+  // "Toutes les dates" is a real value (the next four weeks), so the label never takes its place.
   const trigger = (
     <button
       id={id}
@@ -67,10 +69,9 @@ export function DateField({
       aria-describedby={describedBy}
       aria-haspopup="dialog"
       onClick={isMobile ? () => openChange(true) : undefined}
-      className="flex h-14 w-full items-center gap-3 rounded-md border border-input bg-background px-4 text-left transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className="flex h-14 w-full min-w-0 flex-col justify-end pb-2 pl-12 pr-4 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring lg:h-16 lg:pb-2.5"
     >
-      <CalendarDays className="size-5 shrink-0 text-brand" aria-hidden="true" />
-      <span className={cn("min-w-0 flex-1 truncate", value ? "pr-6 text-base font-semibold first-letter:uppercase" : "text-muted-foreground")}>
+      <span className={cn("block truncate leading-6", value ? "pr-6 text-base font-semibold text-foreground first-letter:uppercase" : "text-base text-muted-foreground")}>
         {value ? formatDateShort(new Date(`${value}T00:00:00Z`)) : t("vols.search.anyDate")}
       </span>
     </button>
@@ -145,42 +146,41 @@ export function DateField({
   );
 
   return (
-    <div className="min-w-0 space-y-2">
-      <label htmlFor={id} className="text-sm font-medium text-muted-foreground">
+    <div className="relative min-w-0">
+      <CalendarDays className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+      <label htmlFor={id} className="pointer-events-none absolute left-12 top-2 z-[1] text-xs font-medium text-muted-foreground lg:top-2.5">
         {t("vols.search.date")}
       </label>
-      <div className="relative">
-        {isMobile ? (
-          <>
-            {trigger}
-            <Sheet open={open} onOpenChange={openChange}>
-              <SheetContent side="bottom" className="gap-0 rounded-t-3xl p-0" aria-describedby={undefined}>
-                <SheetTitle className="border-b px-5 pb-4 pt-5 text-lg font-bold">{t("vols.search.pickDate")}</SheetTitle>
-                {calendar}
-                {footer}
-              </SheetContent>
-            </Sheet>
-          </>
-        ) : (
-          <Popover open={open} onOpenChange={openChange}>
-            <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-            <PopoverContent align="start" collisionPadding={16} className="w-auto rounded-2xl p-0 shadow-hover">
+      {isMobile ? (
+        <>
+          {trigger}
+          <Sheet open={open} onOpenChange={openChange}>
+            <SheetContent side="bottom" className="gap-0 rounded-t-3xl p-0" aria-describedby={undefined}>
+              <SheetTitle className="border-b px-5 pb-4 pt-5 text-lg font-bold">{t("vols.search.pickDate")}</SheetTitle>
               {calendar}
               {footer}
-            </PopoverContent>
-          </Popover>
-        )}
-        {value && (
-          <button
-            type="button"
-            onClick={() => onChange("")}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            aria-label={t("vols.search.clearDate")}
-          >
-            <X className="size-4" aria-hidden="true" />
-          </button>
-        )}
-      </div>
+            </SheetContent>
+          </Sheet>
+        </>
+      ) : (
+        <Popover open={open} onOpenChange={openChange}>
+          <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+          <PopoverContent align="start" sideOffset={2} collisionPadding={16} className="w-auto rounded-2xl p-0 shadow-hover">
+            {calendar}
+            {footer}
+          </PopoverContent>
+        </Popover>
+      )}
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-neutral-100 hover:text-foreground"
+          aria-label={t("vols.search.clearDate")}
+        >
+          <X className="size-4" aria-hidden="true" />
+        </button>
+      )}
     </div>
   );
 }

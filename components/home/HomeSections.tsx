@@ -9,6 +9,8 @@ import { FreshnessBadge } from "@/components/ds/FreshnessBadge";
 import { PriceTag } from "@/components/ds/PriceTag";
 import { RouteTitle } from "@/components/ds/RouteTitle";
 import { Badge } from "@/components/ui/badge";
+import { TYPE } from "@/components/ds/typography";
+import { cn } from "@/lib/utils/cn-utils";
 import { daysBetween, formatDateShort, formatDayMonthYear, formatFlightNumber } from "@/lib/format";
 import { airlineRouteHref, routeHref, VOLS_HREF } from "@/lib/links";
 import type { AirportAlert, HomeData, TrackedRoute, UpcomingDeparture } from "@/lib/home";
@@ -19,10 +21,10 @@ const FRESH_DAYS = 7;
 function SectionHeading({ title, subtitle, id }: { title: string; subtitle?: string; id: string }) {
   return (
     <div className="max-w-2xl">
-      <h2 id={id} className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+      <h2 id={id} className={cn(TYPE.headline, "text-foreground")}>
         {title}
       </h2>
-      {subtitle && <p className="mt-2 text-muted-foreground">{subtitle}</p>}
+      {subtitle && <p className="mt-1.5 text-sm text-muted-foreground sm:mt-2 sm:text-base">{subtitle}</p>}
     </div>
   );
 }
@@ -31,32 +33,36 @@ export function HomeHero({ popular }: { popular: TrackedRoute[] }) {
   const { t } = useTranslation();
   return (
     <section className="hero-surface rounded-b-[2rem] sm:rounded-b-[3rem]" aria-labelledby="home-title">
-      <div className="container mx-auto px-4 pb-12 pt-12 sm:px-6 sm:pb-16 sm:pt-20 lg:px-8">
+      {/* Phones (P-17): tighter padding and type, so the search card is on the first screen with room to spare. */}
+      <div className="container mx-auto px-4 pb-8 pt-8 sm:px-6 sm:pb-16 sm:pt-20 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="text-sm font-semibold text-brand">{t("home.hero.eyebrow")}</p>
-          <h1
-            id="home-title"
-            className="mx-auto mt-3 max-w-3xl text-balance text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl"
-          >
+          <p className="text-[0.8125rem] font-semibold text-brand sm:text-sm">{t("home.hero.eyebrow")}</p>
+          <h1 id="home-title" className={cn(TYPE.display, "mx-auto mt-2.5 max-w-3xl text-balance text-foreground sm:mt-3")}>
             {t("home.hero.title")}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-pretty text-lg text-neutral-700">{t("home.hero.subtitle")}</p>
+          <p className="mx-auto mt-3 max-w-2xl text-pretty text-base text-neutral-700 sm:mt-4 sm:text-lg">{t("home.hero.subtitle")}</p>
 
-          <div className="mt-8 sm:mt-10">
+          <div className="mt-6 sm:mt-10">
             <HomeSearch />
           </div>
-          <p className="mt-3 text-sm text-neutral-700">{t("home.search.hint")}</p>
+          <p className="mt-3 text-pretty text-sm text-neutral-700">{t("home.search.hint")}</p>
 
           {popular.length > 0 && (
-            <nav aria-label={t("home.hero.popular")} className="mt-6 flex flex-wrap items-center justify-center gap-2">
-              <span className="basis-full text-sm font-medium text-neutral-700 sm:basis-auto">{t("home.hero.popular")}</span>
+            // Phones: one row that swipes freely (it was one chip per line; snapping hid the label);
+            // wider screens: centred and wrapped.
+            // "relative" keeps the chips' sr-only text inside the scroller instead of widening the page.
+            <nav
+              aria-label={t("home.hero.popular")}
+              className="relative -mx-4 mt-5 flex items-center gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:mt-6 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0 [&::-webkit-scrollbar]:hidden"
+            >
+              <span className="shrink-0 text-sm font-medium text-neutral-700">{t("home.hero.popular")}</span>
               {popular.map((r) => (
                 <Link
                   key={`${r.origin.code}-${r.destination.code}`}
                   href={routeHref(r.origin, r.destination)}
-                  className="rounded-full border bg-card/80 px-3 py-1 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-link"
+                  className="shrink-0 rounded-full border bg-card/80 px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-link"
                 >
-                  <RouteTitle as="span" origin={r.origin.city} destination={r.destination.city} className="font-medium" />
+                  <RouteTitle as="span" origin={r.origin.city} destination={r.destination.city} className="flex-nowrap gap-x-1.5 font-medium" />
                 </Link>
               ))}
             </nav>
@@ -105,13 +111,13 @@ export function UpcomingDepartures({ departures }: { departures: UpcomingDepartu
   const { t } = useTranslation();
   if (!departures.length) return null;
   return (
-    <section className="container mx-auto px-4 pt-12 sm:px-6 sm:pt-16 lg:px-8" aria-labelledby="home-departures">
+    <section className="container mx-auto px-4 pt-10 sm:px-6 sm:pt-16 lg:px-8" aria-labelledby="home-departures">
       <SectionHeading id="home-departures" title={t("home.departures.title")} subtitle={t("home.departures.subtitle")} />
       {/* Phones swipe a row (never moves on its own); scroll-px keeps the first card off the screen edge
           when it snaps. Larger screens get a grid of 2, 3 then 4 columns, with 6 cards until there is room
           for two full rows of 4, so no row is left half empty.
           "relative" keeps the cards' sr-only text inside the scroller instead of widening the page. */}
-      <ul className="relative -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3 xl:grid-cols-4 sm:[&>li:nth-child(n+7)]:hidden xl:[&>li:nth-child(n+7)]:block">
+      <ul className="relative -mx-4 mt-5 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:mt-8 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3 xl:grid-cols-4 sm:[&>li:nth-child(n+7)]:hidden xl:[&>li:nth-child(n+7)]:block">
         {departures.map((d) => (
           <li key={d.id} className="w-[85%] shrink-0 snap-start sm:w-auto">
             <DepartureCard d={d} />
@@ -126,10 +132,10 @@ export function TrackedRoutes({ routes }: { routes: TrackedRoute[] }) {
   const { t } = useTranslation();
   if (!routes.length) return null;
   return (
-    <section className="container mx-auto px-4 pt-12 sm:px-6 sm:pt-16 lg:px-8" aria-labelledby="home-routes">
-      <div className="rounded-3xl bg-muted p-5 sm:p-8">
+    <section className="container mx-auto px-4 pt-10 sm:px-6 sm:pt-16 lg:px-8" aria-labelledby="home-routes">
+      <div className="rounded-3xl bg-muted p-4 sm:p-8">
         <SectionHeading id="home-routes" title={t("home.routes.title")} subtitle={t("home.routes.subtitle")} />
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-4 grid gap-2.5 sm:mt-6 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
           {routes.map((r) => (
             <li key={`${r.origin.code}-${r.destination.code}`}>
               <Link
@@ -137,7 +143,7 @@ export function TrackedRoutes({ routes }: { routes: TrackedRoute[] }) {
                 className="flex h-full items-center justify-between gap-3 rounded-xl border bg-card px-4 py-3 transition-colors hover:border-primary"
               >
                 <span className="min-w-0">
-                  <RouteTitle as="span" origin={r.origin.city} destination={r.destination.city} className="text-base" />
+                  <RouteTitle as="span" origin={r.origin.city} destination={r.destination.city} className="text-base font-semibold" />
                   <span className="mt-0.5 block text-sm text-muted-foreground">
                     {t("home.routes.airlines", { count: r.airlineCount })} ·{" "}
                     {t("home.routes.flights", { count: r.flightsNext7Days })}
@@ -166,8 +172,8 @@ export function AirportAlerts({ alerts }: { alerts: AirportAlert[] }) {
   const { t } = useTranslation();
   if (!alerts.length) return null;
   return (
-    <section className="container mx-auto px-4 pt-12 sm:px-6 sm:pt-16 lg:px-8" aria-labelledby="home-airports">
-      <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
+    <section className="container mx-auto px-4 pt-10 sm:px-6 sm:pt-16 lg:px-8" aria-labelledby="home-airports">
+      <div className="grid gap-4 sm:gap-8 lg:grid-cols-[1fr_2fr]">
         <SectionHeading id="home-airports" title={t("home.airports.title")} subtitle={t("home.airports.subtitle")} />
         <ul className="grid gap-3">
           {alerts.map((a) => (
@@ -218,10 +224,10 @@ const METHOD = [
 export function HowWeWork() {
   const { t } = useTranslation();
   return (
-    <section className="container mx-auto px-4 py-12 sm:px-6 sm:py-16 lg:px-8" aria-labelledby="home-method">
-      <div className="rounded-3xl border p-5 sm:p-8">
+    <section className="container mx-auto px-4 py-10 sm:px-6 sm:py-16 lg:px-8" aria-labelledby="home-method">
+      <div className="rounded-3xl border p-4 sm:p-8">
         <SectionHeading id="home-method" title={t("home.method.title")} subtitle={t("home.method.subtitle")} />
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           {METHOD.map(({ key, icon: Icon }) => (
             <li key={key} className="rounded-xl bg-muted p-4">
               <span className="inline-flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground">

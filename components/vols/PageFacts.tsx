@@ -29,7 +29,8 @@ export function PageFacts({
   const pathname = usePathname();
   const page = report.date ? `${pathname}?date=${report.date}` : pathname;
   const reportHref = `/contact?${new URLSearchParams({ sujet: "erreur", page, titre: report.label })}`;
-  const date = (iso: string) => <time dateTime={iso.slice(0, 10)}>{formatDayMonthYear(new Date(iso))}</time>;
+  // A date never breaks across two lines ("31 / octobre 2026").
+  const date = (iso: string) => <time dateTime={iso.slice(0, 10)} className="whitespace-nowrap">{formatDayMonthYear(new Date(iso))}</time>;
   const parts = [
     updatedAt && (
       <span key="updated">
@@ -43,11 +44,11 @@ export function PageFacts({
     ),
     sources.length > 0 && (
       <span key="sources">
-        {t("vols.facts.sources", { count: sources.length })} :{" "}
+        {t("vols.facts.sources", { count: sources.length })}{"\u00a0: "}
         {sources.map((s, i) => (
           <span key={s.url}>
             {i > 0 && ", "}
-            <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-link underline">
+            <a href={s.url} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-link underline">
               {s.host}
             </a>
           </span>

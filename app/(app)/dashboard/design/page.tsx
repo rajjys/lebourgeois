@@ -13,6 +13,7 @@ import { FreshnessBadge } from "@/components/ds/FreshnessBadge";
 import { RouteTitle } from "@/components/ds/RouteTitle";
 import { AirlineMark } from "@/components/ds/AirlineMark";
 import { DayStrip } from "@/components/ds/DayStrip";
+import { TYPE } from "@/components/ds/typography";
 
 export const metadata: Metadata = { title: "Système de design" };
 
@@ -130,10 +131,13 @@ export default function DesignSystemPage() {
 
       <Section id="typographie" title="Typographie · Plus Jakarta Sans">
         <div className="space-y-5">
+          {/* Headings come from TYPE (components/ds/typography.ts): phone size, then from 640px. */}
           {[
-            ["text-4xl font-extrabold tracking-tight", "Display · 36", "Vols intérieurs en RDC"],
-            ["text-3xl font-bold tracking-tight", "Titre de page · 30", "Vols Kinshasa – Lubumbashi"],
-            ["text-xl font-bold tracking-tight", "Section · 20", "Horaires de la semaine"],
+            [TYPE.display, "Display · 30 → 60", "Vols intérieurs en RDC"],
+            [TYPE.title, "Titre de page · 24 → 36", "Vols Kinshasa – Lubumbashi"],
+            [TYPE.headline, "Titre de section (accueil) · 20 → 30", "Prochains départs"],
+            [TYPE.section, "Section · 18 → 20", "Horaires de la semaine"],
+            [TYPE.lead, "Chapeau · 16 → 18", "2 compagnies · 22 vols cette semaine · dès 244 $"],
             ["text-base font-semibold", "Sous-titre · 16", "CAA · 4 vols par semaine"],
             ["text-base", "Texte · 16", "Les prix sont relevés sur le site de la compagnie et datés. La compagnie confirme le tarif final."],
             ["text-sm text-muted-foreground", "Méta · 14", "Source : programme CAA du 20 octobre 2026"],

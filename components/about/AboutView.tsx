@@ -18,6 +18,7 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TYPE } from "@/components/ds/typography";
 import { SITE } from "@/lib/site";
 import { VOLS_HREF } from "@/lib/links";
 import { cn } from "@/lib/utils/cn-utils";
@@ -46,12 +47,12 @@ function Section({ id, title, lead, children, className }: { id: string; title: 
   return (
     <section id={id} aria-labelledby={`${id}-title`} className={cn("scroll-mt-24", className)}>
       <div className="max-w-2xl">
-        <h2 id={`${id}-title`} className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+        <h2 id={`${id}-title`} className={cn(TYPE.headline, "text-foreground")}>
           {title}
         </h2>
-        {lead && <p className="mt-3 text-lg text-neutral-700">{lead}</p>}
+        {lead && <p className={cn(TYPE.lead, "mt-2 sm:mt-3")}>{lead}</p>}
       </div>
-      <div className="mt-8">{children}</div>
+      <div className="mt-6 sm:mt-8">{children}</div>
     </section>
   );
 }
@@ -71,13 +72,13 @@ export function AboutView({ figures }: { figures: { routes: number; airlines: nu
   return (
     <div className="flex-1">
       <section className="bg-gradient-to-b from-brand-50 to-background">
-        <div className="container mx-auto max-w-5xl px-4 pb-12 pt-14 sm:px-6 sm:pt-20 lg:px-8">
+        <div className="container mx-auto max-w-5xl px-4 pb-10 pt-10 sm:px-6 sm:pb-12 sm:pt-20 lg:px-8">
           <p className="text-sm font-semibold text-link">{t("about.eyebrow")}</p>
-          <h1 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl">{t("about.title")}</h1>
-          <p className="mt-5 max-w-2xl text-lg text-neutral-700 sm:text-xl">{t("about.lead")}</p>
-          <dl className="mt-10 grid max-w-3xl grid-cols-3 gap-3 sm:gap-4">
+          <h1 className={cn(TYPE.title, "mt-2.5 max-w-3xl text-foreground sm:mt-3 sm:text-4xl lg:text-5xl")}>{t("about.title")}</h1>
+          <p className={cn(TYPE.lead, "mt-3 max-w-2xl sm:mt-5 sm:text-xl")}>{t("about.lead")}</p>
+          <dl className="mt-6 grid max-w-3xl grid-cols-3 gap-2.5 sm:mt-10 sm:gap-4">
             {stats.map((s) => (
-              <div key={s.label} className="flex flex-col rounded-2xl border bg-card p-4 sm:p-5">
+              <div key={s.label} className="flex flex-col rounded-2xl border bg-card p-3 sm:p-5">
                 <dt className="order-last mt-1 text-xs text-muted-foreground sm:text-sm">{s.label}</dt>
                 <dd className="text-2xl font-bold text-foreground sm:text-3xl">{s.value}</dd>
               </div>
@@ -87,7 +88,7 @@ export function AboutView({ figures }: { figures: { routes: number; airlines: nu
         </div>
       </section>
 
-      <div className="container mx-auto max-w-5xl space-y-20 px-4 py-16 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-5xl space-y-14 px-4 py-12 sm:space-y-20 sm:px-6 sm:py-16 lg:px-8">
         <Section id="probleme" title={t("about.problem.title")} lead={t("about.problem.lead")}>
           <ul className="grid gap-4 sm:grid-cols-2">
             {PROBLEMS.map((k) => (
@@ -119,7 +120,7 @@ export function AboutView({ figures }: { figures: { routes: number; airlines: nu
                 <span className="absolute -left-[3.05rem] top-0 inline-flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground ring-4 ring-background">
                   {i + 1}
                 </span>
-                <h3 className="text-lg font-semibold text-foreground">{t(`about.method.steps.${k}.title`)}</h3>
+                <h3 className="text-base font-semibold text-foreground sm:text-lg">{t(`about.method.steps.${k}.title`)}</h3>
                 <p className="mt-1.5 max-w-2xl text-neutral-700">{t(`about.method.steps.${k}.body`)}</p>
               </li>
             ))}
@@ -139,7 +140,7 @@ export function AboutView({ figures }: { figures: { routes: number; airlines: nu
 
         <Section id="intention" title={t("about.intent.title")}>
           <div className="grid gap-6 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-            <div className="space-y-4 text-lg text-neutral-700">
+            <div className="space-y-4 text-base text-neutral-700 sm:text-lg">
               <p>{t("about.intent.p1")}</p>
               <p>{t("about.intent.p2")}</p>
             </div>
@@ -184,8 +185,8 @@ export function AboutView({ figures }: { figures: { routes: number; airlines: nu
           </p>
         </Section>
 
-        <section className="rounded-3xl bg-brand-50 p-8 text-center sm:p-12">
-          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">{t("about.cta.title")}</h2>
+        <section className="rounded-3xl bg-brand-50 p-6 text-center sm:p-12">
+          <h2 className={cn(TYPE.headline, "text-foreground")}>{t("about.cta.title")}</h2>
           <p className="mx-auto mt-3 max-w-xl text-neutral-700">{t("about.cta.body")}</p>
           <Button asChild size="lg" className="mt-6 h-12 px-8 text-base">
             <Link href={VOLS_HREF}>{t("about.cta.button")}</Link>

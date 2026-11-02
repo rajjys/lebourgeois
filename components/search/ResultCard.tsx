@@ -68,8 +68,8 @@ export function ResultCard({
   return (
     <article className="group relative overflow-hidden rounded-2xl border bg-card shadow-card transition-shadow hover:border-primary/40 hover:shadow-hover">
       <div className="grid sm:grid-cols-[minmax(0,1fr)_12rem]">
-        <div className="min-w-0 p-4 sm:p-5">
-          <p className="mb-3 truncate text-sm font-semibold text-foreground">{s.airline.name}</p>
+        <div className="min-w-0 p-4 pb-3 sm:p-5">
+          <p className="mb-2.5 truncate text-sm font-semibold text-foreground sm:mb-3">{s.airline.name}</p>
           <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 sm:gap-5">
             <AirlineTile code={s.airline.code} logo={s.airline.logo} />
             <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-4">
@@ -106,7 +106,7 @@ export function ResultCard({
               </div>
             </div>
           </div>
-          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 sm:pl-16">
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:mt-4 sm:pl-16">
             <DayStrip
               days={s.days}
               highlight={weekdayOf(s.next.date)}
@@ -121,7 +121,7 @@ export function ResultCard({
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t bg-muted/30 px-4 py-3 sm:flex-col sm:items-stretch sm:justify-center sm:border-l sm:border-t-0 sm:px-5 sm:py-5">
+        <div className="flex items-center justify-between gap-3 border-t bg-muted/30 px-4 py-2.5 sm:flex-col sm:items-stretch sm:justify-center sm:border-l sm:border-t-0 sm:px-5 sm:py-5">
           <div className="sm:text-right">
             {s.price ? (
               <PriceTag
@@ -137,7 +137,7 @@ export function ResultCard({
           </div>
           <Link
             href={href}
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 after:absolute after:inset-0 after:content-['']"
+            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold sm:py-2.5 text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 after:absolute after:inset-0 after:content-['']"
           >
             {t("explore.results.view")}
             <ArrowRight className="size-4" aria-hidden="true" />

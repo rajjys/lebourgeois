@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { TYPE } from "@/components/ds/typography";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -121,10 +122,10 @@ const RequestTicket = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
               <Plane className="h-8 w-8 text-primary" />
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
+            <h1 className={cn(TYPE.title, "text-foreground")}>
               {t('request.title')}
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base text-muted-foreground sm:text-lg">
               {t('request.subtitle')}
             </p>
           </div>
