@@ -9,19 +9,26 @@ import { formatDayMonthYear } from "@/lib/format";
  * The end of every route and airline page: when the data last changed, when the schedules were last
  * checked, where they come from, and what we are not (owner, 2026-11-02: these lines go at the bottom,
  * not on top). Real <time> elements, so the dates stay machine-readable (docs/SEO-AEO-GEO.md §5).
- * Ends with "report a mistake on this page", which opens the contact form on that topic.
+ * Ends with "report a mistake on this page", which opens the contact form on that topic with the
+ * message already started: the page's name, and the date the visitor was looking at
+ * (owner, 2026-11-02). The path also goes with the message for the back office.
  */
 export function PageFacts({
   updatedAt,
   verifiedAt,
   sources,
+  report,
 }: {
   updatedAt: string | null;
   verifiedAt: string | null;
   sources: { url: string; host: string }[];
+  /** How the contact form names this page ("Kinshasa – Lubumbashi · CAA, mardi 10 novembre 2026"), and the day shown. */
+  report: { label: string; date?: string | null };
 }) {
   const { t } = useTranslation();
   const pathname = usePathname();
+  const page = report.date ? `${pathname}?date=${report.date}` : pathname;
+  const reportHref = `/contact?${new URLSearchParams({ sujet: "erreur", page, titre: report.label })}`;
   const date = (iso: string) => <time dateTime={iso.slice(0, 10)}>{formatDayMonthYear(new Date(iso))}</time>;
   const parts = [
     updatedAt && (
@@ -62,7 +69,7 @@ export function PageFacts({
         </p>
       )}
       <p>
-        <Link href={`/contact?sujet=erreur&page=${encodeURIComponent(pathname)}`} className="font-medium text-link hover:underline">
+        <Link href={reportHref} className="font-medium text-link hover:underline">
           {t("vols.facts.report")}
         </Link>
       </p>

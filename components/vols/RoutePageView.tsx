@@ -31,9 +31,9 @@ const offset = (zone: string) => {
 };
 
 /**
- * The route page (docs/ROUTE-MODEL.md §7): the answer first, then each airline, then the search box
- * and the departures (it is also the search result), the return trip, the route itself, and last the
- * dates and sources.
+ * The route page (docs/ROUTE-MODEL.md §7), in the owner's order (2026-11-02): the answer, the search
+ * box (this page is also the search result), each airline, the departures, the return trip, the route
+ * itself, and last the dates and sources.
  * Rendered on the server with its data, so every fact is in the HTML.
  */
 export function RoutePageView({ data }: { data: RoutePage }) {
@@ -95,8 +95,17 @@ export function RoutePageView({ data }: { data: RoutePage }) {
           ))}
       </div>
 
+      <RouteSearch
+        initialFrom={origin.code}
+        initialTo={destination.code}
+        initialDate={data.date}
+        today={data.today}
+        flightDates={data.flightDates}
+        summary={{ from: origin.city, to: destination.city }}
+      />
+
       {data.airlines.length > 0 && (
-        // First after the answer (owner, 2026-11-02): travellers here pick an airline more than an hour,
+        // Before the departures (owner, 2026-11-02): travellers here pick an airline more than an hour,
         // and comparing airlines is what the site is for.
         <section aria-labelledby="airlines-title" className="space-y-3">
           <h2 id="airlines-title" className="text-xl font-bold">
@@ -118,10 +127,16 @@ export function RoutePageView({ data }: { data: RoutePage }) {
                     {a.days.length > 0 && (
                       <DayStrip days={a.days} letters={letters} label={t("explore.results.flies", { days: formatWeekdays(a.days) })} />
                     )}
+                    {/* Phones: the count only, so an airline with many departure times does not make
+                        its card taller than the others (owner, 2026-11-02). The times are on its page. */}
                     <p className="text-sm text-muted-foreground">
-                      {[a.times.length && t("vols.route.times", { count: a.times.length, times: a.times.join(", ") }), t("vols.route.flights", { count: a.flightsThisWeek })]
-                        .filter(Boolean)
-                        .join(" · ")}
+                      {a.times.length > 0 && (
+                        <span className="hidden sm:inline">
+                          {t("vols.route.times", { count: a.times.length, times: a.times.join(", ") })}
+                          {" · "}
+                        </span>
+                      )}
+                      {t("vols.route.flights", { count: a.flightsThisWeek })}
                     </p>
                   </div>
                   <div className="flex w-full flex-col items-start gap-1.5 border-t pt-3 sm:w-auto sm:items-end sm:border-0 sm:pt-0">
@@ -157,7 +172,6 @@ export function RoutePageView({ data }: { data: RoutePage }) {
             {dated ? t("explore.results.onDate", { date: formatDateLong(day(data.date!)) }) : t("explore.results.window")}
           </p>
         </div>
-        <RouteSearch initialFrom={origin.code} initialTo={destination.code} initialDate={data.date} today={data.today} flightDates={data.flightDates} />
         {data.date && !dated && <p className="text-sm text-muted-foreground">{t("vols.route.otherDate")}</p>}
         {results.length > 0 ? (
           <>
@@ -222,7 +236,12 @@ export function RoutePageView({ data }: { data: RoutePage }) {
         </section>
       </div>
 
-      <PageFacts updatedAt={data.updatedAt} verifiedAt={data.verifiedAt} sources={data.sources} />
+      <PageFacts
+        updatedAt={data.updatedAt}
+        verifiedAt={data.verifiedAt}
+        sources={data.sources}
+        report={{ label: [`${origin.city} – ${destination.city}`, data.date && formatDateLong(day(data.date))].filter(Boolean).join(", "), date: data.date }}
+      />
     </div>
   );
 }

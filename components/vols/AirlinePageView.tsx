@@ -243,7 +243,15 @@ export function AirlinePageView({ data }: { data: AirlinePage }) {
         )}
       </div>
 
-      <PageFacts updatedAt={data.updatedAt} verifiedAt={data.verifiedAt} sources={data.verifiedSource ? [data.verifiedSource] : []} />
+      <PageFacts
+        updatedAt={data.updatedAt}
+        verifiedAt={data.verifiedAt}
+        sources={data.verifiedSource ? [data.verifiedSource] : []}
+        report={{
+          label: [`${origin.city} – ${destination.city} · ${name}`, f && formatDateLong(day(f.date)), f?.departureTime].filter(Boolean).join(", "),
+          date: f?.date,
+        }}
+      />
     </div>
   );
 }
