@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import { AirlinePageView } from "@/components/vols/AirlinePageView";
-import { formatDayMonth, formatPrice, formatWeekdays, shortAirlineName } from "@/lib/format";
+import { formatDayMonthYear, formatPrice, formatWeekdays, shortAirlineName } from "@/lib/format";
 import { loadAirlinePage } from "@/lib/routePages";
 import { dateParam, timeParam } from "@/lib/routeSlug";
+import { pageMetadata } from "@/lib/seo";
 
 type Props = {
   params: Promise<{ route: string; airline: string }>;
@@ -28,19 +29,27 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const description = data.departures.length
     ? [
         `${name} vole ${formatWeekdays(data.days)} de ${origin.city} à ${destination.city}`,
-        times.length && `départ${times.length > 1 ? "s" : ""} à ${times.join(", ")}`,
-        price && `dès ${formatPrice(price.amount)} (observé le ${formatDayMonth(new Date(price.observedAt))})`,
+        // Up to three times are listed; more read as a range, so the description stays under ~160
+        // characters (CAA Kinshasa – Lubumbashi listed ten times: 205 characters, cut by Google).
+        times.length > 3
+          ? `départs entre ${times[0]} et ${times[times.length - 1]}`
+          : times.length > 0 && `départ${times.length > 1 ? "s" : ""} à ${times.join(", ")}`,
+        // With the year: search results and link previews are kept for months (F-2).
+        price && `dès ${formatPrice(price.amount)} (observé le ${formatDayMonthYear(new Date(price.observedAt))})`,
       ]
         .filter(Boolean)
         .join(", ") + ". Horaires vérifiés et demande de réservation."
     : `${name} n'a pas de vol connu de ${origin.city} à ${destination.city} pour les quatre prochaines semaines.`;
-  return {
+  return pageMetadata({
     title: `${name} ${origin.city} – ${destination.city} : horaires, jours de vol et prix`,
     description,
     // ?date= and ?heure= only pick the departure shown.
-    alternates: { canonical: `/vols/${data.routeSlug}/${data.airline.slug}` },
+    // No " | Clerikaa", as on the route page: the route words must fit before Google cuts the title.
+    absoluteTitle: true,
+    path: `/vols/${data.routeSlug}/${data.airline.slug}`,
+    ownImage: true,
     robots: data.indexable ? undefined : { index: false, follow: true },
-  };
+  });
 }
 
 /** /vols/kinshasa-lubumbashi/caa: one airline on one route, a departure and its booking request. */

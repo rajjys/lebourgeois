@@ -7,8 +7,9 @@
 export const SITE = {
   name: "Clerikaa",
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://lebourgeois.cd").replace(/\/$/, ""),
+  // "prix observés", never "tarifs vérifiés": we date the prices we see, we do not verify fares (F-2).
   description:
-    "Horaires et prix indicatifs des vols intérieurs en RDC : compagnies, jours de vol et tarifs vérifiés, route par route.",
+    "Horaires et prix indicatifs des vols intérieurs en RDC : compagnies, jours de vol, horaires vérifiés et prix observés, trajet par trajet.",
   // The owner's address until a clerikaa.com mailbox exists.
   contactEmail: "rajjysrachid@gmail.com",
   // The owner's WhatsApp, international format without spaces (wa.me needs the digits).

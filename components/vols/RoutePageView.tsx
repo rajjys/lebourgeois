@@ -106,9 +106,11 @@ export function RoutePageView({ data }: { data: RoutePage }) {
         flightDates={data.flightDates}
       />
 
-      {data.airlines.length > 0 && (
+      {data.airlines.length > 0 && !data.date && (
         // Before the departures (owner, 2026-11-02): travellers here pick an airline more than an hour,
-        // and comparing airlines is what the site is for.
+        // and comparing airlines is what the site is for. Each card is the airline's week, so a chosen
+        // date shows the departures only (owner, 2026-11-02); "Toutes les dates" brings the week back.
+        // A dated address has the route page as its canonical, so search engines still see this list.
         <section aria-labelledby="airlines-title" className="space-y-3">
           <h2 id="airlines-title" className={TYPE.section}>
             {t("vols.route.byAirline")}
@@ -176,8 +178,15 @@ export function RoutePageView({ data }: { data: RoutePage }) {
           <h2 id="results-title" className={TYPE.section}>
             {t("vols.route.results")}
           </h2>
-          <p className="text-sm text-muted-foreground first-letter:uppercase">
-            {dated ? t("explore.results.onDate", { date: formatDateLong(day(data.date!)) }) : t("explore.results.window")}
+          <p className="flex flex-wrap items-baseline gap-x-3 text-sm text-muted-foreground">
+            <span className="first-letter:uppercase">
+              {dated ? t("explore.results.onDate", { date: formatDateLong(day(data.date!)) }) : t("explore.results.window")}
+            </span>
+            {data.date && (
+              <Link href={`/vols/${data.slug}`} className="font-medium text-link hover:underline">
+                {t("vols.route.allDates")}
+              </Link>
+            )}
           </p>
         </div>
         {data.date && !dated && <p className="text-sm text-muted-foreground">{t("vols.route.otherDate")}</p>}
