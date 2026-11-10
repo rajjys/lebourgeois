@@ -9,6 +9,7 @@ Start with the plan. Each other document goes deep on one part of it.
 | [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md) | Brand, colours, type, components and data display rules; live at `/dashboard/design` | Before building any screen |
 | [SEO-AEO-GEO.md](SEO-AEO-GEO.md) | Binding rules for every public page: URLs, content, structured data, crawlers, AI engines | Before building or changing a public page |
 | [DATA-SOURCES.md](DATA-SOURCES.md) | Where data comes from; OAG/Cirium and other vendors; the airlines' systems and the partnership plan | Before adding a source or contacting an airline |
+| [ANALYTICS.md](ANALYTICS.md) | Visit statistics: events, sources and attribution, the *Statistiques* page, privacy, limits, how to check it, UTM tags for shared links | Before reading the numbers, sharing a link, or adding an event |
 
 **Rules for all documents**
 - Facts carry a source and a date. Assumptions say so.

@@ -13,14 +13,8 @@ import { useTranslation } from 'react-i18next';
 import { useRequests } from '@/hooks/useRequests';
 import { deleteRequest } from '@/services/requests';
 import { FileText, Eye, Trash2 } from 'lucide-react';
-import { RequestStatus } from '@/lib/constants';
+import { REQUEST_STATUS_LABEL, REQUEST_STATUS_VARIANT } from '@/lib/constants';
 
-const statusVariant = {
-  [RequestStatus.NEW]: 'info',
-  [RequestStatus.CLAIMED]: 'warning',
-  [RequestStatus.CONTACTED]: 'success',
-  [RequestStatus.CLOSED]: 'neutral',
-} as const;
 
 export default function RequestsPage() {
   const { t } = useTranslation();
@@ -82,8 +76,8 @@ export default function RequestsPage() {
                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={statusVariant[request.status]}>
-                      {request.status}
+                    <Badge variant={REQUEST_STATUS_VARIANT[request.status]}>
+                      {REQUEST_STATUS_LABEL[request.status]}
                     </Badge>
                     <div className="text-sm text-muted-foreground">
                       {format(new Date(request.createdAt), 'MMM dd, HH:mm')}

@@ -9,6 +9,7 @@ import { AirportStatusNotice } from "@/components/search/AirportStatusNotice";
 import { Button } from "@/components/ui/button";
 import { DateField } from "@/components/vols/DateField";
 import { useAirports } from "@/hooks/useAirports";
+import { markSearch, track } from "@/lib/analytics/browser";
 import { cn } from "@/lib/utils/cn-utils";
 
 /**
@@ -24,6 +25,8 @@ export function useRouteSearch() {
     const from = slug(fromCode);
     const to = slug(toCode);
     const query = date ? `?date=${date}` : "";
+    track("flight_search", { origin: fromCode, destination: toCode, routeSlug: from && to ? `${from}-${to}` : null, travelDate: date ?? null });
+    markSearch();
     router.push(from && to ? `/vols/${from}-${to}${query}` : `/vols?de=${fromCode}&a=${toCode}${date ? `&date=${date}` : ""}`);
   };
 }

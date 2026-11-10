@@ -20,6 +20,7 @@ import { isPhoneNumber } from "@/lib/validations/request";
 import { enUS, fr } from "date-fns/locale";
 import React from 'react'
 import { createRequest } from "@/services/requests";
+import { requestAttribution, track } from "@/lib/analytics/browser";
 
 
 const RequestTicket = () => {
@@ -90,7 +91,7 @@ const RequestTicket = () => {
         travelClass: formData.travelClass as "economy" | "business" | "first",
         travelers: formData.travelers,
         source: "request-form",
-      });
+      }, requestAttribution());
 
       toast.success(t('request.form.successTitle'), {
         description: t('request.form.successMessage')
@@ -108,6 +109,7 @@ const RequestTicket = () => {
       setDepartureDate(undefined);
       setReturnDate(undefined);
     } catch (error) {
+      track("booking_request_failed", { props: { form: "request-form" } });
       toast.error(t('request.form.error', { defaultValue: 'Failed to submit request. Please try again.' }));
     } finally {
       setIsSubmitting(false);

@@ -21,6 +21,7 @@
 - [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md): brand, tokens, components, data display rules
 - [SEO-AEO-GEO.md](SEO-AEO-GEO.md): binding rules for public pages, search engines and AI engines
 - [DATA-SOURCES.md](DATA-SOURCES.md): sources, OAG/Cirium, airline systems and the partnership plan
+- [ANALYTICS.md](ANALYTICS.md): visit statistics, sources and request attribution, the dashboard, limits and how to check them
 
 **Contents**
 1. [The problem](#1-the-problem)
@@ -101,7 +102,7 @@ Snapshot on **2026-10-31**:
 | Brand and design | ✅ **Clerikaa** in code (still served from `lebourgeois.cd`). Design system v1 merged (PR #5): tokens, font, logo, components, `/dashboard/design`. |
 | Public site | 🟡 Home rebuilt and rendered on the server (P-9, PR #6). Navbar search button, contact page and form fixes live (P-12, PR #7). Search results redesigned and read from dated flights, with a server-rendered flight page (P-13, PR #11). **RW-5 (PR #15, merged):** search and route pages are one structure under `/vols`, rendered on the server; `/explore` redirects there. **P-15 (PR #16, merged):** booking card and calendar redesigned, airlines before departures, dates at the bottom, `/about` and footer rewritten. **P-16 (PR #17, merged):** route page order search → airlines → departures, a one-line search on phones, "report a mistake" starts the message, phone navbar and menu redesigned. **P-17 (PR #18, merged):** phone polish: a smaller type step for headings on phones, tighter spacing, the search as one compact card, and choosing the departure opens the arrival list. **P-18 (in review):** a route page with a date shows the departures only. The request page is still rendered in the browser. |
 | Search and sharing | 🟡 **F-2, F-3, F-4 (in review):** every public page has its own title, description, canonical address **and link preview** (title, description, address and image of the page itself; until now WhatsApp showed the home's for every page). Route and airline pages get a share image drawn from their data in the brand font. Route and airline titles drop " | Clerikaa" so the route words fit before Google cuts them. `Organization` on the home; sitemap without `priority`/`changefreq`, dated by data changes, with `/contact`. AI crawlers allowed by name, training ones included (F-6, owner). Still to do: Search Console and Bing (F-5), English URLs (F-1). |
-| Leads | 🟡 Request form and contact form save to the database; both are visible in the back office (Demandes, Messages). Email alerts are built but on hold. |
+| Leads | 🟡 Request form and contact form save to the database; both are visible in the back office (Demandes, Messages). Email alerts are built but on hold. **AN-1 to AN-3 (in review, 2026-11-10):** our own visit statistics, each request credited to where its traveller came from, a *Statistiques* page, and request outcomes (*Réservée* / *Sans suite*). Until then: 6 requests in production (4–10 Nov), all still "Nouvelle", 4 of them for Air Congo flights. |
 | Environments | ✅ Separate local dev database. Production migrations run automatically on deploy. |
 
 ---
@@ -414,13 +415,18 @@ Verified on 2026-10-30.
 **Work items**
 - ➡️ **L-1:** Request workflow in the dashboard. Now **B-4** (one inbox for requests and messages).
 - 🟡 **L-2:** Spam protection on the public forms, before promoting the site. The contact form has a honeypot (P-12); the request form still needs one, and both need a rate limit.
-- ⬜ **L-3:** Consent text and privacy page: what we store, why, for how long.
+- ⬜ **L-3:** Consent text and privacy page: what we store, why, for how long. Visit statistics are described on `/about` (AN-1); a full privacy page is still to do.
 - ⏸ **L-4:** Email alerts. Turn on when the Resend account is verified; send from `info@clerikaa.com` once that domain exists.
 - ⬜ **L-5:** WhatsApp alerts.
 - ⬜ **L-6:** Route requests to partner agencies, with tracking.
 - ⬜ **L-7:** Commission agreement and reporting.
 - ⬜ **L-8:** Traveller price alerts. Needs user accounts, which reopens the authentication decision.
 - ⬜ **L-9:** Request page redesign (M7). It is reached from a failed search or a route page, prefilled with the route (`lib/links.ts`), and says what happens next. Renamed from "Demander un devis" to "Besoin d'aide ?" on 2026-10-31: we compare, we don't quote.
+
+- 🟡 **AN-1:** Visit statistics, first-party ([ANALYTICS.md](ANALYTICS.md)). In review (2026-11-10). Visits and events in our database (`AnalyticsSession`, `AnalyticsEvent`): pages, route and airline pages, searches, booking form started / sent / failed, WhatsApp, e-mail and phone links. Source of each visit from UTM tags then the referrer; no referrer = "Direct / inconnu", never Google. First and last touch kept in the browser; a direct visit never replaces a known source. Each booking request carries them, re-checked by the server; anything missing gives "non mesurée" and the request is saved anyway; the conversion event is written by the server. Anonymous (random ids, no cookie, no IP stored, referrer host only), off for Global Privacy Control / Do Not Track, for the signed-in team, and on phones opened once with `?stats=off`. Bots, scripts and headless browsers dropped; same-origin, size, field and rate limits on `/api/analytics`. Vercel Web Analytics now counts public pages only (it counted `/dashboard` and `/login`). One line on `/about`.
+- 🟡 **AN-2:** *Statistiques* page in the back office (`/dashboard/analytics`). In review. Visitors, visits, page views, requests, bookings, WhatsApp clicks and request rate against the previous period; per day; the path visitors take; sources, sites, UTM campaigns and site addresses; routes (visitors, searches, requests started and sent, request rate); devices, browsers, systems, countries; requests by status. Periods: today, 7, 30, 90 days or chosen dates, in Kinshasa days. Filters: source, campaign, route, device.
+- 🟡 **AN-3:** Request outcomes. In review. A request's status can now be changed (it could only be shown, so all 6 production requests were still "NEW"): Nouvelle → Voyageur rappelé → **Réservée (billet émis)** or **Sans suite**, logged. The request page shows where the traveller came from.
+- ⬜ **AN-4:** Tag every link the team shares (UTM convention in [ANALYTICS.md §9](ANALYTICS.md#9-tagging-the-links-we-share-utm)); review the *Statistiques* page weekly with the owner.
 
 **Quality metrics:** requests per week, time to first response, conversion rate (once a partner exists).
 
@@ -554,7 +560,10 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | 2026-10-31 | **Delete the old production data** (owner): expired schedules, the prices copied from them, and the route records left empty. Priority routes, current fares, requests and messages stay. Replaces "keep expired patterns as hints" (ROUTE-MODEL §9). | Owner: the database is full of old data. A backup file and the change log keep what was deleted. |
 | 2026-10-31 | **Schema v3 details** (RW-1): a flight's number may be empty (Air Congo's timetable publishes none), so flights are unique per route-airline and date both by number and by departure time. Fares keep only their link to the airline-on-route; their own airline and city columns were dropped to avoid two sources of truth. The seed now only adds missing reference rows. | ROUTE-MODEL §4 said "unique by number", which cannot hold unnumbered flights. A seed that overwrote rows would undo edits made in the back office since P-12. |
 | 2026-11-10 | **A newer timetable replaces the older one in its window** (C-10): flights it no longer lists are removed, not marked cancelled; the window ends at the last date already stored unless told otherwise. | "Annulé" tells travellers an airline cancelled a flight, which a timetable change is not. The older weeks were an assumption (one weekly PDF repeated), so the newer document wins. Each route's change is one batch, so it can be undone. |
-
+| 2026-11-10 | **Our own visit statistics, no analytics vendor** (AN-1): first-party events in our database, anonymous random ids in `localStorage`, no consent banner, Global Privacy Control and Do Not Track respected, ad blockers not worked around. "Keep it basic and useful" (owner). | Owner wants real data on sources, routes and requests; Vercel Web Analytics on the Hobby plan has no custom events and cannot link a visit to a request. Nothing personal is collected, so a banner would mostly cost data. The DRC rules were not checked by a lawyer. |
+| 2026-11-10 | **Domains left as they are** (owner): `lebourgeois.cd` stays the canonical address; `clerikaa.vercel.app` and `lebourgeois.vercel.app` keep serving the site without a redirect. Statistics record which address each visit used. | Owner: "Don't touch the domains." Cost: one person on two addresses counts as two visitors. |
+| 2026-11-10 | **A booking is a request marked "Réservée (billet émis)"** by the team; the statistics count nothing else as a booking. | Bookings happen at partner agencies, outside the site: only the team knows. |
+| 2026-11-10 | CAA schedules stay up to **29 Nov**; December is not loaded for now (owner). | Each weekly PDF is loaded when it comes out. |
 ---
 
 ## 9. Waiting on

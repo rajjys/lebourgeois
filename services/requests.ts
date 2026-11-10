@@ -17,11 +17,12 @@ export async function fetchRequest(id: string): Promise<Request> {
   return response.json();
 }
 
-export async function createRequest(data: RequestInput): Promise<{ id: string }> {
+/** `attribution`: where the visitor came from (lib/analytics/browser.ts); optional, never required by the server. */
+export async function createRequest(data: RequestInput, attribution: unknown = null): Promise<{ id: string }> {
   const response = await fetch("/api/requests", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ ...data, attribution }),
   });
   if (!response.ok) {
     throw new Error("Failed to create request");

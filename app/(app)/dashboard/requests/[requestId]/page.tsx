@@ -12,22 +12,17 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useRequest } from '@/hooks/useRequests';
+import { RequestFollowUp } from '@/components/backoffice/RequestFollowUp';
 import { deleteRequest } from '@/services/requests';
 import { ArrowLeft, Trash2, Phone, Mail, Users, Plane, Calendar, MapPin } from 'lucide-react';
-import { RequestStatus } from '@/lib/constants';
+import { REQUEST_STATUS_LABEL, REQUEST_STATUS_VARIANT } from '@/lib/constants';
 
-const statusVariant = {
-  [RequestStatus.NEW]: 'info',
-  [RequestStatus.CLAIMED]: 'warning',
-  [RequestStatus.CONTACTED]: 'success',
-  [RequestStatus.CLOSED]: 'neutral',
-} as const;
 
 export default function RequestDetailPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const { requestId } = useParams<{ requestId: string }>();
-  const { request, isLoading } = useRequest(requestId);
+  const { request, isLoading, mutate } = useRequest(requestId);
   const [deleting, setDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -134,6 +129,8 @@ export default function RequestDetailPage() {
       </div>
 
       <div className="grid gap-6">
+        <RequestFollowUp request={request} onSaved={() => void mutate()} />
+
         {/* Status and Basic Info */}
         <Card>
           <CardHeader>
@@ -142,8 +139,8 @@ export default function RequestDetailPage() {
                 <Plane className="h-5 w-5" />
                 {request.originCity} → {request.destinationCity}
               </CardTitle>
-              <Badge variant={statusVariant[request.status]}>
-                {request.status}
+              <Badge variant={REQUEST_STATUS_VARIANT[request.status]}>
+                {REQUEST_STATUS_LABEL[request.status]}
               </Badge>
             </div>
             <CardDescription>

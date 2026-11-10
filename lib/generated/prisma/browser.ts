@@ -72,3 +72,13 @@ export type Request = Prisma.RequestModel
  * 
  */
 export type ContactMessage = Prisma.ContactMessageModel
+/**
+ * Model AnalyticsSession
+ * 
+ */
+export type AnalyticsSession = Prisma.AnalyticsSessionModel
+/**
+ * Model AnalyticsEvent
+ * 
+ */
+export type AnalyticsEvent = Prisma.AnalyticsEventModel

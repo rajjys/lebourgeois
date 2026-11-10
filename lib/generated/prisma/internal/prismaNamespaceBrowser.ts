@@ -61,7 +61,9 @@ export const ModelName = {
   FareObservation: 'FareObservation',
   FlightPattern: 'FlightPattern',
   Request: 'Request',
-  ContactMessage: 'ContactMessage'
+  ContactMessage: 'ContactMessage',
+  AnalyticsSession: 'AnalyticsSession',
+  AnalyticsEvent: 'AnalyticsEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -281,6 +283,12 @@ export const RequestScalarFieldEnum = {
   routeId: 'routeId',
   source: 'source',
   status: 'status',
+  visitorId: 'visitorId',
+  sessionId: 'sessionId',
+  firstChannel: 'firstChannel',
+  lastChannel: 'lastChannel',
+  device: 'device',
+  attribution: 'attribution',
   assignedToId: 'assignedToId',
   claimedAt: 'claimedAt',
   createdAt: 'createdAt',
@@ -304,6 +312,49 @@ export const ContactMessageScalarFieldEnum = {
 } as const
 
 export type ContactMessageScalarFieldEnum = (typeof ContactMessageScalarFieldEnum)[keyof typeof ContactMessageScalarFieldEnum]
+
+
+export const AnalyticsSessionScalarFieldEnum = {
+  id: 'id',
+  visitorId: 'visitorId',
+  isNewVisitor: 'isNewVisitor',
+  startedAt: 'startedAt',
+  lastSeenAt: 'lastSeenAt',
+  hostname: 'hostname',
+  landingPath: 'landingPath',
+  referrerHost: 'referrerHost',
+  channel: 'channel',
+  utmSource: 'utmSource',
+  utmMedium: 'utmMedium',
+  utmCampaign: 'utmCampaign',
+  utmTerm: 'utmTerm',
+  utmContent: 'utmContent',
+  device: 'device',
+  browser: 'browser',
+  os: 'os',
+  country: 'country'
+} as const
+
+export type AnalyticsSessionScalarFieldEnum = (typeof AnalyticsSessionScalarFieldEnum)[keyof typeof AnalyticsSessionScalarFieldEnum]
+
+
+export const AnalyticsEventScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  occurredAt: 'occurredAt',
+  sessionId: 'sessionId',
+  visitorId: 'visitorId',
+  path: 'path',
+  routeSlug: 'routeSlug',
+  airline: 'airline',
+  origin: 'origin',
+  destination: 'destination',
+  travelDate: 'travelDate',
+  passengers: 'passengers',
+  props: 'props'
+} as const
+
+export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
 
 
 export const SortOrder = {

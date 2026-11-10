@@ -35,7 +35,7 @@ const OFFER = [
   { key: "booking", icon: PhoneCall },
 ] as const;
 const METHOD = ["collect", "check", "date", "publish"] as const;
-const LIMITS = ["prices", "live", "coverage", "published", "time", "team", "tickets"] as const;
+const LIMITS = ["prices", "live", "coverage", "published", "time", "team", "tickets", "stats"] as const;
 const JOIN = [
   { key: "error", icon: MessageSquareWarning, href: "/contact?sujet=erreur" },
   { key: "share", icon: Share2, href: "/contact?sujet=question" },
