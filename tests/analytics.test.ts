@@ -237,8 +237,13 @@ describe("storage and dashboard numbers", { skip: isLocal ? false : "local datab
     assert.equal(r.current.requestsUnmeasured, 1);
     assert.equal(r.current.conversion, 1);
     assert.equal(r.previous.visitors, 0);
-    assert.deepEqual(r.days.map((d) => d.day), ["2020-01-10", "2020-01-11", "2020-01-12"]);
-    assert.deepEqual(r.days.map((d) => d.requests), [0, 1, 1]);
+    assert.deepEqual(r.series.map((d) => d.key), ["2020-01-10", "2020-01-11", "2020-01-12"]);
+    assert.deepEqual(r.series.map((d) => d.current?.requests), [0, 1, 1]);
+    assert.deepEqual(r.series.map((d) => d.current?.sessions), [1, 1, 1]);
+    // Each visit has one page, but did something (search, booking form, WhatsApp): none bounced.
+    assert.equal(r.current.bounceRate, 0);
+    assert.equal(r.current.returningVisitors, 1);
+    assert.equal(r.current.searches, 1);
   });
 
   test("sources, funnel and routes", async () => {
@@ -250,6 +255,33 @@ describe("storage and dashboard numbers", { skip: isLocal ? false : "local datab
     const route = r.routes.find((x) => x.slug === routeSlug);
     assert.deepEqual([route?.viewers, route?.views, route?.searches, route?.starts, route?.requests], [1, 2, 1, 1, 2]);
     assert.equal(r.campaigns[0]?.campaign, "groupe-fbm");
+    assert.equal(r.campaigns[0]?.requests, 0);
+    assert.deepEqual(r.entries.map((x) => [x.key, x.sessions, x.converted]).sort(), [["/vols/kinshasa-lubumbashi", 3, 1]]);
+    assert.equal(r.pages.find((x) => x.key === "/")?.views, 1);
+    assert.equal(r.contacts[0]?.name, "whatsapp_click");
+    assert.equal(r.recentRequests.length, 2);
+  });
+
+  test("a single day is shown hour by hour, against the day before", async () => {
+    const day = resolvePeriod({ periode: "dates", du: "2020-01-11", au: "2020-01-11" }, "2026-11-10");
+    const r = await loadAnalytics(prisma, day, noFilter);
+    assert.equal(r.hourly, true);
+    assert.equal(r.series.length, 24);
+    assert.equal(r.series.find((p) => p.key === "10")?.current?.sessions, 1, "09:00 UTC is 10:00 in Kinshasa");
+    assert.equal(r.series.find((p) => p.key === "10")?.previous?.sessions, 1, "the day before, same hour");
+  });
+
+  test("a period that ends today is compared up to the same time of day", async () => {
+    // "Today" is 12 Jan 2020 at 10:00 in Kinshasa: visit B (12 Jan 10:00) counts; the day before is
+    // compared until 10:00 too, so A's visit at 10:00 on 11 Jan is in, its request at 10:10 is not.
+    const now = new Date("2020-01-12T09:00:30Z");
+    const today = resolvePeriod({ periode: "today" }, "2020-01-12");
+    const r = await loadAnalytics(prisma, today, noFilter, now);
+    assert.equal(r.comparedToSameTime, true);
+    assert.equal(r.current.sessions, 1);
+    assert.equal(r.previous.sessions, 1);
+    assert.equal(r.previous.requests, 0, "the request at 10:10 the day before is after the same time");
+    assert.equal(r.series.find((p) => p.key === "11")?.current, null, "hours not reached yet are empty");
   });
 
   test("filters apply to visits and requests alike", async () => {
