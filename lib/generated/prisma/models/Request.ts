@@ -49,6 +49,11 @@ export type RequestMinAggregateOutputType = {
   routeId: string | null
   source: string | null
   status: $Enums.RequestStatus | null
+  visitorId: string | null
+  sessionId: string | null
+  firstChannel: string | null
+  lastChannel: string | null
+  device: string | null
   assignedToId: string | null
   claimedAt: Date | null
   createdAt: Date | null
@@ -70,6 +75,11 @@ export type RequestMaxAggregateOutputType = {
   routeId: string | null
   source: string | null
   status: $Enums.RequestStatus | null
+  visitorId: string | null
+  sessionId: string | null
+  firstChannel: string | null
+  lastChannel: string | null
+  device: string | null
   assignedToId: string | null
   claimedAt: Date | null
   createdAt: Date | null
@@ -91,6 +101,12 @@ export type RequestCountAggregateOutputType = {
   routeId: number
   source: number
   status: number
+  visitorId: number
+  sessionId: number
+  firstChannel: number
+  lastChannel: number
+  device: number
+  attribution: number
   assignedToId: number
   claimedAt: number
   createdAt: number
@@ -122,6 +138,11 @@ export type RequestMinAggregateInputType = {
   routeId?: true
   source?: true
   status?: true
+  visitorId?: true
+  sessionId?: true
+  firstChannel?: true
+  lastChannel?: true
+  device?: true
   assignedToId?: true
   claimedAt?: true
   createdAt?: true
@@ -143,6 +164,11 @@ export type RequestMaxAggregateInputType = {
   routeId?: true
   source?: true
   status?: true
+  visitorId?: true
+  sessionId?: true
+  firstChannel?: true
+  lastChannel?: true
+  device?: true
   assignedToId?: true
   claimedAt?: true
   createdAt?: true
@@ -164,6 +190,12 @@ export type RequestCountAggregateInputType = {
   routeId?: true
   source?: true
   status?: true
+  visitorId?: true
+  sessionId?: true
+  firstChannel?: true
+  lastChannel?: true
+  device?: true
+  attribution?: true
   assignedToId?: true
   claimedAt?: true
   createdAt?: true
@@ -272,6 +304,12 @@ export type RequestGroupByOutputType = {
   routeId: string | null
   source: string
   status: $Enums.RequestStatus
+  visitorId: string | null
+  sessionId: string | null
+  firstChannel: string | null
+  lastChannel: string | null
+  device: string | null
+  attribution: runtime.JsonValue | null
   assignedToId: string | null
   claimedAt: Date | null
   createdAt: Date
@@ -316,6 +354,12 @@ export type RequestWhereInput = {
   routeId?: Prisma.StringNullableFilter<"Request"> | string | null
   source?: Prisma.StringFilter<"Request"> | string
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
+  visitorId?: Prisma.StringNullableFilter<"Request"> | string | null
+  sessionId?: Prisma.StringNullableFilter<"Request"> | string | null
+  firstChannel?: Prisma.StringNullableFilter<"Request"> | string | null
+  lastChannel?: Prisma.StringNullableFilter<"Request"> | string | null
+  device?: Prisma.StringNullableFilter<"Request"> | string | null
+  attribution?: Prisma.JsonNullableFilter<"Request">
   assignedToId?: Prisma.StringNullableFilter<"Request"> | string | null
   claimedAt?: Prisma.DateTimeNullableFilter<"Request"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
@@ -338,6 +382,12 @@ export type RequestOrderByWithRelationInput = {
   routeId?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  visitorId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sessionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  firstChannel?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastChannel?: Prisma.SortOrderInput | Prisma.SortOrder
+  device?: Prisma.SortOrderInput | Prisma.SortOrder
+  attribution?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedToId?: Prisma.SortOrderInput | Prisma.SortOrder
   claimedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -363,6 +413,12 @@ export type RequestWhereUniqueInput = Prisma.AtLeast<{
   routeId?: Prisma.StringNullableFilter<"Request"> | string | null
   source?: Prisma.StringFilter<"Request"> | string
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
+  visitorId?: Prisma.StringNullableFilter<"Request"> | string | null
+  sessionId?: Prisma.StringNullableFilter<"Request"> | string | null
+  firstChannel?: Prisma.StringNullableFilter<"Request"> | string | null
+  lastChannel?: Prisma.StringNullableFilter<"Request"> | string | null
+  device?: Prisma.StringNullableFilter<"Request"> | string | null
+  attribution?: Prisma.JsonNullableFilter<"Request">
   assignedToId?: Prisma.StringNullableFilter<"Request"> | string | null
   claimedAt?: Prisma.DateTimeNullableFilter<"Request"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
@@ -385,6 +441,12 @@ export type RequestOrderByWithAggregationInput = {
   routeId?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  visitorId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sessionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  firstChannel?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastChannel?: Prisma.SortOrderInput | Prisma.SortOrder
+  device?: Prisma.SortOrderInput | Prisma.SortOrder
+  attribution?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedToId?: Prisma.SortOrderInput | Prisma.SortOrder
   claimedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -414,6 +476,12 @@ export type RequestScalarWhereWithAggregatesInput = {
   routeId?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
   source?: Prisma.StringWithAggregatesFilter<"Request"> | string
   status?: Prisma.EnumRequestStatusWithAggregatesFilter<"Request"> | $Enums.RequestStatus
+  visitorId?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  sessionId?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  firstChannel?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  lastChannel?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  device?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  attribution?: Prisma.JsonNullableWithAggregatesFilter<"Request">
   assignedToId?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
   claimedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Request"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Request"> | Date | string
@@ -434,6 +502,12 @@ export type RequestCreateInput = {
   travelers: number
   source?: string
   status?: $Enums.RequestStatus
+  visitorId?: string | null
+  sessionId?: string | null
+  firstChannel?: string | null
+  lastChannel?: string | null
+  device?: string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: string | null
   claimedAt?: Date | string | null
   createdAt?: Date | string
@@ -456,6 +530,12 @@ export type RequestUncheckedCreateInput = {
   routeId?: string | null
   source?: string
   status?: $Enums.RequestStatus
+  visitorId?: string | null
+  sessionId?: string | null
+  firstChannel?: string | null
+  lastChannel?: string | null
+  device?: string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: string | null
   claimedAt?: Date | string | null
   createdAt?: Date | string
@@ -476,6 +556,12 @@ export type RequestUpdateInput = {
   travelers?: Prisma.IntFieldUpdateOperationsInput | number
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -498,6 +584,12 @@ export type RequestUncheckedUpdateInput = {
   routeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -519,6 +611,12 @@ export type RequestCreateManyInput = {
   routeId?: string | null
   source?: string
   status?: $Enums.RequestStatus
+  visitorId?: string | null
+  sessionId?: string | null
+  firstChannel?: string | null
+  lastChannel?: string | null
+  device?: string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: string | null
   claimedAt?: Date | string | null
   createdAt?: Date | string
@@ -539,6 +637,12 @@ export type RequestUpdateManyMutationInput = {
   travelers?: Prisma.IntFieldUpdateOperationsInput | number
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -560,6 +664,12 @@ export type RequestUncheckedUpdateManyInput = {
   routeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -591,6 +701,12 @@ export type RequestCountOrderByAggregateInput = {
   routeId?: Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  visitorId?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrder
+  firstChannel?: Prisma.SortOrder
+  lastChannel?: Prisma.SortOrder
+  device?: Prisma.SortOrder
+  attribution?: Prisma.SortOrder
   assignedToId?: Prisma.SortOrder
   claimedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -616,6 +732,11 @@ export type RequestMaxOrderByAggregateInput = {
   routeId?: Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  visitorId?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrder
+  firstChannel?: Prisma.SortOrder
+  lastChannel?: Prisma.SortOrder
+  device?: Prisma.SortOrder
   assignedToId?: Prisma.SortOrder
   claimedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -637,6 +758,11 @@ export type RequestMinOrderByAggregateInput = {
   routeId?: Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  visitorId?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrder
+  firstChannel?: Prisma.SortOrder
+  lastChannel?: Prisma.SortOrder
+  device?: Prisma.SortOrder
   assignedToId?: Prisma.SortOrder
   claimedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -707,6 +833,12 @@ export type RequestCreateWithoutRouteInput = {
   travelers: number
   source?: string
   status?: $Enums.RequestStatus
+  visitorId?: string | null
+  sessionId?: string | null
+  firstChannel?: string | null
+  lastChannel?: string | null
+  device?: string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: string | null
   claimedAt?: Date | string | null
   createdAt?: Date | string
@@ -727,6 +859,12 @@ export type RequestUncheckedCreateWithoutRouteInput = {
   travelers: number
   source?: string
   status?: $Enums.RequestStatus
+  visitorId?: string | null
+  sessionId?: string | null
+  firstChannel?: string | null
+  lastChannel?: string | null
+  device?: string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: string | null
   claimedAt?: Date | string | null
   createdAt?: Date | string
@@ -777,6 +915,12 @@ export type RequestScalarWhereInput = {
   routeId?: Prisma.StringNullableFilter<"Request"> | string | null
   source?: Prisma.StringFilter<"Request"> | string
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
+  visitorId?: Prisma.StringNullableFilter<"Request"> | string | null
+  sessionId?: Prisma.StringNullableFilter<"Request"> | string | null
+  firstChannel?: Prisma.StringNullableFilter<"Request"> | string | null
+  lastChannel?: Prisma.StringNullableFilter<"Request"> | string | null
+  device?: Prisma.StringNullableFilter<"Request"> | string | null
+  attribution?: Prisma.JsonNullableFilter<"Request">
   assignedToId?: Prisma.StringNullableFilter<"Request"> | string | null
   claimedAt?: Prisma.DateTimeNullableFilter<"Request"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
@@ -797,6 +941,12 @@ export type RequestCreateManyRouteInput = {
   travelers: number
   source?: string
   status?: $Enums.RequestStatus
+  visitorId?: string | null
+  sessionId?: string | null
+  firstChannel?: string | null
+  lastChannel?: string | null
+  device?: string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: string | null
   claimedAt?: Date | string | null
   createdAt?: Date | string
@@ -817,6 +967,12 @@ export type RequestUpdateWithoutRouteInput = {
   travelers?: Prisma.IntFieldUpdateOperationsInput | number
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -837,6 +993,12 @@ export type RequestUncheckedUpdateWithoutRouteInput = {
   travelers?: Prisma.IntFieldUpdateOperationsInput | number
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -857,6 +1019,12 @@ export type RequestUncheckedUpdateManyWithoutRouteInput = {
   travelers?: Prisma.IntFieldUpdateOperationsInput | number
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
+  visitorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastChannel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -880,6 +1048,12 @@ export type RequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   routeId?: boolean
   source?: boolean
   status?: boolean
+  visitorId?: boolean
+  sessionId?: boolean
+  firstChannel?: boolean
+  lastChannel?: boolean
+  device?: boolean
+  attribution?: boolean
   assignedToId?: boolean
   claimedAt?: boolean
   createdAt?: boolean
@@ -902,6 +1076,12 @@ export type RequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   routeId?: boolean
   source?: boolean
   status?: boolean
+  visitorId?: boolean
+  sessionId?: boolean
+  firstChannel?: boolean
+  lastChannel?: boolean
+  device?: boolean
+  attribution?: boolean
   assignedToId?: boolean
   claimedAt?: boolean
   createdAt?: boolean
@@ -924,6 +1104,12 @@ export type RequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   routeId?: boolean
   source?: boolean
   status?: boolean
+  visitorId?: boolean
+  sessionId?: boolean
+  firstChannel?: boolean
+  lastChannel?: boolean
+  device?: boolean
+  attribution?: boolean
   assignedToId?: boolean
   claimedAt?: boolean
   createdAt?: boolean
@@ -946,13 +1132,19 @@ export type RequestSelectScalar = {
   routeId?: boolean
   source?: boolean
   status?: boolean
+  visitorId?: boolean
+  sessionId?: boolean
+  firstChannel?: boolean
+  lastChannel?: boolean
+  device?: boolean
+  attribution?: boolean
   assignedToId?: boolean
   claimedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clientName" | "clientEmail" | "clientPhone" | "prefersWhatsapp" | "flightNumber" | "originCity" | "destinationCity" | "travelDate" | "travelClass" | "travelers" | "routeId" | "source" | "status" | "assignedToId" | "claimedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["request"]>
+export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clientName" | "clientEmail" | "clientPhone" | "prefersWhatsapp" | "flightNumber" | "originCity" | "destinationCity" | "travelDate" | "travelClass" | "travelers" | "routeId" | "source" | "status" | "visitorId" | "sessionId" | "firstChannel" | "lastChannel" | "device" | "attribution" | "assignedToId" | "claimedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["request"]>
 export type RequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   route?: boolean | Prisma.Request$routeArgs<ExtArgs>
 }
@@ -983,6 +1175,12 @@ export type $RequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     routeId: string | null
     source: string
     status: $Enums.RequestStatus
+    visitorId: string | null
+    sessionId: string | null
+    firstChannel: string | null
+    lastChannel: string | null
+    device: string | null
+    attribution: runtime.JsonValue | null
     assignedToId: string | null
     claimedAt: Date | null
     createdAt: Date
@@ -1425,6 +1623,12 @@ export interface RequestFieldRefs {
   readonly routeId: Prisma.FieldRef<"Request", 'String'>
   readonly source: Prisma.FieldRef<"Request", 'String'>
   readonly status: Prisma.FieldRef<"Request", 'RequestStatus'>
+  readonly visitorId: Prisma.FieldRef<"Request", 'String'>
+  readonly sessionId: Prisma.FieldRef<"Request", 'String'>
+  readonly firstChannel: Prisma.FieldRef<"Request", 'String'>
+  readonly lastChannel: Prisma.FieldRef<"Request", 'String'>
+  readonly device: Prisma.FieldRef<"Request", 'String'>
+  readonly attribution: Prisma.FieldRef<"Request", 'Json'>
   readonly assignedToId: Prisma.FieldRef<"Request", 'String'>
   readonly claimedAt: Prisma.FieldRef<"Request", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Request", 'DateTime'>

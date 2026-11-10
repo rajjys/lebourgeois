@@ -353,19 +353,31 @@ model Request {
   source           String   @default("web")
   status           RequestStatus @default(NEW)
 
+  // Where the visitor came from (docs/ANALYTICS.md). Null on requests made before tracking
+  // existed (10 Nov 2026) or when the browser kept nothing: shown as "non mesurée", never guessed.
+  visitorId        String?
+  sessionId        String?
+  firstChannel     String?  // first known source of this visitor: search, social, whatsapp, direct…
+  lastChannel      String?  // latest known source before the request; a direct visit does not replace it
+  device           String?  // mobile, tablet, desktop: from the browser that sent the request
+  attribution      Json?    // first and last touch (source, medium, campaign, referrer, landing page), conversion page
+
   // Future use
   assignedToId     String?
   claimedAt        DateTime?
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  @@index([createdAt])
 }
 
 enum RequestStatus {
   NEW
-  CLAIMED
-  CONTACTED
-  CLOSED
+  CLAIMED    // unused: kept for old rows
+  CONTACTED  // the team called the traveller back
+  BOOKED     // a ticket was issued (by the partner agency): the request became a booking
+  CLOSED     // no booking: no answer, too expensive, flight full…
 }
 
 // A message from the contact page: a question, a correction, an airline getting in touch.
@@ -396,4 +408,55 @@ enum MessageStatus {
   NEW
   ANSWERED
   ARCHIVED
+}
+
+// First-party, anonymous visit statistics (docs/ANALYTICS.md). No name, phone or IP address is
+// stored; the ids are random values kept in the visitor's browser. Events and requests point at a
+// session by id only (no foreign key), so a missing session never blocks a write.
+
+// One visit: starts on the first page, ends after 30 minutes without activity.
+model AnalyticsSession {
+  id           String   @id        // random, made by the browser
+  visitorId    String              // random, kept by the browser across visits
+  isNewVisitor Boolean             // the visitor's first session on this browser
+  startedAt    DateTime @default(now())
+  lastSeenAt   DateTime @default(now())
+  hostname     String              // lebourgeois.cd, clerikaa.vercel.app…
+  landingPath  String              // first page, without its query string
+  referrerHost String?             // e.g. www.google.com; null when the browser sent none
+  channel      String              // search, social, ai, whatsapp, email, paid, campaign, referral, internal, direct
+  utmSource    String?
+  utmMedium    String?
+  utmCampaign  String?
+  utmTerm      String?
+  utmContent   String?
+  device       String              // mobile, tablet, desktop
+  browser      String?
+  os           String?
+  country      String?             // ISO code from the hosting platform's IP lookup; the IP is not stored
+
+  @@index([startedAt])
+  @@index([visitorId])
+}
+
+// One thing a visitor did. Names and fields: lib/analytics/events.ts.
+model AnalyticsEvent {
+  id          String   @id        // random, made by the browser: a resent batch is not counted twice
+  name        String
+  occurredAt  DateTime @default(now())  // server time
+  sessionId   String
+  visitorId   String
+  path        String              // page, without its query string
+  routeSlug   String?             // kinshasa-lubumbashi
+  airline     String?             // airline slug or code
+  origin      String?             // airport code
+  destination String?
+  travelDate  String?             // YYYY-MM-DD
+  passengers  Int?
+  props       Json?
+
+  @@index([occurredAt])
+  @@index([name, occurredAt])
+  @@index([sessionId])
+  @@index([routeSlug, occurredAt])
 }

@@ -3,7 +3,6 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "@/components/I18nProvider";
 import { Toaster as Sonner, Toaster } from "@/components/ui/sonner";
-import { Analytics } from "@vercel/analytics/next"
 import { OPEN_GRAPH_BASE } from "@/lib/seo";
 import { SITE } from "@/lib/site";
 
@@ -53,7 +52,6 @@ export default function RootLayout({
         <Sonner />
           {children}
         </I18nProvider>
-        <Analytics />
         {/* Structured Data: site name only. No sameAs/SearchAction until real profiles and a /search page exist. */}
         <script
           type="application/ld+json"

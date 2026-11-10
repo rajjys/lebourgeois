@@ -280,7 +280,8 @@
         "published": "Certaines compagnies publient peu d'informations, par exemple pas de numéro de vol. Nous montrons ce qui est publié, rien de plus.",
         "time": "Les heures sont locales à chaque aéroport\u00a0: la RDC a deux fuseaux horaires, Lubumbashi a une heure d'avance sur Kinshasa.",
         "team": "Nous sommes une petite équipe. Une erreur peut nous échapper\u00a0: si vous en voyez une, dites-le-nous.",
-        "tickets": "Nous ne sommes ni une compagnie aérienne ni une agence de voyage\u00a0: notre métier est d'informer. Les réservations sont transmises à des agences partenaires, qui émettent les billets et en sont responsables. Aucun paiement ne se fait sur ce site."
+        "tickets": "Nous ne sommes ni une compagnie aérienne ni une agence de voyage\u00a0: notre métier est d'informer. Les réservations sont transmises à des agences partenaires, qui émettent les billets et en sont responsables. Aucun paiement ne se fait sur ce site.",
+        "stats": "Nous comptons les visites de façon anonyme\u00a0: pages vues, d'où vient la visite (Google, WhatsApp…), type d'appareil et pays. Pas de publicité, pas de cookie de suivi, aucune adresse IP gardée\u00a0; les chiffres restent chez nous et chez notre hébergeur. Si votre navigateur demande à ne pas être suivi, rien n'est compté."
       }
     },
     "intent": {

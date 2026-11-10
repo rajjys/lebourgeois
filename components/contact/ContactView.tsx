@@ -17,6 +17,7 @@ import { CONTACT_TOPICS, ContactSchema, type ContactInput } from "@/lib/validati
 import { requestHref } from "@/lib/links";
 import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils/cn-utils";
+import { track } from "@/lib/analytics/browser";
 
 // "+243975092470" → "+243 975 092 470", the way Congolese numbers are written.
 const WHATSAPP_DISPLAY = SITE.whatsapp.replace(/^\+(\d{3})(\d{3})(\d{3})(\d{3})$/, "+$1 $2 $3 $4");
@@ -85,6 +86,7 @@ export function ContactView() {
         body: JSON.stringify(values),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      track("contact_click", { props: { kind: "form", topic: values.topic } });
       setSent({ name: values.name, reply: values.reply });
       reset();
     } catch {

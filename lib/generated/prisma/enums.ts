@@ -129,6 +129,7 @@ export const RequestStatus = {
   NEW: 'NEW',
   CLAIMED: 'CLAIMED',
   CONTACTED: 'CONTACTED',
+  BOOKED: 'BOOKED',
   CLOSED: 'CLOSED'
 } as const
 

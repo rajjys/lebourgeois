@@ -8,6 +8,7 @@ import {
   ExternalLink,
   Inbox,
   LayoutDashboard,
+  ChartColumn,
   LogOut,
   MapPin,
   Menu,
@@ -31,7 +32,12 @@ type NavGroup = { label?: string; items: NavItem[] };
 
 // Users and settings join "Administration" when those pages exist (docs/PLAN.md, O-11 and O-12).
 const navGroups: NavGroup[] = [
-  { items: [{ name: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboard }] },
+  {
+    items: [
+      { name: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboard },
+      { name: 'Statistiques', href: '/dashboard/analytics', icon: ChartColumn },
+    ],
+  },
   {
     label: 'Données de vol',
     items: [

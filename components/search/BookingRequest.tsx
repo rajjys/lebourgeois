@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CircleAlert, CircleCheck, ShieldCheck } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/
 import { PriceTag } from "@/components/ds/PriceTag";
 import { Stepper } from "@/components/ds/Stepper";
 import { createRequest } from "@/services/requests";
+import { requestAttribution, track } from "@/lib/analytics/browser";
 import { formatDateShort, formatFlightNumber, shortAirlineName } from "@/lib/format";
 import type { FlightPage } from "@/lib/search";
 import { isPhoneNumber } from "@/lib/validations/request";
@@ -20,6 +21,16 @@ import { cn } from "@/lib/utils/cn-utils";
 type TravelClass = "economy" | "business" | "first";
 const empty = { name: "", phone: "", travelers: 1, travelClass: "economy" as TravelClass };
 type Errors = Partial<Record<"name" | "phone", string>>;
+
+/** The facts statistics keep about a booking request: which flight, never who. */
+const flightFields = (flight: FlightPage) => ({
+  // The form lives on /vols/{route}/{airline}; called from event handlers only, so window exists.
+  routeSlug: window.location.pathname.match(/^\/vols\/([a-z0-9-]+)/)?.[1] ?? null,
+  airline: flight.airline.slug,
+  origin: flight.origin.code,
+  destination: flight.destination.code,
+  travelDate: flight.date,
+});
 
 /** "CAA · lun. 9 nov. · 08:00 – 12:30 · BU 1633": which departure the request is for. */
 function useSummary(flight: FlightPage) {
@@ -63,6 +74,13 @@ function BookingForm({ flight, idPrefix, sheet = false, onClose }: { flight: Fli
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">("idle");
   const [sentTo, setSentTo] = useState("");
+  // booking_request_started once per form, on the first field the visitor touches.
+  const started = useRef(false);
+  const start = () => {
+    if (started.current) return;
+    started.current = true;
+    track("booking_request_started", flightFields(flight));
+  };
   const set = (patch: Partial<typeof empty>) => {
     setForm((f) => ({ ...f, ...patch }));
     // A corrected field loses its message straight away.
@@ -99,11 +117,12 @@ function BookingForm({ flight, idPrefix, sheet = false, onClose }: { flight: Fli
         travelClass: form.travelClass,
         travelers: form.travelers,
         source: "flight-detail",
-      });
+      }, requestAttribution({ airline: flight.airline.slug }));
       setSentTo(phone);
       setStatus("sent");
       setForm(empty);
     } catch {
+      track("booking_request_failed", { ...flightFields(flight), passengers: form.travelers });
       setStatus("failed");
     }
   }
@@ -146,7 +165,7 @@ function BookingForm({ flight, idPrefix, sheet = false, onClose }: { flight: Fli
     );
 
   return (
-    <form onSubmit={submit} noValidate className={cn(sheet ? "flex min-h-0 flex-1 flex-col" : "space-y-5")}>
+    <form onSubmit={submit} onFocusCapture={start} noValidate className={cn(sheet ? "flex min-h-0 flex-1 flex-col" : "space-y-5")}>
       <div className={body}>
         <PriceLine flight={flight} />
 

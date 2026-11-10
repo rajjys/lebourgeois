@@ -10,6 +10,7 @@ import { decryptSession, SESSION_COOKIE } from "@/lib/auth/session";
 const PUBLIC_WRITES = new Set([
   "POST /api/requests",
   "POST /api/contact",
+  "POST /api/analytics",
   "POST /api/auth/login",
   "POST /api/auth/logout",
 ]);

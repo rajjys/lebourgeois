@@ -280,7 +280,8 @@
         "published": "Some airlines publish little information, for example no flight numbers. We show what is published, nothing more.",
         "time": "Times are local to each airport: the DRC has two time zones, Lubumbashi is one hour ahead of Kinshasa.",
         "team": "We are a small team. A mistake can slip through: if you see one, tell us.",
-        "tickets": "We are neither an airline nor a travel agency: our job is to inform. Bookings are passed to partner agencies, which issue the tickets and are responsible for them. No payment is made on this site."
+        "tickets": "We are neither an airline nor a travel agency: our job is to inform. Bookings are passed to partner agencies, which issue the tickets and are responsible for them. No payment is made on this site.",
+        "stats": "We count visits anonymously: pages viewed, where the visit came from (Google, WhatsApp…), device type and country. No advertising, no tracking cookie, no IP address kept; the figures stay with us and our host. If your browser asks not to be tracked, nothing is counted."
       }
     },
     "intent": {
