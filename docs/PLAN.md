@@ -172,6 +172,7 @@ Verified on 2026-10-30.
 - ⬜ **C-7:** Airline partnerships (CAA, Air Congo). Asks, offer and contacts are in [DATA-SOURCES.md §5](DATA-SOURCES.md#5-partnership-plan). Starts once the first routes are live (M5).
 - ⬜ **C-8:** Level 3 feeds through an agency partner.
 - ⬜ **C-9:** Traveller reports ("I flew this, I paid X"), moderated.
+- 🟡 **C-10:** Timetable update script, `scripts/update-timetable.ts` (2026-11-10). A newer timetable is typed in by hand under `data/timetables/` (not an importer: C-2 stays paused) and the script brings the stored flights in line over a window: adds, retimes, confirms, and removes the scheduled flights the newer document no longer lists. Cancelled flights are left alone. Preview by default; `--apply` writes one "Appliquer un horaire" batch per airline-on-route, so "Défaire" in the route workspace reverses it (checked locally on Kinshasa → Kananga). First use: CAA's timetable of 11 Nov 2026 over 11 → 29 Nov (the last date already stored): **+101 flights, 159 retimed, 65 removed, 50 confirmed** on 26 city pairs, the same plan locally and in production (both still held the 20 Oct timetable). Applied locally; **production waits for the owner** (the assistant cannot write there).
 
 **Quality metrics**
 - % of published routes whose schedule was verified in the last 7 days
@@ -552,6 +553,7 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | 2026-10-31 | **Undo is a stack per airline on a route** (RW-3): every workspace action is one batch; "Défaire" reverts the latest one not yet undone, and can be repeated. No redo. | Undoing an older action while newer ones touched the same flights could not be explained or trusted. "Défaire" because "Annuler" already means cancelling flights. |
 | 2026-10-31 | **Delete the old production data** (owner): expired schedules, the prices copied from them, and the route records left empty. Priority routes, current fares, requests and messages stay. Replaces "keep expired patterns as hints" (ROUTE-MODEL §9). | Owner: the database is full of old data. A backup file and the change log keep what was deleted. |
 | 2026-10-31 | **Schema v3 details** (RW-1): a flight's number may be empty (Air Congo's timetable publishes none), so flights are unique per route-airline and date both by number and by departure time. Fares keep only their link to the airline-on-route; their own airline and city columns were dropped to avoid two sources of truth. The seed now only adds missing reference rows. | ROUTE-MODEL §4 said "unique by number", which cannot hold unnumbered flights. A seed that overwrote rows would undo edits made in the back office since P-12. |
+| 2026-11-10 | **A newer timetable replaces the older one in its window** (C-10): flights it no longer lists are removed, not marked cancelled; the window ends at the last date already stored unless told otherwise. | "Annulé" tells travellers an airline cancelled a flight, which a timetable change is not. The older weeks were an assumption (one weekly PDF repeated), so the newer document wins. Each route's change is one batch, so it can be undone. |
 
 ---
 
@@ -559,6 +561,7 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 
 | What | Who | Blocks |
 |---|---|---|
+| Run `npx tsx scripts/update-timetable.ts caa-2026-11-11 --production` (preview), then the same with `--apply`: CAA's 11 Nov timetable in production (C-10). | Owner | CAA times correct from 11 Nov |
 | Review the 5 Air Congo prices in production (Routes → filter "Prix à valider"). They are the "From USD" fares from air-congo.com; Kinshasa as origin is an assumption. | Owner | Prices shown publicly |
 | Review the imported data (a team member's first task). Air Congo is published from its schedule PDF (owner, 2026-11-01); the PDF lists one Lubumbashi → Kinshasa flight at 19:10 where Skyscanner shows 12:30 and 19:30, set aside for now. CAA: confirm against this week's timetable. | Team | Accuracy of the public pages |
 | Kinshasa ↔ Kalemie and Kinshasa ↔ Muanda (4 routes, 2 of them P1) are *Publiée* but have no airline published, so they stay `noindex`. Publish an airline on them when their schedules are reviewed. | Team | Those 4 pages indexed |

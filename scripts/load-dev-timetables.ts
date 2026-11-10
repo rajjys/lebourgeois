@@ -14,6 +14,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type Prisma, type Weekday } from "../lib/generated/prisma/client";
 import { ensureRouteAirline } from "../lib/routes";
 import { arrivalDayOffset, datesOnWeekdays } from "../lib/flights";
+import { trips, type Leg } from "../lib/timetable";
 
 const url = process.env.DATABASE_URL;
 if (!url) throw new Error("DATABASE_URL is not set");
@@ -29,8 +30,6 @@ const READ_ON = new Date("2026-10-31T12:00:00Z");  // day the PDFs were read
 // Flights: the same assumption over a shorter window, so "known until" has something to show.
 const FLIGHTS_FROM = "2026-10-20";
 const FLIGHTS_TO = "2026-11-29";
-
-type Leg = { days: Weekday[]; flight: string; from: string; to: string; dep: string; arr: string; aircraft?: string };
 
 // https://www.caacongo.com/horaires-20-oct.pdf ("20/10/2026"). One row per day and leg, as printed.
 // The A330 flies 1611-1614; every other rotation is an A320. Monday: "A330 OFF".
@@ -155,44 +154,6 @@ const airCongoLegs: Leg[] = [
   { days: ["TUE", "SAT"], from: "FIH", to: "MDK", dep: "13:30", arr: "14:50" },
   { days: ["TUE", "SAT"], from: "MDK", to: "FIH", dep: "15:30", arr: "16:50" },
 ].map((leg) => ({ ...leg, days: leg.days as Weekday[], flight: "" })); // no flight numbers published
-
-type Trip = { day: Weekday; flight: string | null; from: string; to: string; dep: string; arr: string; via: string[]; aircraft?: string };
-
-/**
- * Every trip a day's legs offer. The legs of one flight number that follow each other
- * (BU1414 FIH→MJM, then MJM→FBM) also make the through trips (FIH→FBM via MJM), the way
- * ROUTE-MODEL §5.3 stores them. Unnumbered legs (Air Congo) stay single: nothing says they connect.
- */
-function trips(legs: Leg[]): Trip[] {
-  const out: Trip[] = [];
-  const byFlight = new Map<string, Leg[]>();
-  for (const leg of legs) {
-    for (const day of leg.days) {
-      if (!leg.flight) {
-        out.push({ day, flight: null, from: leg.from, to: leg.to, dep: leg.dep, arr: leg.arr, via: [], aircraft: leg.aircraft });
-        continue;
-      }
-      const key = `${day}|${leg.flight}`;
-      byFlight.set(key, [...(byFlight.get(key) ?? []), leg]);
-    }
-  }
-  for (const [key, group] of byFlight) {
-    const day = key.split("|")[0] as Weekday;
-    group.sort((a, b) => a.dep.localeCompare(b.dep));
-    for (let i = 0; i < group.length; i++) {
-      for (let j = i; j < group.length; j++) {
-        const follows = j === i || (group[j - 1].to === group[j].from && group[j].dep >= group[j - 1].arr);
-        if (!follows) break;
-        if (group[i].from === group[j].to) continue;
-        out.push({
-          day, flight: group[i].flight, from: group[i].from, to: group[j].to, dep: group[i].dep, arr: group[j].arr,
-          via: group.slice(i + 1, j + 1).map((leg) => leg.from), aircraft: group[i].aircraft,
-        });
-      }
-    }
-  }
-  return out;
-}
 
 async function loadFlights(airlineCode: string, legs: Leg[], sourceUrl: string) {
   const airline = await prisma.airline.findUniqueOrThrow({ where: { code: airlineCode } });
