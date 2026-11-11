@@ -1,6 +1,6 @@
 # Visit statistics and request attribution
 
-> **Status:** AN-1 (collection), AN-2 (dashboard) and AN-3 (request outcomes) built on 2026-11-10. Plan items in [PLAN.md](PLAN.md#stage-6-capture).
+> **Status:** AN-1 (collection), AN-2 (dashboard) and AN-3 (request outcomes) built on 2026-11-10; AN-5 (dashboard redesign) the same day. Plan items in [PLAN.md](PLAN.md#stage-6-capture).
 > **Owner's brief (2026-11-10):** know where visitors come from, what they look at, which routes bring requests, and whether requests become bookings, from real data. Keep it basic and useful. Leave the domains alone.
 
 **Contents**
@@ -83,25 +83,48 @@ Requests made before 2026-11-10, or from a browser that keeps nothing, have null
 
 ## 5. The dashboard
 
-`/dashboard/analytics` (*Statistiques* in the sidebar), server-rendered, admin only.
+`/dashboard/analytics` (*Statistiques* in the sidebar), server-rendered, admin only. Redesigned in AN-5 (2026-11-10) so the team needs no other tool for day-to-day questions.
 
-**Periods:** today, 7, 30 or 90 days, or chosen dates (a year at most). **Kinshasa days** (UTC+1). The comparison period is the same number of days just before.
-**Filters:** source, campaign, route, device. They apply to visits (a route filter keeps the visits that saw that route) and to requests (source = the request's last known source).
+**Header:** title, **visitors online** (active in the last 30 minutes), the period and what it is compared with, "Comment c'est compté" (the definitions, one click away), and one line of controls:
+- **Period:** Aujourd'hui (hour by hour), 7 j, 30 j, 90 j, or **Dates** (a range calendar, a year at most). Kinshasa days (UTC+1).
+- **Filtres:** one button opening source, campaign, route and device. Active filters show as chips that remove themselves ("Tout effacer" for several). A click on a source, a route or a device in any list filters the page too.
+- Everything is in the address (`?periode=`, `du`, `au`, `source`, `campagne`, `trajet`, `appareil`, `vue`): a view can be bookmarked or shared.
+
+**Comparison:** the same number of days just before. A period that ends **today** is compared up to the same time (today until 20:15 against yesterday until 20:15), not with a whole day; the chart still draws the previous period in full, and today's hours not yet reached are left empty.
+
+**Five views** (tabs):
+| View | What it holds |
+|---|---|
+| Vue d'ensemble | Six headline figures that also choose the chart (visitors, visits, page views, bounce rate, average visit, requests), each with its change and the previous value; the chart with the previous period in grey; request rate, bookings, WhatsApp clicks, pages per visit; top sources, top routes, the visitors' path, devices, countries; the latest requests |
+| Acquisition | Sources (visitors, visits, bounce, requests by last and first source, bookings, rate), referring sites, UTM campaigns with their requests, new and returning visitors, site addresses |
+| Trajets et pages | Routes (visitors, page views, searches, requests started, requests, bookings, rate), airlines (CAA, Air Congo…), **demand we do not cover** (searched routes with no published airline), most frequent searches, entry pages (visits, bounce, requests), most viewed pages with readable names |
+| Demandes | Requests, bookings, booking rate, request rate, forms started, send failures, unmeasured requests; the path; requests by status and by source; contact clicks (WhatsApp by place, e-mail, phone, contact form); the latest requests |
+| Audience | Devices (with requests), new and returning, countries, browsers, systems, site addresses |
 
 | Figure | Definition |
 |---|---|
 | Visiteurs | distinct `visitorId` among visits started in the period |
 | Visites | visits started in the period |
 | Pages vues | `page_view` events of those visits |
+| Taux de rebond | visits with one page view **and nothing done** (no search, booking form, WhatsApp or contact click), as GA4 counts engagement |
+| Durée moyenne | last activity − arrival, averaged over visits. The time spent on a visit's last page is unknown, so it reads short, as in every analytics tool |
+| En ligne | visitors with activity in the last 30 minutes (not filtered) |
+| Nouveaux / connus | first visit on this browser / already came with it |
 | Demandes | rows in `Request` created in the period: complete, measured or not |
 | Réservées | of those, status "Réservée" |
 | Clics WhatsApp | `whatsapp_click` events, and how many visitors made them |
 | Taux de demande | requests ÷ visitors. Unmeasured requests count in the numerator, so it can read slightly high |
-| Parcours | visitors who reached each step, **not necessarily in order**: most arrive from Google straight on a route page, without the search |
+| Parcours | visitors who reached each step, **not necessarily in order** (most arrive from Google straight on a route page); the drop from the step before is shown |
 | Trajets | visitors who saw the route or one of its airlines, page views, searches, requests started, requests (all, from `Request`) |
-| Sources | visits per source, and requests per last and per first source |
+| Compagnies | visitors of the airline's pages; requests by the airline code at the start of the request's flight number (`BU…` CAA, `4H…` Air Congo) |
+| Demande non couverte | searched pairs with no published airline on that route |
+| Pages d'entrée | first page of each visit; "Demandes" = visits that sent a request |
 
-Queries: `lib/analytics/report.ts` (plain SQL on indexed columns; at a few hundred visitors a week no summary tables are needed).
+Queries: `lib/analytics/report.ts` (plain SQL on indexed columns; at a few hundred visitors a week no summary tables are needed). Interface: `components/backoffice/analytics/`.
+
+**Not here, and why:** search queries and Google rankings (Search Console, F-5: Google does not pass search words to sites); page speed (Vercel Speed Insights, not set up). Vercel Web Analytics stays on as a cross-check.
+
+**Demo data (local only):** `npx tsx scripts/seed-dev-analytics.ts` fills the local database with 90 days of invented visits and requests (ids `demo-…`, requests named "DÉMO statistiques") to review the page; `--clear` removes them. It refuses any database that is not local.
 
 ## 6. Privacy and abuse
 
