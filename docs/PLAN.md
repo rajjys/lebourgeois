@@ -440,7 +440,7 @@ Verified on 2026-10-30.
 **Today:**
 - Admin login.
 - Security headers.
-- Next.js 16.4.3.
+- Next.js 16.4.6 (2026-11-19: fixes GHSA-mfr8-8qww-v76h and GHSA-vc7v-qv4w-wrv8, moderate, `'use cache'` with root params, unused here).
 - Separate local database.
 - Production migrations on deploy.
 - The seed script refuses to touch production unless explicitly allowed.
@@ -453,7 +453,11 @@ Verified on 2026-10-30.
 - ⬜ **O-4:** Automated tests run on every PR:
   - unit tests (timezones, next departure, parsers)
   - API access tests (the manual security checks turned into a script)
-- ⬜ **O-5:** Dependency upkeep: upgrade to React 19 (React 18 is deprecated in Next.js 16 and removed in 17); resolve remaining advisories in Prisma tooling and zod.
+- 🟡 **O-5:** Dependency upkeep.
+  - Done 2026-11-19: Next.js 16.4.3 → 16.4.6.
+  - Left: React 19 (React 18 is deprecated in Next.js 16 and removed in 17).
+  - Left: Prisma 7.0 → 7.10. The `prisma` CLI pulls in hono, effect, defu and deepmerge-ts with high advisories. They run at build time and locally, not in the deployed site; 7.10.1 ships fixed versions, but the upgrade also regenerates the client.
+  - Left: zod.
 - ⬜ **O-6:** Rate-limit the admin login.
 - ⬜ **O-7:** Multiple users with roles, when a second person or an agency joins. Choose between a self-hosted library and a hosted service such as Clerk at that point.
 - ✅ **O-8:** Vercel stays (owner, 2026-10-30). Hobby is fine for the informational phase; upgrade to Pro before leads or commissions (M7), because Hobby forbids commercial use.
