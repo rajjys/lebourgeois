@@ -12,6 +12,7 @@
 import { readFileSync } from "node:fs";
 import { config, parse } from "dotenv";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { pgConfig } from "../lib/dbConnection";
 import { PrismaClient } from "../lib/generated/prisma/client";
 
 const arg = (name: string) => process.argv.find((a) => a.startsWith(`--${name}=`))?.split("=").slice(1).join("=");
@@ -28,7 +29,7 @@ else {
   if (url && !["localhost", "127.0.0.1", "::1"].includes(new URL(url).hostname)) throw new Error("Not a local database; pass --production");
 }
 if (!url) throw new Error("DATABASE_URL is not set");
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) });
+const prisma = new PrismaClient({ adapter: new PrismaPg(pgConfig(url)) });
 
 async function main() {
   const targets = await prisma.route.findMany({

@@ -11,6 +11,7 @@ import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
 
 import { PrismaPg } from "@prisma/adapter-pg";
+import { pgConfig } from "../lib/dbConnection";
 import { PrismaClient, type Prisma, type Weekday } from "../lib/generated/prisma/client";
 import { ensureRouteAirline } from "../lib/routes";
 import { arrivalDayOffset, datesOnWeekdays } from "../lib/flights";
@@ -24,7 +25,7 @@ if (!["localhost", "127.0.0.1", "::1"].includes(host)) {
   process.exit(1);
 }
 
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) });
+const prisma = new PrismaClient({ adapter: new PrismaPg(pgConfig(url)) });
 
 const READ_ON = new Date("2026-10-31T12:00:00Z");  // day the PDFs were read
 // Flights: the same assumption over a shorter window, so "known until" has something to show.

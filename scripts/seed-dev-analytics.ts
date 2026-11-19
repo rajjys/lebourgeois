@@ -11,6 +11,7 @@
 import { readFileSync } from "node:fs";
 import { parse } from "dotenv";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { pgConfig } from "../lib/dbConnection";
 import { PrismaClient, type Prisma } from "../lib/generated/prisma/client";
 
 const url = parse(readFileSync(".env.local")).DATABASE_URL;
@@ -18,7 +19,7 @@ if (!url || !["localhost", "127.0.0.1", "::1"].includes(new URL(url).hostname)) 
   console.error("Local database only (.env.local).");
   process.exit(1);
 }
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) });
+const prisma = new PrismaClient({ adapter: new PrismaPg(pgConfig(url)) });
 const DEMO_NAME = "DÉMO statistiques";
 
 // Deterministic randomness: the same demo every run.
