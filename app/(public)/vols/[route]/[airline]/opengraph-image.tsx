@@ -8,6 +8,15 @@ import { loadAirlinePage } from "@/lib/routePages";
  * price with the day it was seen. The same facts as the page's answer line.
  */
 export const revalidate = 3600;
+
+/**
+ * Built on its first request, then served from cache for the hour (O-13). Without this the image
+ * was drawn again, with the page's 20-odd database queries, every time a crawler or a messaging
+ * app fetched it.
+ */
+export async function generateStaticParams() {
+  return [];
+}
 export const alt = "La compagnie sur ce trajet : jours de vol, vols de la semaine et prix observé, sur Clerikaa";
 export const size = OG_SIZE;
 export const contentType = "image/png";

@@ -103,7 +103,7 @@ Snapshot on **2026-10-31**:
 | Public site | 🟡 Home rebuilt and rendered on the server (P-9, PR #6). Navbar search button, contact page and form fixes live (P-12, PR #7). Search results redesigned and read from dated flights, with a server-rendered flight page (P-13, PR #11). **RW-5 (PR #15, merged):** search and route pages are one structure under `/vols`, rendered on the server; `/explore` redirects there. **P-15 (PR #16, merged):** booking card and calendar redesigned, airlines before departures, dates at the bottom, `/about` and footer rewritten. **P-16 (PR #17, merged):** route page order search → airlines → departures, a one-line search on phones, "report a mistake" starts the message, phone navbar and menu redesigned. **P-17 (PR #18, merged):** phone polish: a smaller type step for headings on phones, tighter spacing, the search as one compact card, and choosing the departure opens the arrival list. **P-18 (in review):** a route page with a date shows the departures only. The request page is still rendered in the browser. |
 | Search and sharing | 🟡 **F-2, F-3, F-4 (in review):** every public page has its own title, description, canonical address **and link preview** (title, description, address and image of the page itself; until now WhatsApp showed the home's for every page). Route and airline pages get a share image drawn from their data in the brand font. Route and airline titles drop " | Clerikaa" so the route words fit before Google cuts them. `Organization` on the home; sitemap without `priority`/`changefreq`, dated by data changes, with `/contact`. AI crawlers allowed by name, training ones included (F-6, owner). Still to do: Search Console and Bing (F-5), English URLs (F-1). |
 | Leads | 🟡 Request form and contact form save to the database; both are visible in the back office (Demandes, Messages). Email alerts are built but on hold. **AN-1 to AN-3 (in review, 2026-11-10):** our own visit statistics, each request credited to where its traveller came from, a *Statistiques* page, and request outcomes (*Réservée* / *Sans suite*). Until then: 6 requests in production (4–10 Nov), all still "Nouvelle", 4 of them for Air Congo flights. |
-| Environments | ✅ Separate local dev database. Production migrations run automatically on deploy. |
+| Environments | 🔴 **2026-11-19: production database blocked.** Prisma Postgres' free plan (200,000 operations a month) ran out on 2026-11-16 and queries were refused until Prisma lifted the block for 24 hours on 2026-11-19. Cause measured, not guessed: crawlers fetching uncached route pages, mostly dated addresses (O-13). Full backup taken and verified the same day. Move to another host and the crawl fix in progress (O-13). Separate local dev database; production migrations run on deploy. |
 
 ---
 
@@ -449,7 +449,7 @@ Verified on 2026-10-30.
 **Work items**
 - ⬜ **O-1:** Separate the preview environment's database from production. Preview deployments probably use the production database today, so a preview could read or change live data.
 - ⬜ **O-2:** Error monitoring, uptime check and alerts when a daily job fails (free tiers).
-- ⬜ **O-3:** Backups: confirm the Prisma Postgres backup policy; add a periodic dump.
+- 🟡 **O-3:** Backups: a full production dump was taken and verified by restoring it on 2026-11-19 (`~/.lebourgeois/backups/prod-full-2026-11-19.dump`). Still to do: a periodic dump, and the new host's own backup policy (Supabase's free plan has no downloadable backups).
 - ⬜ **O-4:** Automated tests run on every PR:
   - unit tests (timezones, next departure, parsers)
   - API access tests (the manual security checks turned into a script)
@@ -461,6 +461,19 @@ Verified on 2026-10-30.
 - ⬜ **O-10:** Dev server note. If styles look stale in development, stop the dev server and move `.next/dev/cache/turbopack` aside. Seen on 2026-10-30 with Next.js 16.4.3. Documented in the README.
 - ⬜ **O-11:** Back-office "Utilisateurs" page, with O-7 (roles), under the sidebar's Administration group.
 - ⬜ **O-12:** Back-office "Paramètres" page, when there is something to set (freshness window, site texts).
+- 🟡 **O-13 (in review, 2026-11-19):** Production database ran out of its plan; move it and stop the crawler load.
+  - **Measured on a restored copy of production:**
+    - Real visitors made 30 to 70 page views a day (10–16 Nov) and our statistics about 100 to 200 events a day. That's a few hundred database statements a day, so the statistics were not the cause.
+    - A route page costs 24 to 29 statements, an airline page 21 and a share image 24, every request. Over Prisma's direct connection each SQL statement is one billed operation.
+    - The ~10,000 to 16,000 operations a day billed since 1 Nov are therefore 400 to 650 page renders a day, ten times the human traffic: crawlers.
+    - Every page links about 12 dated addresses (`?date=…&heure=…`), new ones each day, none cached.
+  - **Done in this PR:**
+    - robots.txt blocks dated addresses (canonical pages stay crawlable).
+    - Share images are built on their first request and then served from cache for the hour: 24 statements, then 0, verified.
+    - `prisma migrate` can use its own address on Vercel (`MIGRATE_DATABASE_URL`), which a pooler in transaction mode needs.
+    - `scripts/move-database.sh` copies the database and compares every table. It was tested end to end on local copies: the anon role was refused, and the app read and wrote with row-level security on.
+  - **Still to do:** the move itself (Waiting on).
+- ⬜ **O-14:** Public pages from a cache, not the database. Route, airline and hub pages read the database on every request because they read `?date=`. Plan: cache the data each page reads for a long time, refresh it when the back office saves, and work out "today", "this week" and "next departure" per request from the cached data. That way the database is read once per change, not once per visit, whatever the host. A short cache alone would not help: most pages are requested a few times a day, so a 10-minute cache would almost never be hit.
 
 ---
 
@@ -566,12 +579,14 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | 2026-11-10 | **A booking is a request marked "Réservée (billet émis)"** by the team; the statistics count nothing else as a booking. | Bookings happen at partner agencies, outside the site: only the team knows. |
 | 2026-11-10 | CAA schedules stay up to **29 Nov**; December is not loaded for now (owner). | Each weekly PDF is loaded when it comes out. |
 | 2026-11-10 | **Bounce = one page and nothing done**; a period ending today is compared with the period before **up to the same time** (AN-5). | A one-page visit that searched, started a booking or clicked WhatsApp engaged (GA4 counts it so). Comparing a day still running with a whole day made every morning look like a drop. |
+| 2026-11-19 | **Dated addresses are not crawled** (`?date=`, `?heure=`, `/vols?` in robots.txt) (O-13). Share images are cached for the hour. | Measured: crawlers fetching ever-new dated addresses, each read from the database, used up the production database plan in 16 days. The canonical pages carry the same content and stay crawlable. |
 ---
 
 ## 9. Waiting on
 
 | What | Who | Blocks |
 |---|---|---|
+| **O-13, before Prisma's 24-hour reprieve ends (2026-11-20 evening):** choose the new host (recommended: Supabase free), create the project in the same region as the Vercel functions, put its two addresses in `.env` (`SUPABASE_POOLED_URL`, port 6543; `SUPABASE_SESSION_URL`, port 5432), turn off its Data API, then run `scripts/move-database.sh` and switch Vercel's `DATABASE_URL` / `MIGRATE_DATABASE_URL`. Fallback if anything snags: Prisma's paid plan for one month. | Owner, then engineering | The site works at all |
 | Run `npx tsx scripts/update-timetable.ts caa-2026-11-11 --production` (preview), then the same with `--apply`: CAA's 11 Nov timetable in production (C-10). | Owner | CAA times correct from 11 Nov |
 | Review the 5 Air Congo prices in production (Routes → filter "Prix à valider"). They are the "From USD" fares from air-congo.com; Kinshasa as origin is an assumption. | Owner | Prices shown publicly |
 | Review the imported data (a team member's first task). Air Congo is published from its schedule PDF (owner, 2026-11-01); the PDF lists one Lubumbashi → Kinshasa flight at 19:10 where Skyscanner shows 12:30 and 19:30, set aside for now. CAA: confirm against this week's timetable. | Team | Accuracy of the public pages |
@@ -596,6 +611,7 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 | Domain move | Temporary loss of search traffic. | Page-to-page 301 redirects; Search Console change of address; move early, while traffic is small. |
 | Brand public before the domain is owned | Someone registers `clerikaa.com` first. | Buy it now (rebrand track step 2). |
 | Volatile operations (conflict, epidemics, cancellations) | Schedules wrong quickly. | Status fields with sources; network status page; short verification cycles. |
+| A database plan with a hard monthly limit | Crawlers or a traffic spike take the whole site down until the month ends (happened 2026-11-16). | A host whose free plan has no per-query limit (O-13); pages served from a cache, not the database (O-14); a usage alert. |
 
 ## 11. Glossary
 

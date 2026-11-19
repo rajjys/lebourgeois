@@ -9,7 +9,7 @@ The site is still served from `lebourgeois.cd` until `clerikaa.com` is bought. T
 ## Stack
 
 - Next.js 16 (App Router) on Vercel
-- PostgreSQL with Prisma 7 (Prisma Postgres in production)
+- PostgreSQL with Prisma 7. Production ran on Prisma Postgres until its free plan ran out on 2026-11-16; the move to another host is O-13 in [docs/PLAN.md](docs/PLAN.md).
 - Tailwind CSS 4 with generated design tokens, shadcn/ui ([docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md))
 - i18next (French default, English)
 
@@ -65,6 +65,7 @@ After a reboot, run `npm run db:start` before `npm run dev`.
 | `npx tsx scripts/push-preview-to-production.ts [--production] [--apply] [--publish=BU]` | Copies the local routes, airlines on routes, upcoming flights and prices into production for review. Only adds what is missing; previews by default. Airlines on routes are created unpublished unless their airline is named in `--publish=`. Each import is one batch per route, so the workspace's "Défaire" removes it. |
 | `npx tsx scripts/publish-routes.ts [--tier=1] [--production] [--apply]` | Sets draft routes to *Publiée* in bulk and says which become indexable (an airline published on them or an airport notice) and which stay `noindex`. Previews by default; each change is logged in the route's history. |
 | `npx tsx scripts/publish-route-airlines.ts --airline=4H [--source=<url>] [--production] [--apply]` | Publishes an airline on its routes (the "Publiée" switch of the route workspace, in bulk), optionally only the records whose flights come from one source. Previews by default; each change is logged in the change history. |
+| `scripts/move-database.sh [--apply \| --compare] [--from=VAR] [--to=VAR]` | Copies the production database to another Postgres (O-13). Addresses come from `.env` (default `DATABASE_URL` → `SUPABASE_SESSION_URL`) and are never printed. Previews by default; `--apply` dumps the source to `~/.lebourgeois/backups`, restores it into the target in one transaction (refuses a target that already has tables), closes the tables to Supabase's public API roles, then compares every table's row count. `--compare` only compares. |
 | `npx tsx scripts/load-dev-timetables.ts` | Local preview data: deletes expired schedules, then loads CAA's 20 Oct 2026 timetable and Air Congo's schedule PDF, typed in by hand, as flights on dates, and publishes each airline on its routes so the local search shows them. Refuses any non-local database. |
 
 ## Troubleshooting

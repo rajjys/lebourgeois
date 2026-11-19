@@ -1,8 +1,14 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/site";
 
-/** Never crawled: the back office, the API and the login page. */
-const PRIVATE = ["/dashboard", "/api/", "/login"];
+/**
+ * Never crawled: the back office, the API and the login page; and every dated address (O-13).
+ * `?date=` and `?heure=` only narrow a route or airline page whose canonical address has none, and
+ * every page links twelve or so of them, new ones each day. Crawlers were fetching hundreds a day,
+ * each one read from the database (24 to 29 queries), which used up the database plan in 16 days
+ * of November 2026. The canonical pages stay open.
+ */
+const PRIVATE = ["/dashboard", "/api/", "/login", "/*?date=", "/*&date=", "/*?heure=", "/vols?"];
 
 /**
  * AI crawlers, allowed by name (docs/SEO-AEO-GEO.md §8, F-6). Search and user-requested fetches put
