@@ -1,6 +1,6 @@
 import type { z } from "zod";
 import { badRequest, conflict, generateRequestId, internalError, notFound, ok } from "@/app/api/utils/http";
-import { dbErrorKind } from "@/app/api/utils/db";
+import { dbErrorKind, refreshPublicPages } from "@/app/api/utils/db";
 import { currentActor, requireAdmin } from "@/lib/auth/session";
 import { WorkspaceError } from "@/lib/workspace";
 
@@ -22,7 +22,10 @@ export function workspaceAction<S extends z.ZodTypeAny>(
         return badRequest(parsed.error.issues[0]?.message ?? "Champs invalides", parsed.error.format(), requestId);
       }
       const { id } = await context.params;
-      return ok(await run(id, parsed.data, await currentActor()), requestId);
+      const result = await run(id, parsed.data, await currentActor());
+      // Every workspace action changes what the public pages show (flights, prices, notes, publishing).
+      refreshPublicPages();
+      return ok(result, requestId);
     } catch (err) {
       if (err instanceof WorkspaceError) return conflict(err.message, null, requestId);
       const kind = dbErrorKind(err);

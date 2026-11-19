@@ -4,6 +4,7 @@ import { badRequest, conflict, created, generateRequestId, internalError } from 
 import { currentActor, requireAdmin } from "@/lib/auth/session";
 import { logChange, snapshot } from "@/lib/changeLog";
 import { routeSlug } from "@/lib/routes";
+import { refreshPublicPages } from "@/app/api/utils/db";
 
 /**
  * POST /api/routes: creates a route between two airports, and its return route unless withReturn is false.
@@ -49,6 +50,7 @@ export async function POST(req: Request) {
     if (result.created.length === 0) {
       return conflict(withReturn ? "Ces deux routes existent déjà" : "Cette route existe déjà", result, requestId);
     }
+    refreshPublicPages();
     return created(result, requestId);
   } catch (err) {
     return internalError("Failed to create route", (err as Error)?.message ?? null, requestId);

@@ -478,7 +478,19 @@ Verified on 2026-10-30.
   - Vercel's functions run in Washington (`iad1`, seen in `x-vercel-id`) and the new database is in Ireland, so the function region moves to Dublin (`dub1`) with the switch. That's one hop instead of a transatlantic round trip per query, and closer to Kinshasa too.
   - **Still to do:** set Vercel's variables and its function region, redeploy, then `--catch-up` (Waiting on).
 - ⬜ **O-15:** Verify the database certificate. Pass Supabase's CA certificate to the database client in `lib/prisma.ts`, so the connection is checked, not only encrypted.
-- ⬜ **O-14:** Public pages from a cache, not the database. Route, airline and hub pages read the database on every request because they read `?date=`. Plan: cache the data each page reads for a long time, refresh it when the back office saves, and work out "today", "this week" and "next departure" per request from the cached data. That way the database is read once per change, not once per visit, whatever the host. A short cache alone would not help: most pages are requested a few times a day, so a 10-minute cache would almost never be hit.
+- 🟡 **O-14 (in review, 2026-11-19):** Public pages read from a cache, not the database.
+  - `lib/publicDb.ts` is a read-only stand-in for `prisma` in `lib/routePages.ts`, `lib/search.ts` and `lib/home.ts`. Each read is kept in Next's data cache under its model, method and arguments.
+  - Why it stays correct: every public query filters by calendar day and never by time of day, so keys change at midnight on their own. "Departed", "next departure" and "this week" are still worked out on every request from the cached rows.
+  - Back-office writes (all eleven handlers and every route-workspace action) expire the cache at once (`revalidateTag(…, { expire: 0 })`). Before, only airport and airline edits refreshed anything, and only the home page.
+  - Writes by scripts reach the pages within the hour (the update script now says so).
+  - Measured on a production build with the local database and statement logging:
+    - Route page: 23 statements cold, 0 warm.
+    - Airline page: 12 cold, 0 warm.
+    - A new date on a warm route: 3 (was 29). A new departure on an airline page: 6 (was 21).
+    - Cold and warm pages have identical visible text.
+    - A note saved through the back-office API showed on the next public request, then 0 statements again; removing it showed at once too.
+  - Share images read through the same cache, so Vercel rebuilding them in the background (`STALE`, O-13) no longer reaches the database.
+  - Not done: serving pages from Vercel's CDN, which would avoid the function call too. That needs `?date=` read in the browser instead of on the server.
 
 ---
 

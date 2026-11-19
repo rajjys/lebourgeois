@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
-import prisma from "@/lib/prisma";
+// Reads go through the public data cache (O-14, lib/publicDb.ts).
+import publicDb from "@/lib/publicDb";
 import { PUBLIC_FLIGHT, SEARCH_DAYS, latestPrices, loadFlight, searchRoute } from "@/lib/search";
 import { dayOf, isUpcoming, localNow } from "@/lib/routeStatus";
 import { addDays } from "@/lib/schedule";
@@ -22,7 +23,7 @@ const hasContent = (r: { status: string; publishedAirlines: number; origin: { st
   r.status === "PUBLISHED" && (r.publishedAirlines > 0 || r.origin.status !== "OPEN" || r.destination.status !== "OPEN");
 
 const airportsBySlug = cache(async () => {
-  const airports = await prisma.airport.findMany();
+  const airports = await publicDb.airport.findMany();
   return new Map(airports.map((a) => [a.slug, a]));
 });
 
@@ -33,13 +34,13 @@ export const resolveRoute = cache(async (slug: string) => {
   if (!pair) return null;
   const origin = airports.get(pair[0])!;
   const destination = airports.get(pair[1])!;
-  const route = await prisma.route.findUnique({ where: { originId_destinationId: { originId: origin.id, destinationId: destination.id } } });
+  const route = await publicDb.route.findUnique({ where: { originId_destinationId: { originId: origin.id, destinationId: destination.id } } });
   return { origin, destination, route, slug: `${origin.slug}-${destination.slug}` };
 });
 
 /** /vols/{slug} for two airport codes (redirects and the search box). */
 export async function routeSlugForCodes(fromCode: string, toCode: string) {
-  const airports = await prisma.airport.findMany({ where: { code: { in: [fromCode, toCode] } }, select: { code: true, slug: true } });
+  const airports = await publicDb.airport.findMany({ where: { code: { in: [fromCode, toCode] } }, select: { code: true, slug: true } });
   const from = airports.find((a) => a.code === fromCode);
   const to = airports.find((a) => a.code === toCode);
   return from && to && from.code !== to.code ? `${from.slug}-${to.slug}` : null;
@@ -90,7 +91,7 @@ export async function loadRoutePage(slug: string, date: string | null, now: Date
   const services = window!.services;
 
   const routeAirlines = route
-    ? await prisma.routeAirline.findMany({
+    ? await publicDb.routeAirline.findMany({
         where: { routeId: route.id, isPublished: true, airline: { isPublished: true } },
         include: { airline: true },
         orderBy: { airline: { name: "asc" } },
@@ -102,7 +103,7 @@ export async function loadRoutePage(slug: string, date: string | null, now: Date
 
   // Flights in the coming week, per airline, from the public departures.
   const weekFlights = route
-    ? await prisma.flight.groupBy({
+    ? await publicDb.flight.groupBy({
         by: ["routeAirlineId"],
         where: { ...PUBLIC_FLIGHT, routeAirline: { routeId: route.id, isPublished: true, airline: { isPublished: true } }, date: { gte: new Date(`${today}T00:00:00Z`), lte: new Date(`${weekEnd}T00:00:00Z`) } },
         _count: true,
@@ -112,7 +113,7 @@ export async function loadRoutePage(slug: string, date: string | null, now: Date
 
   // Every day with a public departure from today on, for the dots in the search box's calendar.
   const flightDays = route
-    ? await prisma.flight.findMany({
+    ? await publicDb.flight.findMany({
         where: { ...PUBLIC_FLIGHT, routeAirline: { routeId: route.id, isPublished: true, airline: { isPublished: true } }, date: { gte: new Date(`${today}T00:00:00Z`) } },
         select: { date: true },
         distinct: ["date"],
@@ -139,7 +140,7 @@ export async function loadRoutePage(slug: string, date: string | null, now: Date
     };
   });
 
-  const reverse = await prisma.route.findUnique({
+  const reverse = await publicDb.route.findUnique({
     where: { originId_destinationId: { originId: destination.id, destinationId: origin.id } },
     select: {
       id: true,
@@ -151,7 +152,7 @@ export async function loadRoutePage(slug: string, date: string | null, now: Date
   const [reverseServices, reverseWeek] = reverse
     ? await Promise.all([
         searchRoute(destination.code, origin.code, null, now).then((r) => r!.services),
-        prisma.flight.count({
+        publicDb.flight.count({
           where: { ...PUBLIC_FLIGHT, routeAirline: { routeId: reverse.id, isPublished: true, airline: { isPublished: true } }, date: { gte: new Date(`${today}T00:00:00Z`), lte: new Date(`${weekEnd}T00:00:00Z`) } },
         }),
       ])
@@ -160,9 +161,9 @@ export async function loadRoutePage(slug: string, date: string | null, now: Date
   // The three dates of SEO-AEO-GEO §4: when the page's data last changed, when it was last checked.
   const ids = routeAirlines.map((ra) => ra.id);
   const [lastFlight, lastFare, sourceRows] = await Promise.all([
-    prisma.flight.aggregate({ where: { routeAirlineId: { in: ids } }, _max: { updatedAt: true } }),
-    prisma.fareObservation.aggregate({ where: { routeAirlineId: { in: ids }, reviewStatus: "APPROVED" }, _max: { updatedAt: true } }),
-    prisma.flight.findMany({ where: { ...PUBLIC_FLIGHT, routeAirlineId: { in: ids }, sourceUrl: { not: null } }, distinct: ["sourceUrl"], select: { sourceUrl: true } }),
+    publicDb.flight.aggregate({ where: { routeAirlineId: { in: ids } }, _max: { updatedAt: true } }),
+    publicDb.fareObservation.aggregate({ where: { routeAirlineId: { in: ids }, reviewStatus: "APPROVED" }, _max: { updatedAt: true } }),
+    publicDb.flight.findMany({ where: { ...PUBLIC_FLIGHT, routeAirlineId: { in: ids }, sourceUrl: { not: null } }, distinct: ["sourceUrl"], select: { sourceUrl: true } }),
   ]);
   const updatedAt = [route?.updatedAt, lastFlight._max.updatedAt, lastFare._max.updatedAt]
     .filter((d): d is Date => !!d)
@@ -221,14 +222,14 @@ export async function loadAirlinePage(routeSlug: string, airlineSlug: string, da
   const resolved = await resolveRoute(routeSlug);
   if (!resolved?.route) return null;
   const { origin, destination, route } = resolved;
-  const ra = await prisma.routeAirline.findFirst({
+  const ra = await publicDb.routeAirline.findFirst({
     where: { routeId: route.id, isPublished: true, airline: { slug: airlineSlug, isPublished: true } },
     include: { airline: true },
   });
   if (!ra) return null;
 
   const local = localNow(origin.timezone, now);
-  const flights = await prisma.flight.findMany({
+  const flights = await publicDb.flight.findMany({
     where: {
       ...PUBLIC_FLIGHT,
       routeAirlineId: ra.id,
@@ -249,7 +250,7 @@ export async function loadAirlinePage(routeSlug: string, airlineSlug: string, da
   const chosen = onDate.find((f) => f.departureTime === time) ?? onDate[0] ?? upcoming[0] ?? null;
   const [departure, fares] = await Promise.all([
     chosen ? loadFlight(chosen.id, now) : null,
-    prisma.fareObservation.findMany({ where: { routeAirlineId: ra.id, reviewStatus: "APPROVED" }, orderBy: { observedAt: "desc" }, take: 20 }),
+    publicDb.fareObservation.findMany({ where: { routeAirlineId: ra.id, reviewStatus: "APPROVED" }, orderBy: { observedAt: "desc" }, take: 20 }),
   ]);
   const seen = new Set(upcoming.map((f) => weekdayOf(dayOf(f.date))));
 
@@ -296,7 +297,7 @@ export type AirlinePage = NonNullable<Awaited<ReturnType<typeof loadAirlinePage>
 export async function loadHub(now: Date = new Date()) {
   const today = localNow("Africa/Kinshasa", now).day;
   const [routes, flights] = await Promise.all([
-    prisma.route.findMany({
+    publicDb.route.findMany({
       where: { status: { not: "ARCHIVED" } },
       include: {
         origin: { select: { code: true, city: true, slug: true, status: true } },
@@ -304,7 +305,7 @@ export async function loadHub(now: Date = new Date()) {
         airlines: { where: { isPublished: true, airline: { isPublished: true } }, include: { airline: { select: { code: true, name: true, logo: true } } } },
       },
     }),
-    prisma.flight.groupBy({
+    publicDb.flight.groupBy({
       by: ["routeAirlineId"],
       where: { ...PUBLIC_FLIGHT, date: { gte: new Date(`${today}T00:00:00Z`), lte: new Date(`${addDays(today, 6)}T00:00:00Z`) } },
       _count: true,
@@ -346,7 +347,7 @@ export type Hub = Awaited<ReturnType<typeof loadHub>>;
 
 /** Published routes and their published airlines, for the sitemap, with the date their data last changed. */
 export async function sitemapRoutes() {
-  const routes = await prisma.route.findMany({
+  const routes = await publicDb.route.findMany({
     where: { status: "PUBLISHED" },
     include: {
       origin: { select: { status: true } },
@@ -358,7 +359,7 @@ export async function sitemapRoutes() {
     routes
       .filter((r) => hasContent({ status: r.status, publishedAirlines: r.airlines.length, origin: r.origin, destination: r.destination }))
       .map(async (r) => {
-        const last = await prisma.flight.aggregate({ where: { routeAirline: { routeId: r.id } }, _max: { updatedAt: true } });
+        const last = await publicDb.flight.aggregate({ where: { routeAirline: { routeId: r.id } }, _max: { updatedAt: true } });
         const lastModified = [r.updatedAt, last._max.updatedAt].filter((d): d is Date => !!d).sort((a, b) => b.getTime() - a.getTime())[0];
         return { slug: r.slug, lastModified, airlines: r.airlines.map((ra) => ra.airline.slug) };
       }),
@@ -370,7 +371,7 @@ export async function sitemapRoutes() {
  * airline is published on the route, otherwise the route page. Null when the flight is unknown.
  */
 export async function pathForOldFlight(id: string) {
-  const flight = await prisma.flight.findUnique({
+  const flight = await publicDb.flight.findUnique({
     where: { id },
     select: {
       date: true,

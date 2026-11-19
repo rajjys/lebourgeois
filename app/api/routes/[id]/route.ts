@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { RouteSettingsSchema, routeSettingsData } from "@/lib/validations/route";
 import { badRequest, conflict, generateRequestId, internalError, notFound, ok } from "@/app/api/utils/http";
-import { dbErrorKind } from "@/app/api/utils/db";
+import { dbErrorKind, refreshPublicPages } from "@/app/api/utils/db";
 import { currentActor, requireAdmin } from "@/lib/auth/session";
 import { changedFields, logChange, snapshot } from "@/lib/changeLog";
 
@@ -28,6 +28,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
       }
       return after;
     });
+    refreshPublicPages();
     return ok(route, requestId);
   } catch (err) {
     if (dbErrorKind(err) === "notFound") return notFound("Route introuvable", null, requestId);
@@ -54,6 +55,7 @@ export async function DELETE(_req: Request, context: { params: Promise<{ id: str
       const deleted = await tx.route.delete({ where: { id } });
       await logChange(tx, { actor, entity: "Route", entityId: id, action: "DELETE", routeId: id, summary: `Route ${deleted.slug} supprimée`, changes: snapshot(deleted) });
     });
+    refreshPublicPages();
     return ok({ deleted: true }, requestId);
   } catch (err) {
     const kind = dbErrorKind(err);

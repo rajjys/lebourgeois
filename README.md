@@ -70,6 +70,8 @@ After a reboot, run `npm run db:start` before `npm run dev`.
 
 ## Troubleshooting
 
+- **A public page doesn't show a change yet**: public pages read through a cache (`lib/publicDb.ts`, O-14). Saves in the back office refresh it at once; changes made by a script (`update-timetable.ts` and the others) show within the hour, or at once after any save in the back office.
+
 - **Styles look old in development** (old colours, missing classes) although the files are right: Turbopack's development cache is stale. Stop `npm run dev`, move or delete `.next/dev/cache/turbopack`, and start again. Seen with Next.js 16.4.3 on 2026-10-30.
 - **The design system page** is at `/dashboard/design` (log in first).
 - **"Cannot read properties of undefined" on a model after a schema change**: the dev server keeps the Prisma client it started with. Run `npx prisma generate`, then restart `npm run dev`.
