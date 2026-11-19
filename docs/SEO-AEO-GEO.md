@@ -180,7 +180,7 @@ Google's rules:
 - **Sitemap generated from the database:** only pages that pass the publication rules ([ROUTE-MODEL.md §7](ROUTE-MODEL.md#7-what-the-public-site-shows)).
   - `lastmod` is the date the **data** last changed, not the build date. Google uses `lastmod` only when it is "consistently and verifiably" accurate.
   - Google ignores `priority` and `changefreq`, so drop them.
-- **robots.txt** (generated in `app/robots.ts`): keep the back office, API and login blocked. The AI crawlers of [§8](#8-ai-engines-specifically) are named and allowed; their group repeats the blocked paths, because a crawler that finds its own name skips the `*` rules.
+- **robots.txt** (generated in `app/robots.ts`): keep the back office, API and login blocked, and **every dated address** (`?date=`, `?heure=`, `/vols?`; O-13, 2026-11-19). Those only narrow a page whose canonical has no date, each page links a dozen of them and the set changes daily, so crawlers kept fetching new ones, each read from the database; that used up the production database plan in November 2026. The canonical pages stay crawlable. The AI crawlers of [§8](#8-ai-engines-specifically) are named and allowed; their group repeats the blocked paths, because a crawler that finds its own name skips the `*` rules.
 - Register the site in **Google Search Console** and **Bing Webmaster Tools** (F-5).
   - Leave Search Console's new "Search generative AI control" on **Include**. Excluding removes us from AI Overviews and AI Mode.
 - **IndexNow** (F-5): notify Bing (also Yandex, Seznam, Naver, Yep, Internet Archive, Amazonbot) whenever a route's data changes. Google does not use IndexNow; it relies on the sitemap.
