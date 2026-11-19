@@ -469,10 +469,15 @@ Verified on 2026-10-30.
     - Every page links about 12 dated addresses (`?date=…&heure=…`), new ones each day, none cached.
   - **Done in this PR:**
     - robots.txt blocks dated addresses (canonical pages stay crawlable).
-    - Share images are built on their first request and then served from cache for the hour: 24 statements, then 0, verified.
+    - Share images are built on their first request and then served from cache for the hour: 24 statements, then 0, **verified locally only**. In production (checked 2026-11-19 after the merge) Vercel answers `x-vercel-cache: STALE` on every request and rebuilds the image in the background, so each fetch still reads the database. Fold into O-14 (cache the data the image reads, not only the response).
     - `prisma migrate` can use its own address on Vercel (`MIGRATE_DATABASE_URL`), which a pooler in transaction mode needs.
     - `scripts/move-database.sh` copies the database and compares every table. It was tested end to end on local copies: the anon role was refused, and the app read and wrote with row-level security on.
-  - **Still to do:** the move itself (Waiting on).
+  - **Copied 2026-11-19 21:08:** the Supabase project (eu-west-1, Ireland, Postgres 17.12) holds a full copy, every table matching.
+    - Checked through Supabase's pooler with the app's own client and adapter: an interactive transaction rolls back, `prisma migrate status` reads 16 of 16 migrations, and every public page renders the same figures.
+    - Encryption: Node's database client rejects Supabase's own certificate authority with `sslmode=require`, and with no `sslmode` it connects unencrypted. The app therefore uses `uselibpqcompat=true&sslmode=require`: encrypted, but the certificate is not checked. Checking it needs Supabase's CA certificate passed to the client (O-15).
+  - Vercel's functions run in Washington (`iad1`, seen in `x-vercel-id`) and the new database is in Ireland, so the function region moves to Dublin (`dub1`) with the switch. That's one hop instead of a transatlantic round trip per query, and closer to Kinshasa too.
+  - **Still to do:** set Vercel's variables and its function region, redeploy, then `--catch-up` (Waiting on).
+- ⬜ **O-15:** Verify the database certificate. Pass Supabase's CA certificate to the database client in `lib/prisma.ts`, so the connection is checked, not only encrypted.
 - ⬜ **O-14:** Public pages from a cache, not the database. Route, airline and hub pages read the database on every request because they read `?date=`. Plan: cache the data each page reads for a long time, refresh it when the back office saves, and work out "today", "this week" and "next departure" per request from the cached data. That way the database is read once per change, not once per visit, whatever the host. A short cache alone would not help: most pages are requested a few times a day, so a 10-minute cache would almost never be hit.
 
 ---
@@ -586,7 +591,7 @@ Do this **before M4**: moving a domain is nearly free while the site has little 
 
 | What | Who | Blocks |
 |---|---|---|
-| **O-13, before Prisma's 24-hour reprieve ends (2026-11-20 evening):** choose the new host (recommended: Supabase free), create the project in the same region as the Vercel functions, put its two addresses in `.env` (`SUPABASE_POOLED_URL`, port 6543; `SUPABASE_SESSION_URL`, port 5432), turn off its Data API, then run `scripts/move-database.sh` and switch Vercel's `DATABASE_URL` / `MIGRATE_DATABASE_URL`. Fallback if anything snags: Prisma's paid plan for one month. | Owner, then engineering | The site works at all |
+| **O-13, before Prisma's 24-hour reprieve ends (2026-11-20 evening):** ~~choose the host, create the project, run `--apply`~~ (done 2026-11-19: Supabase, eu-west-1). Left: Vercel function region → Dublin (`dub1`); Vercel variables `DATABASE_URL` and `MIGRATE_DATABASE_URL` (Production and Preview) from `VERCEL_DATABASE_URL` / `VERCEL_MIGRATE_DATABASE_URL` in `.env`; redeploy; then engineering runs `scripts/move-database.sh --catch-up`. Fallback if anything snags: Prisma's paid plan for one month. | Owner, then engineering | The site works at all |
 | Run `npx tsx scripts/update-timetable.ts caa-2026-11-11 --production` (preview), then the same with `--apply`: CAA's 11 Nov timetable in production (C-10). | Owner | CAA times correct from 11 Nov |
 | Review the 5 Air Congo prices in production (Routes → filter "Prix à valider"). They are the "From USD" fares from air-congo.com; Kinshasa as origin is an assumption. | Owner | Prices shown publicly |
 | Review the imported data (a team member's first task). Air Congo is published from its schedule PDF (owner, 2026-11-01); the PDF lists one Lubumbashi → Kinshasa flight at 19:10 where Skyscanner shows 12:30 and 19:30, set aside for now. CAA: confirm against this week's timetable. | Team | Accuracy of the public pages |

@@ -4,6 +4,9 @@
 #   scripts/move-database.sh             preview: checks both databases, writes nothing
 #   scripts/move-database.sh --apply     dump the source, restore it into the (empty) target, compare
 #   scripts/move-database.sh --compare   row counts of every table on both sides, nothing else
+#   scripts/move-database.sh --catch-up  after the switch: copy the rows the public wrote to the source
+#                                        since --apply (requests, messages, statistics), then compare.
+#                                        Rows already in the target are left as they are.
 #
 # Addresses come from .env (or $ENV_FILE) and are never printed (only their host):
 #   --from=VAR   the source, default DATABASE_URL (Prisma Postgres until the move)
@@ -22,6 +25,7 @@ for arg in "$@"; do
   case "$arg" in
     --apply) MODE=apply ;;
     --compare) MODE=compare ;;
+    --catch-up) MODE=catchup ;;
     --from=*) FROM="${arg#--from=}" ;;
     --to=*) TO="${arg#--to=}" ;;
     *) echo "Unknown argument: $arg" >&2; exit 2 ;;
@@ -65,6 +69,21 @@ TARGET_TABLES="$(q "$DST" "select count(*) from pg_tables where schemaname = 'pu
 echo "Tables already in the target's public schema: $TARGET_TABLES"
 
 if [[ $MODE == compare ]]; then compare; exit $?; fi
+
+if [[ $MODE == catchup ]]; then
+  [[ "$TARGET_TABLES" != 0 ]] || { echo "The target is empty: run --apply first." >&2; exit 1; }
+  # Only the tables the public writes to. Back-office tables are not merged: edit nothing there
+  # between --apply and the switch.
+  echo
+  echo "Copying rows that are in the source and missing from the target: sessions, events, requests, messages"
+  # Multi-row inserts in one transaction: one round trip per 500 rows, not per row.
+  pg_dump "$SRC" --data-only --column-inserts --rows-per-insert=500 --on-conflict-do-nothing \
+    -t 'public."AnalyticsSession"' -t 'public."AnalyticsEvent"' -t 'public."Request"' -t 'public."ContactMessage"' |
+    psql "$DST" -Xq -v ON_ERROR_STOP=1 --single-transaction >/dev/null
+  # The target keeps receiving rows after the switch, so "differs" there is expected; only target < source is a loss.
+  compare || true
+  exit 0
+fi
 
 if [[ $MODE == preview ]]; then
   echo
