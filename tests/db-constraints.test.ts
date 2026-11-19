@@ -8,12 +8,13 @@ import { config } from "dotenv";
 config({ path: [".env.local", ".env"], quiet: true });
 
 import { PrismaPg } from "@prisma/adapter-pg";
+import { pgConfig } from "../lib/dbConnection";
 import { PrismaClient, type Prisma } from "../lib/generated/prisma/client";
 import { ensureRoute, ensureRouteAirline, routeIdForCities } from "../lib/routes";
 
 const url = process.env.DATABASE_URL ?? "";
 const isLocal = ["localhost", "127.0.0.1", "::1"].includes(url ? new URL(url).hostname : "");
-const prisma = isLocal ? new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) }) : null;
+const prisma = isLocal ? new PrismaClient({ adapter: new PrismaPg(pgConfig(url)) }) : null;
 
 /** Name of the constraint a write broke, from Prisma's P2002 or the adapter's raw Postgres error. */
 function violated(err: unknown): string | undefined {

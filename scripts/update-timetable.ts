@@ -20,6 +20,7 @@ import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { parse } from "dotenv";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { pgConfig } from "../lib/dbConnection";
 import { PrismaClient, type Flight, type Prisma } from "../lib/generated/prisma/client";
 import { ensureRouteAirline } from "../lib/routes";
 import { localNow, dayOf } from "../lib/routeStatus";
@@ -57,7 +58,7 @@ if (!url) throw new Error(production ? "No DATABASE_URL in .env" : "No DATABASE_
 if (!production && !isLocal(url)) throw new Error("Without --production the target must be the local database");
 if (production && isLocal(url)) throw new Error("--production points at a local database: check .env");
 
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) });
+const prisma = new PrismaClient({ adapter: new PrismaPg(pgConfig(url)) });
 const ACTOR = "script:update-timetable";
 const TX = { timeout: 60_000, maxWait: 20_000 };
 const toDate = (day: string) => new Date(`${day}T00:00:00Z`);
