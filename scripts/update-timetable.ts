@@ -9,10 +9,10 @@
  * touched. Each airline-on-route's changes are one "Appliquer un horaire" batch, so the route
  * workspace's "Défaire" reverses them. A pair with no airline-on-route yet gets one, unpublished.
  *
- *   npx tsx scripts/update-timetable.ts caa-2026-11-11                          local, preview
- *   npx tsx scripts/update-timetable.ts caa-2026-11-11 --apply                  local, write
- *   npx tsx scripts/update-timetable.ts caa-2026-11-11 --production             production, preview
- *   npx tsx scripts/update-timetable.ts caa-2026-11-11 --production --apply     production, write
+ *   npx tsx scripts/update-timetable.ts caa-2026-11-16                          local, preview
+ *   npx tsx scripts/update-timetable.ts caa-2026-11-16 --apply                  local, write
+ *   npx tsx scripts/update-timetable.ts caa-2026-11-16 --production             production, preview
+ *   npx tsx scripts/update-timetable.ts caa-2026-11-16 --production --apply     production, write
  * --to=YYYY-MM-DD sets the end of the window; by default, the airline's last stored flight date,
  * so the document replaces what is there without extending how far ahead the site shows.
  */
@@ -28,8 +28,9 @@ import { blockedAdditions, planTimetable, wantedFlights, type Timetable, type Ti
 import { changedFields } from "../lib/changeLog";
 import { formatDayMonth, formatFlightNumber } from "../lib/format";
 import { caa20261111 } from "../data/timetables/caa-2026-11-11";
+import { caa20261116 } from "../data/timetables/caa-2026-11-16";
 
-const TIMETABLES: Record<string, Timetable> = { "caa-2026-11-11": caa20261111 };
+const TIMETABLES: Record<string, Timetable> = { "caa-2026-11-11": caa20261111, "caa-2026-11-16": caa20261116 };
 
 const args = process.argv.slice(2);
 const name = args.find((a) => !a.startsWith("--"));
