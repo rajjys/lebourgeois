@@ -332,7 +332,8 @@ export const AnalyticsSessionScalarFieldEnum = {
   device: 'device',
   browser: 'browser',
   os: 'os',
-  country: 'country'
+  country: 'country',
+  excludedReason: 'excludedReason'
 } as const
 
 export type AnalyticsSessionScalarFieldEnum = (typeof AnalyticsSessionScalarFieldEnum)[keyof typeof AnalyticsSessionScalarFieldEnum]

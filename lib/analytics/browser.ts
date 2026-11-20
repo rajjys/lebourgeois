@@ -3,8 +3,11 @@
  * browser's localStorage (visitor, session), first and last touch, nothing else. No cookie, no third
  * party, nothing typed into a form.
  *
- * Off when the browser asks not to be tracked (Global Privacy Control or Do Not Track), and on the
- * team's own phones after visiting any page with ?stats=off (?stats=on turns it back on).
+ * Off when the browser asks not to be tracked (Global Privacy Control or Do Not Track), when it is
+ * driven by automation software (navigator.webdriver), and on the team's own phones after visiting
+ * any page with ?stats=off (?stats=on turns it back on).
+ *
+ * Only engaged visits are recorded (AN-6): nothing is sent until a person shows up (see `engage`).
  * Every storage or network failure is swallowed: statistics never break a page.
  */
 import { classify, referrerHostOf, utmOf, type Touch } from "./channel";
@@ -55,7 +58,8 @@ export function isDisabled() {
   if (params.get("stats") === "off") write(local, OFF_KEY, true);
   if (params.get("stats") === "on") write(local, OFF_KEY, null);
   const nav = navigator as Navigator & { globalPrivacyControl?: boolean };
-  disabled = nav.globalPrivacyControl === true || nav.doNotTrack === "1" || read<boolean>(local, OFF_KEY) === true;
+  disabled =
+    nav.globalPrivacyControl === true || nav.doNotTrack === "1" || nav.webdriver === true || read<boolean>(local, OFF_KEY) === true;
   return disabled;
 }
 
@@ -79,9 +83,76 @@ function currentVisit(): VisitState {
 let queue: BrowserEvent[] = [];
 let timer: ReturnType<typeof setTimeout> | null = null;
 
+/**
+ * AN-6: a visit is recorded once a person is there: a tap, click, key, wheel or mouse movement
+ * (trusted input only: events made by a script do not count), or ENGAGED_MS with the page visible.
+ * Until then events wait in memory, and a page left earlier sends nothing. Scrolling alone does not
+ * count: crawlers scroll pages to load them. On 19 and 20 Nov 2026 most visits recorded were
+ * programs that loaded one page in a real-looking browser and left after 0 s without any input.
+ * Once a visit is engaged, its later pages in this tab are sent straight away.
+ */
+export const ENGAGED_MS = 10_000;
+const ENGAGED_KEY = "clerikaa.engaged";
+const INPUTS = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
+let engaged = false;
+let watching = false;
+let visibleMs = 0;
+let visibleSince: number | null = null;
+let engageTimer: ReturnType<typeof setTimeout> | null = null;
+
+const onInput = (e: Event) => e.isTrusted && engage();
+const onMove = (e: PointerEvent) => e.isTrusted && e.pointerType === "mouse" && engage();
+function onVisibility() {
+  if (document.visibilityState === "visible") {
+    visibleSince = Date.now();
+    if (engageTimer) clearTimeout(engageTimer);
+    engageTimer = setTimeout(engage, Math.max(0, ENGAGED_MS - visibleMs));
+  } else {
+    if (visibleSince !== null) visibleMs += Date.now() - visibleSince;
+    visibleSince = null;
+    if (engageTimer) clearTimeout(engageTimer);
+    engageTimer = null;
+  }
+}
+
+function stopWatching() {
+  if (!watching) return;
+  watching = false;
+  for (const name of INPUTS) window.removeEventListener(name, onInput, true);
+  window.removeEventListener("pointermove", onMove, true);
+  document.removeEventListener("visibilitychange", onVisibility);
+  if (engageTimer) clearTimeout(engageTimer);
+  engageTimer = null;
+}
+
+/** The visit is a person's: record it, from what waited onwards. */
+function engage() {
+  if (engaged) return;
+  engaged = true;
+  stopWatching();
+  write(session, ENGAGED_KEY, state?.session?.id ?? null);
+  send(false);
+}
+
+/** Starts waiting for a person, unless this visit already showed one (an earlier page in this tab). */
+function watch() {
+  if (engaged || watching) return;
+  if (state?.session && read<string>(session, ENGAGED_KEY) === state.session.id) {
+    engaged = true;
+    return;
+  }
+  watching = true;
+  for (const name of INPUTS) window.addEventListener(name, onInput, { capture: true, passive: true });
+  window.addEventListener("pointermove", onMove, { capture: true, passive: true });
+  document.addEventListener("visibilitychange", onVisibility);
+  onVisibility();
+}
+
 function send(useBeacon: boolean) {
   if (timer) clearTimeout(timer);
   timer = null;
+  // Not a person yet: keep waiting; if the page is closing, what waited is dropped.
+  if (!engaged) return;
   const visit = state;
   if (!visit?.visitorId || !visit.session || queue.length === 0) return;
   const t = visit.session.touch;
@@ -116,6 +187,7 @@ export function track(name: EventName, fields: EventFields = {}) {
   if (!isBrowser() || isDisabled()) return;
   try {
     currentVisit();
+    watch();
     queue.push({ id: newId(), name, path: window.location.pathname.slice(0, 300), ...fields });
     if (!timer) timer = setTimeout(() => send(false), 3000);
   } catch {

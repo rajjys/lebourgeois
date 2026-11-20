@@ -29,7 +29,19 @@ Our own, first-party statistics, stored in our database next to the requests. No
 | Country, from the host's IP lookup | The IP address itself |
 | Searches, route and airline pages, booking form started / sent / failed, WhatsApp, e-mail and phone links | Names, phone numbers, anything typed into a form |
 
-**Not counted:** a browser signed in to the back office; bots and headless browsers; browsers sending *Global Privacy Control* or *Do Not Track*; a phone where `?stats=off` was opened once (the team's own phones; `?stats=on` reverts it).
+**Only engaged visits are counted (AN-6, 2026-11-20).** Nothing is sent until a person shows up:
+- **What counts as a person:** a tap, click, key, mouse wheel or mouse movement (real input only: events made by a script do not count), or 10 seconds with the page visible.
+- **Before that,** events wait in the page; a page left earlier sends nothing.
+- **Scrolling alone** does not count: crawlers scroll pages to load them.
+- **Later pages** of an engaged visit (same tab) are sent straight away.
+
+Why: on 19 and 20 Nov 2026, 179 of 193 recorded visits were programs that loaded one page in a real-looking browser (desktop Chrome or Edge, mostly from the US, Mexico and Hong Kong, 128 of them straight to `/contact`) and left after 0 s without any input. Nothing filtered them: their browser looked normal and they run the page's script.
+
+The cost: a person who opens a page and leaves within 10 seconds without touching it is not counted. GA4 calls the rest "engaged sessions". A program that stays 10 seconds or moves the mouse is still counted.
+
+**Hidden visits:** a visit with `excludedReason` set counts nowhere on the dashboard (visits, visitors, pages, sources, online now, campaigns). `scripts/exclude-bot-visits.ts` set it to `bot-pattern` on the visits recorded before AN-6 that look automated. Nothing is deleted, and `--undo` restores them. The pattern is desktop, no referrer, one batch (0 s), only the events a page sends by itself. A person who arrived that way and left at once is hidden too: about one a day before the bots started.
+
+**Not counted:** a browser signed in to the back office; bots and headless browsers; browsers driven by automation software (`navigator.webdriver`); browsers sending *Global Privacy Control* or *Do Not Track*; a phone where `?stats=off` was opened once (the team's own phones; `?stats=on` reverts it).
 
 **Vercel Web Analytics** stays on, on public pages only (until 2026-11-10 it also counted `/dashboard` and `/login`, i.e. the team). Its numbers will not match ours exactly: different rules for visitors, bots and blocked scripts.
 
@@ -149,6 +161,8 @@ Queries: `lib/analytics/report.ts` (plain SQL on indexed columns; at a few hundr
 | Country | IP-based. Opera Mini (extreme mode) and VPNs show their servers' country. Missing locally. |
 | Several devices | A phone and a laptop are two visitors; nothing links them (on purpose). |
 | Server instances | The rate limit is per instance, so best effort. |
+| Bots that look like people | A program in a normal-looking browser that stays 10 s or simulates input is counted. We store no IP or network owner, so data-centre traffic cannot be told apart. |
+| Very short visits | Since AN-6, a person who leaves within 10 s without touching the page is not counted (§1). Bounce rate therefore reads lower than before 2026-11-20. |
 | History | Visits start on the deployment day. Earlier requests stay "Non mesurée". |
 
 ## 8. Checking that it works

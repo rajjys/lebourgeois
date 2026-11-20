@@ -43,6 +43,7 @@ export type AnalyticsSessionMinAggregateOutputType = {
   browser: string | null
   os: string | null
   country: string | null
+  excludedReason: string | null
 }
 
 export type AnalyticsSessionMaxAggregateOutputType = {
@@ -64,6 +65,7 @@ export type AnalyticsSessionMaxAggregateOutputType = {
   browser: string | null
   os: string | null
   country: string | null
+  excludedReason: string | null
 }
 
 export type AnalyticsSessionCountAggregateOutputType = {
@@ -85,6 +87,7 @@ export type AnalyticsSessionCountAggregateOutputType = {
   browser: number
   os: number
   country: number
+  excludedReason: number
   _all: number
 }
 
@@ -108,6 +111,7 @@ export type AnalyticsSessionMinAggregateInputType = {
   browser?: true
   os?: true
   country?: true
+  excludedReason?: true
 }
 
 export type AnalyticsSessionMaxAggregateInputType = {
@@ -129,6 +133,7 @@ export type AnalyticsSessionMaxAggregateInputType = {
   browser?: true
   os?: true
   country?: true
+  excludedReason?: true
 }
 
 export type AnalyticsSessionCountAggregateInputType = {
@@ -150,6 +155,7 @@ export type AnalyticsSessionCountAggregateInputType = {
   browser?: true
   os?: true
   country?: true
+  excludedReason?: true
   _all?: true
 }
 
@@ -244,6 +250,7 @@ export type AnalyticsSessionGroupByOutputType = {
   browser: string | null
   os: string | null
   country: string | null
+  excludedReason: string | null
   _count: AnalyticsSessionCountAggregateOutputType | null
   _min: AnalyticsSessionMinAggregateOutputType | null
   _max: AnalyticsSessionMaxAggregateOutputType | null
@@ -286,6 +293,7 @@ export type AnalyticsSessionWhereInput = {
   browser?: Prisma.StringNullableFilter<"AnalyticsSession"> | string | null
   os?: Prisma.StringNullableFilter<"AnalyticsSession"> | string | null
   country?: Prisma.StringNullableFilter<"AnalyticsSession"> | string | null
+  excludedReason?: Prisma.StringNullableFilter<"AnalyticsSession"> | string | null
 }
 
 export type AnalyticsSessionOrderByWithRelationInput = {
@@ -307,6 +315,7 @@ export type AnalyticsSessionOrderByWithRelationInput = {
   browser?: Prisma.SortOrderInput | Prisma.SortOrder
   os?: Prisma.SortOrderInput | Prisma.SortOrder
   country?: Prisma.SortOrderInput | Prisma.SortOrder
+  excludedReason?: Prisma.SortOrderInput | Prisma.SortOrder
 }
 
 export type AnalyticsSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -331,6 +340,7 @@ export type AnalyticsSessionWhereUniqueInput = Prisma.AtLeast<{
   browser?: Prisma.StringNullableFilter<"AnalyticsSession"> | string | null
   os?: Prisma.StringNullableFilter<"AnalyticsSession"> | string | null
   country?: Prisma.StringNullableFilter<"AnalyticsSession"> | string | null
+  excludedReason?: Prisma.StringNullableFilter<"AnalyticsSession"> | string | null
 }, "id">
 
 export type AnalyticsSessionOrderByWithAggregationInput = {
@@ -352,6 +362,7 @@ export type AnalyticsSessionOrderByWithAggregationInput = {
   browser?: Prisma.SortOrderInput | Prisma.SortOrder
   os?: Prisma.SortOrderInput | Prisma.SortOrder
   country?: Prisma.SortOrderInput | Prisma.SortOrder
+  excludedReason?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.AnalyticsSessionCountOrderByAggregateInput
   _max?: Prisma.AnalyticsSessionMaxOrderByAggregateInput
   _min?: Prisma.AnalyticsSessionMinOrderByAggregateInput
@@ -379,6 +390,7 @@ export type AnalyticsSessionScalarWhereWithAggregatesInput = {
   browser?: Prisma.StringNullableWithAggregatesFilter<"AnalyticsSession"> | string | null
   os?: Prisma.StringNullableWithAggregatesFilter<"AnalyticsSession"> | string | null
   country?: Prisma.StringNullableWithAggregatesFilter<"AnalyticsSession"> | string | null
+  excludedReason?: Prisma.StringNullableWithAggregatesFilter<"AnalyticsSession"> | string | null
 }
 
 export type AnalyticsSessionCreateInput = {
@@ -400,6 +412,7 @@ export type AnalyticsSessionCreateInput = {
   browser?: string | null
   os?: string | null
   country?: string | null
+  excludedReason?: string | null
 }
 
 export type AnalyticsSessionUncheckedCreateInput = {
@@ -421,6 +434,7 @@ export type AnalyticsSessionUncheckedCreateInput = {
   browser?: string | null
   os?: string | null
   country?: string | null
+  excludedReason?: string | null
 }
 
 export type AnalyticsSessionUpdateInput = {
@@ -442,6 +456,7 @@ export type AnalyticsSessionUpdateInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  excludedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type AnalyticsSessionUncheckedUpdateInput = {
@@ -463,6 +478,7 @@ export type AnalyticsSessionUncheckedUpdateInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  excludedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type AnalyticsSessionCreateManyInput = {
@@ -484,6 +500,7 @@ export type AnalyticsSessionCreateManyInput = {
   browser?: string | null
   os?: string | null
   country?: string | null
+  excludedReason?: string | null
 }
 
 export type AnalyticsSessionUpdateManyMutationInput = {
@@ -505,6 +522,7 @@ export type AnalyticsSessionUpdateManyMutationInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  excludedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type AnalyticsSessionUncheckedUpdateManyInput = {
@@ -526,6 +544,7 @@ export type AnalyticsSessionUncheckedUpdateManyInput = {
   browser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  excludedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type AnalyticsSessionCountOrderByAggregateInput = {
@@ -547,6 +566,7 @@ export type AnalyticsSessionCountOrderByAggregateInput = {
   browser?: Prisma.SortOrder
   os?: Prisma.SortOrder
   country?: Prisma.SortOrder
+  excludedReason?: Prisma.SortOrder
 }
 
 export type AnalyticsSessionMaxOrderByAggregateInput = {
@@ -568,6 +588,7 @@ export type AnalyticsSessionMaxOrderByAggregateInput = {
   browser?: Prisma.SortOrder
   os?: Prisma.SortOrder
   country?: Prisma.SortOrder
+  excludedReason?: Prisma.SortOrder
 }
 
 export type AnalyticsSessionMinOrderByAggregateInput = {
@@ -589,6 +610,7 @@ export type AnalyticsSessionMinOrderByAggregateInput = {
   browser?: Prisma.SortOrder
   os?: Prisma.SortOrder
   country?: Prisma.SortOrder
+  excludedReason?: Prisma.SortOrder
 }
 
 
@@ -612,6 +634,7 @@ export type AnalyticsSessionSelect<ExtArgs extends runtime.Types.Extensions.Inte
   browser?: boolean
   os?: boolean
   country?: boolean
+  excludedReason?: boolean
 }, ExtArgs["result"]["analyticsSession"]>
 
 export type AnalyticsSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -633,6 +656,7 @@ export type AnalyticsSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   browser?: boolean
   os?: boolean
   country?: boolean
+  excludedReason?: boolean
 }, ExtArgs["result"]["analyticsSession"]>
 
 export type AnalyticsSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -654,6 +678,7 @@ export type AnalyticsSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   browser?: boolean
   os?: boolean
   country?: boolean
+  excludedReason?: boolean
 }, ExtArgs["result"]["analyticsSession"]>
 
 export type AnalyticsSessionSelectScalar = {
@@ -675,9 +700,10 @@ export type AnalyticsSessionSelectScalar = {
   browser?: boolean
   os?: boolean
   country?: boolean
+  excludedReason?: boolean
 }
 
-export type AnalyticsSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "visitorId" | "isNewVisitor" | "startedAt" | "lastSeenAt" | "hostname" | "landingPath" | "referrerHost" | "channel" | "utmSource" | "utmMedium" | "utmCampaign" | "utmTerm" | "utmContent" | "device" | "browser" | "os" | "country", ExtArgs["result"]["analyticsSession"]>
+export type AnalyticsSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "visitorId" | "isNewVisitor" | "startedAt" | "lastSeenAt" | "hostname" | "landingPath" | "referrerHost" | "channel" | "utmSource" | "utmMedium" | "utmCampaign" | "utmTerm" | "utmContent" | "device" | "browser" | "os" | "country" | "excludedReason", ExtArgs["result"]["analyticsSession"]>
 
 export type $AnalyticsSessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AnalyticsSession"
@@ -701,6 +727,7 @@ export type $AnalyticsSessionPayload<ExtArgs extends runtime.Types.Extensions.In
     browser: string | null
     os: string | null
     country: string | null
+    excludedReason: string | null
   }, ExtArgs["result"]["analyticsSession"]>
   composites: {}
 }
@@ -1142,6 +1169,7 @@ export interface AnalyticsSessionFieldRefs {
   readonly browser: Prisma.FieldRef<"AnalyticsSession", 'String'>
   readonly os: Prisma.FieldRef<"AnalyticsSession", 'String'>
   readonly country: Prisma.FieldRef<"AnalyticsSession", 'String'>
+  readonly excludedReason: Prisma.FieldRef<"AnalyticsSession", 'String'>
 }
     
 

@@ -434,6 +434,9 @@ model AnalyticsSession {
   browser      String?
   os           String?
   country      String?             // ISO code from the hosting platform's IP lookup; the IP is not stored
+  // Set when a visit is hidden from the statistics, with why (AN-6: "bot-pattern" for the automated
+  // visits recorded before only engaged visits were counted). Nothing is deleted; clearing it restores the visit.
+  excludedReason String?
 
   @@index([startedAt])
   @@index([visitorId])

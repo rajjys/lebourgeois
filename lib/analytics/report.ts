@@ -9,6 +9,7 @@
  * - requests come from the Request table itself (complete, even when statistics were blocked);
  *   a request's source is its last known source, "direct" never overwriting a known one.
  * Filters (source, campaign, device, route) apply to visits and to requests alike.
+ * Visits hidden with a reason (`excludedReason`, AN-6) count nowhere; their events neither.
  */
 import { DateTime } from "luxon";
 import { Prisma, type PrismaClient } from "../generated/prisma/client";
@@ -40,6 +41,7 @@ function visits(r: Range, f: Filters) {
                FROM "AnalyticsEvent" WHERE "occurredAt" >= ${r.start} GROUP BY 1) pv
       ON pv."sessionId" = s.id
     WHERE s."startedAt" >= ${r.start} AND s."startedAt" < ${r.end}
+      AND s."excludedReason" IS NULL
       AND (${f.channel}::text IS NULL OR s.channel = ${f.channel})
       AND (${f.campaign}::text IS NULL OR s."utmCampaign" = ${f.campaign})
       AND (${f.device}::text IS NULL OR s.device = ${f.device})
@@ -253,9 +255,9 @@ export async function loadAnalytics(db: Db, period: Period, f: Filters, now = ne
       WITH q AS (${q})
       SELECT id, "createdAt", "originCity", "destinationCity", "airlineName", status::text AS status, "lastChannel", device, "travelDate", travelers
       FROM q ORDER BY "createdAt" DESC LIMIT 8`,
-    db.$queryRaw<{ first: Date | null }[]>`SELECT min("startedAt") AS first FROM "AnalyticsSession"`,
+    db.$queryRaw<{ first: Date | null }[]>`SELECT min("startedAt") AS first FROM "AnalyticsSession" WHERE "excludedReason" IS NULL`,
     db.$queryRaw<{ visitors: bigint }[]>`
-      SELECT count(DISTINCT "visitorId") AS visitors FROM "AnalyticsSession" WHERE "lastSeenAt" > ${new Date(now.getTime() - 30 * 60_000)}`,
+      SELECT count(DISTINCT "visitorId") AS visitors FROM "AnalyticsSession" WHERE "excludedReason" IS NULL AND "lastSeenAt" > ${new Date(now.getTime() - 30 * 60_000)}`,
   ]);
 
   const prevByIndex = prev.map(([, v]) => v);
@@ -303,7 +305,7 @@ export async function filterOptions(db: Db) {
   const [campaigns, routes] = await Promise.all([
     db.$queryRaw<{ campaign: string }[]>`
       SELECT DISTINCT "utmCampaign" AS campaign FROM "AnalyticsSession"
-      WHERE "utmCampaign" IS NOT NULL AND "startedAt" > now() - interval '365 days' ORDER BY 1 LIMIT 100`,
+      WHERE "utmCampaign" IS NOT NULL AND "excludedReason" IS NULL AND "startedAt" > now() - interval '365 days' ORDER BY 1 LIMIT 100`,
     db.route.findMany({
       where: { status: "PUBLISHED" },
       select: { slug: true, origin: { select: { city: true } }, destination: { select: { city: true } } },
