@@ -19,6 +19,7 @@ import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { config, parse } from "dotenv";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { pgConfig } from "../lib/dbConnection";
 import { PrismaClient, type Prisma } from "../lib/generated/prisma/client";
 import { localNow } from "../lib/routeStatus";
 import { routeSlug } from "../lib/routes";
@@ -38,8 +39,8 @@ if (!targetUrl) throw new Error("No target: pass --production, or TARGET_DATABAS
 if (!production && !isLocalUrl(targetUrl)) throw new Error("TARGET_DATABASE_URL must be local; use --production for production");
 if (targetUrl === sourceUrl) throw new Error("Source and target are the same database");
 
-const source = new PrismaClient({ adapter: new PrismaPg({ connectionString: sourceUrl }) });
-const target = new PrismaClient({ adapter: new PrismaPg({ connectionString: targetUrl }) });
+const source = new PrismaClient({ adapter: new PrismaPg(pgConfig(sourceUrl)) });
+const target = new PrismaClient({ adapter: new PrismaPg(pgConfig(targetUrl)) });
 const ACTOR = "script:push-preview-to-production";
 const day = (d: Date) => d.toISOString().slice(0, 10);
 

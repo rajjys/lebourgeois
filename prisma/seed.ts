@@ -12,6 +12,7 @@ import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
 
 import { PrismaPg } from "@prisma/adapter-pg";
+import { pgConfig } from "../lib/dbConnection";
 import { PrismaClient, type Prisma } from "../lib/generated/prisma/client";
 import { ensureRoute, ensureRouteAirline } from "../lib/routes";
 import { PRIORITY_ROUTES } from "../lib/priorityRoutes";
@@ -24,7 +25,7 @@ if (!["localhost", "127.0.0.1", "::1"].includes(host) && process.env.ALLOW_REMOT
   process.exit(1);
 }
 
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) });
+const prisma = new PrismaClient({ adapter: new PrismaPg(pgConfig(url)) });
 
 const KIN = "Africa/Kinshasa";   // UTC+1, west
 const LUB = "Africa/Lubumbashi"; // UTC+2, centre and east

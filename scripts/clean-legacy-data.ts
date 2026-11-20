@@ -20,6 +20,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { config, parse } from "dotenv";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { pgConfig } from "../lib/dbConnection";
 import { PrismaClient } from "../lib/generated/prisma/client";
 import { PRIORITY_ROUTE_KEYS } from "../lib/priorityRoutes";
 import { snapshot } from "../lib/changeLog";
@@ -43,7 +44,7 @@ if (!isLocal && !production) {
   process.exit(1);
 }
 
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) });
+const prisma = new PrismaClient({ adapter: new PrismaPg(pgConfig(url)) });
 const ACTOR = "script:clean-legacy-data";
 const LEGACY_FARE_NOTE = "Migré depuis FlightPattern.price";
 

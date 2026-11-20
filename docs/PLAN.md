@@ -489,7 +489,10 @@ Verified on 2026-10-30.
     - The old database got no write after 20:39:31 UTC, while Supabase got 20 events in the first 6 minutes.
     - `--catch-up` then copied the last rows, and every row id of the old database (12 tables, including the 18 requests) exists in Supabase.
     - Local `.env`: `DATABASE_URL` now points at Supabase, and the old address is kept as `PRISMA_OLD_DATABASE_URL`.
-- ⬜ **O-15:** Verify the database certificate. Pass Supabase's CA certificate to the database client in `lib/prisma.ts`, so the connection is checked, not only encrypted.
+- 🟡 **O-15 (in review, 2026-11-19):** The database certificate is checked. `lib/dbConnection.ts` pins "Supabase Root 2021 CA" (SHA-256 `80:70:25:AD…CA:FA`, valid to 2031-04-26) and is used by the app, every script, the seed and the tests. For a Supabase host it removes the address's TLS settings (node-postgres lets them override explicit ones), trusts that root only, and checks the host name; other hosts are untouched. No Vercel change: the current `DATABASE_URL` works as it is.
+  - Checked live against production: the pinned root connects. A wrong root is refused ("self-signed certificate in certificate chain"), and so is the right root on the server's IP address ("Hostname/IP does not match"). The whole site renders through it.
+  - Limit: `prisma migrate` (the Vercel build) stays encrypted but unchecked. The Prisma 7 CLI connected with a wrong root given as `sslcert`, `sslrootcert` or `verify-full`.
+  - To do by the owner: compare the fingerprint with the certificate in Supabase's dashboard (Project Settings → Database → SSL Configuration → Download).
 - ⬜ **O-14:** Public pages from a cache, not the database. Route, airline and hub pages read the database on every request because they read `?date=`. Plan: cache the data each page reads for a long time, refresh it when the back office saves, and work out "today", "this week" and "next departure" per request from the cached data. That way the database is read once per change, not once per visit, whatever the host. A short cache alone would not help: most pages are requested a few times a day, so a 10-minute cache would almost never be hit.
 
 ---
