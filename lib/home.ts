@@ -1,5 +1,6 @@
 import "server-only";
-import prisma from "@/lib/prisma";
+// Reads go through the public data cache (O-14, lib/publicDb.ts).
+import publicDb from "@/lib/publicDb";
 import { PUBLIC_FLIGHT, latestPrices } from "@/lib/search";
 import { dayOf, isUpcoming, localNow } from "@/lib/routeStatus";
 import { addDays } from "@/lib/schedule";
@@ -58,12 +59,12 @@ export async function getHomeData(now = new Date()) {
   const from = new Date(`${dayOf(new Date(now.getTime() - DAY_MS))}T00:00:00Z`);
   const until = new Date(`${addDays(dayOf(now), 7)}T00:00:00Z`);
   const [flights, alerts] = await Promise.all([
-    prisma.flight.findMany({
+    publicDb.flight.findMany({
       where: { ...PUBLIC_FLIGHT, date: { gte: from, lte: until } },
       include: { routeAirline: { include: { airline: true, route: { include: { origin: true, destination: true } } } } },
       orderBy: [{ date: "asc" }, { departureTime: "asc" }],
     }),
-    prisma.airport.findMany({
+    publicDb.airport.findMany({
       where: { status: { not: "OPEN" } },
       orderBy: { city: "asc" },
     }),

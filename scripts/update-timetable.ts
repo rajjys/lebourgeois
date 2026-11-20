@@ -222,6 +222,8 @@ async function main() {
     console.log(`  ✓ ${pair}`);
   }
   console.log("Done.");
+  // O-14: the site caches its reads; a script bypasses the back office, so nothing tells it.
+  console.log("The public pages show this within the hour (lib/publicDb.ts), or at once after any save in the back office.");
 }
 
 main()

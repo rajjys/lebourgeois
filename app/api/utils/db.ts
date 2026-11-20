@@ -1,5 +1,3 @@
-import { revalidatePath } from "next/cache";
-
 /**
  * What went wrong in a write, in terms the back office can show.
  * Prisma reports duplicates and missing rows itself; a delete blocked by a foreign key
@@ -13,7 +11,5 @@ export function dbErrorKind(err: unknown): "duplicate" | "inUse" | "notFound" | 
   return undefined;
 }
 
-/** The home page is cached (revalidate = 600); data edits show on its next visit instead. */
-export function refreshPublicPages() {
-  revalidatePath("/");
-}
+/** After a back-office write: public pages read fresh data (O-14, lib/publicDb.ts). */
+export { refreshPublicPages } from "@/lib/publicDb";

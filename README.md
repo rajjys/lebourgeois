@@ -71,6 +71,7 @@ After a reboot, run `npm run db:start` before `npm run dev`.
 ## Troubleshooting
 
 - **Database connection refused with a certificate error** (`self-signed certificate in certificate chain`, `unable to verify`): the app trusts only Supabase's root certificate, pinned in `lib/dbConnection.ts` (O-15). If Supabase rotates it (the current root expires 2031-04-26, the pooler's certificate 2030-03-11), download the new one from the Supabase dashboard (Project Settings → Database → SSL Configuration) and replace `SUPABASE_ROOT_CA` and the fingerprint in `tests/dbConnection.test.ts`.
+- **A public page doesn't show a change yet**: public pages read through a cache (`lib/publicDb.ts`, O-14). Saves in the back office refresh it at once; changes made by a script (`update-timetable.ts` and the others) show within the hour, or at once after any save in the back office.
 
 - **Styles look old in development** (old colours, missing classes) although the files are right: Turbopack's development cache is stale. Stop `npm run dev`, move or delete `.next/dev/cache/turbopack`, and start again. Seen with Next.js 16.4.3 on 2026-10-30.
 - **The design system page** is at `/dashboard/design` (log in first).

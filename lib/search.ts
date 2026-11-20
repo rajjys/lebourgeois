@@ -1,5 +1,6 @@
 import "server-only";
-import prisma from "@/lib/prisma";
+// Reads go through the public data cache (O-14, lib/publicDb.ts).
+import publicDb from "@/lib/publicDb";
 import type { FareObservation, Prisma } from "@/lib/generated/prisma/client";
 import { durationMinutes } from "@/lib/flights";
 import { dayOf, isUpcoming, localNow } from "@/lib/routeStatus";
@@ -34,7 +35,7 @@ const toPrice = (f: FareObservation): Price => ({
 
 /** Latest validated price per airline on a route. */
 export async function latestPrices(routeAirlineIds: string[]) {
-  const fares = await prisma.fareObservation.findMany({
+  const fares = await publicDb.fareObservation.findMany({
     where: { routeAirlineId: { in: routeAirlineIds }, reviewStatus: "APPROVED" },
     orderBy: { observedAt: "desc" },
     distinct: ["routeAirlineId"],
@@ -44,7 +45,7 @@ export async function latestPrices(routeAirlineIds: string[]) {
 
 async function cities(codes: string[]) {
   if (codes.length === 0) return new Map<string, string>();
-  const rows = await prisma.airport.findMany({ where: { code: { in: codes } }, select: { code: true, city: true } });
+  const rows = await publicDb.airport.findMany({ where: { code: { in: codes } }, select: { code: true, city: true } });
   return new Map(rows.map((a) => [a.code, a.city]));
 }
 
@@ -62,14 +63,14 @@ const toSearchFlight = (f: { id: string; routeAirlineId: string; date: Date; fli
 /** Search one direction, with or without a date. Null when an airport code is unknown. */
 export async function searchRoute(fromCode: string, toCode: string, date: string | null, now: Date = new Date()) {
   const [origin, destination] = await Promise.all([
-    prisma.airport.findUnique({ where: { code: fromCode } }),
-    prisma.airport.findUnique({ where: { code: toCode } }),
+    publicDb.airport.findUnique({ where: { code: fromCode } }),
+    publicDb.airport.findUnique({ where: { code: toCode } }),
   ]);
   if (!origin || !destination) return null;
   const local = localNow(origin.timezone, now);
   const start = date && date > local.day ? date : local.day;
 
-  const rows = await prisma.flight.findMany({
+  const rows = await publicDb.flight.findMany({
     where: {
       ...PUBLIC_FLIGHT,
       date: { gte: new Date(`${start}T00:00:00Z`), lte: new Date(`${addDays(start, SEARCH_DAYS - 1)}T00:00:00Z`) },
@@ -99,7 +100,7 @@ export async function searchRoute(fromCode: string, toCode: string, date: string
  * aircraft, stops, other dates, sources). Null when the flight is unknown or not public.
  */
 export async function loadFlight(id: string, now: Date = new Date()) {
-  const flight = await prisma.flight.findFirst({
+  const flight = await publicDb.flight.findFirst({
     where: { id, ...PUBLIC_FLIGHT },
     include: {
       routeAirline: { include: { airline: true, route: { include: { origin: true, destination: true } } } },
@@ -111,7 +112,7 @@ export async function loadFlight(id: string, now: Date = new Date()) {
   const day = dayOf(flight.date);
 
   // The same service on other dates: same airline, number, times and stops, from today on.
-  const others = await prisma.flight.findMany({
+  const others = await publicDb.flight.findMany({
     where: {
       ...PUBLIC_FLIGHT,
       routeAirlineId: flight.routeAirlineId,
